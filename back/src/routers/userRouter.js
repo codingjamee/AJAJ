@@ -54,8 +54,7 @@ userAuthRouter.post("/user/login", async function (req, res, next) {
   }
 });
 
-userAuthRouter.get(
-  "/userlist",
+userAuthRouter.get("/userlist",
   //login_required,
   async function (req, res, next) {
     try {
@@ -68,8 +67,7 @@ userAuthRouter.get(
   }
 );
 
-userAuthRouter.get(
-  "/user/current",
+userAuthRouter.get("/user/current",
   login_required,
   async function (req, res, next) {
     try {
