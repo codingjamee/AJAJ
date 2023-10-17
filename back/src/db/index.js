@@ -1,6 +1,8 @@
 import mongoose from "mongoose";
 import { User } from "./models/User";
 import { Education } from "./models/Education";
+import { Project } from "./models/Project";
+
 
 const DB_URL =
   process.env.MONGODB_URL = "mongodb+srv://AJAJ:eliceAJAJ@ajaj.yo3gtp4.mongodb.net/";
@@ -17,3 +19,4 @@ db.on("error", (error) =>
 
 export { User };
 export { Education };
+export { Project };
