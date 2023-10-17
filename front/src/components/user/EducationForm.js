@@ -18,7 +18,7 @@ const EducationForm = ({ portfolioOwnerId, isEditable, setEdu }) => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     console.log({ school, degree, major, startDate, endDate });
-    const res = await Api.post("education", {
+    const res = await Api.post(`user/${user.id}/education`, {
       school,
       degree,
       major,
