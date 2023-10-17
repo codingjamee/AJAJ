@@ -17,6 +17,7 @@ const EducationForm = ({ portfolioOwnerId, isEditable, setEdu }) => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    console.log({ school, degree, major, startDate, endDate });
     const res = await Api.post(`user/${user.id}`, {
       school,
       degree,
@@ -71,7 +72,7 @@ const EducationForm = ({ portfolioOwnerId, isEditable, setEdu }) => {
             </Form.Group>
 
             <Form.Group controlId="startDate" className="mb-3">
-              <Form.Label htmlFor="formEmail">입학연월일</Form.Label>
+              <Form.Label>입학연월일</Form.Label>
               <Form.Control
                 type="Date"
                 placeholder=""
@@ -80,7 +81,7 @@ const EducationForm = ({ portfolioOwnerId, isEditable, setEdu }) => {
             </Form.Group>
 
             <Form.Group controlId="endDate" className="mb-3">
-              <Form.Label htmlFor="formEmail">졸업연월일</Form.Label>
+              <Form.Label>졸업연월일</Form.Label>
 
               <Form.Control
                 type="Date"
