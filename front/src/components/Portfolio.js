@@ -5,6 +5,8 @@ import { Container, Col, Row } from "react-bootstrap";
 import { UserStateContext } from "../App";
 import * as Api from "../api";
 import User from "./user/User";
+import EducationForm from "./user/EducationForm";
+import Education from "./user/Education";
 
 function Portfolio() {
   const navigate = useNavigate();
@@ -14,6 +16,7 @@ function Portfolio() {
   // fetchPorfolioOwner 함수가 완료된 이후에만 (isFetchCompleted가 true여야) 컴포넌트가 구현되도록 함.
   // 아래 코드를 보면, isFetchCompleted가 false이면 "loading..."만 반환되어서, 화면에 이 로딩 문구만 뜨게 됨.
   const [isFetchCompleted, setIsFetchCompleted] = useState(false);
+  const [edu, setEdu] = useState("");
   const userState = useContext(UserStateContext);
 
   const fetchPorfolioOwner = async (ownerId) => {
@@ -54,20 +57,28 @@ function Portfolio() {
   return (
     <Container fluid>
       <Row>
-        <Col md="3" lg="3">
+        <Col md="2" lg="2">
           <User
             portfolioOwnerId={portfolioOwner.id}
             isEditable={portfolioOwner.id === userState.user?.id}
           />
         </Col>
-        <Col>
-
-          <div style={{ textAlign: "center" }}>
-            학력 목록, 수상이력 목록, 프로젝트 목록, 자격증 목록 만들기
-          </div>
-
-        </Col>
       </Row>
+      <Col style={{ display: "flex", justifyContent: "center" }}>
+        <div style={{ textAlign: "center" }}>
+          <Education
+            portfolioOwnerId={portfolioOwner.id}
+            isEditable={portfolioOwner.id === userState.user?.id}
+            edu={edu}
+          />
+          <EducationForm
+            portfolioOwnerId={portfolioOwner.id}
+            isEditable={portfolioOwner.id === userState.user?.id}
+            setEdu={setEdu}
+            edu={edu}
+          />
+        </div>
+      </Col>
     </Container>
   );
 }
