@@ -1,6 +1,6 @@
 import is from "@sindresorhus/is";
 import { Router } from "express";
-// import { login_required } from "../middlewares/login_required";
+// import { login_required } from "../middlewares/login_required"; 나중에 한꺼번에 추가
 import { educationAuthService } from "../services/educationService";
 
 const educationAuthRouter = Router();
@@ -10,9 +10,9 @@ educationAuthRouter.post("/education", async function (req, res, next) {
     try {
         if (is.emptyObject(req.body)) {
             throw new Error(
-                "입력값이 없음"
+                "입력값이 없습니다."
             );
-            }
+        }
     const school = req.body.school;
     const major = req.body.major;
     const degree = req.body.degree;
@@ -52,5 +52,25 @@ educationAuthRouter.get("/educations", async function (req, res, next) {
     next(error);
   }
 });
+
+
+// 특정 학력 가져오기
+// param 된 eduId 받아와서 조회
+educationAuthRouter.get("/education/:eduId", async function (req, res, next) {
+    const { eduId } = req.params;
+    console.log(eduId);
+    try {
+      
+      const educations = await educationAuthService.getEducation({eduId});
+  
+      if (educations.errorMessage) {
+        throw new Error('Error:', educations.errorMessage);
+      }
+  
+      res.status(201).send(educations);
+    } catch (error) {
+      next(error);
+    }
+  });
 
 export { educationAuthRouter };

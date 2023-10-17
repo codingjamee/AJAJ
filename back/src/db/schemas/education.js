@@ -5,7 +5,7 @@ const EducationSchema = new Schema(
     id: {
       type: String,
       required: true,
-      ref: "User",
+      ref: "User", // 관건 !!!!
     },
     eduId: {
       type: String,
