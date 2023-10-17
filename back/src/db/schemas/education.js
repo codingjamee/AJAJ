@@ -5,6 +5,11 @@ const EducationSchema = new Schema(
     id: {
       type: String,
       required: true,
+      ref: "User",
+    },
+    eduId: {
+      type: String,
+      required: true,
     },
     school: {
       type: String,
@@ -12,11 +17,11 @@ const EducationSchema = new Schema(
     },
     major: {
       type: String,
-      required: true,
+      required: false,
     },
     degree: {
       type: String,
-      required: true,
+      required: false,
     },
     startDate: {
       type: Date,
