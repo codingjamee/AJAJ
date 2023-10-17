@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import * as Api from "../../api";
+import * as Api from "../../../hooks/api";
 import { Button, Form, Card, Col, Row } from "react-bootstrap";
 
 const EducationForm = ({ portfolioOwnerId, isEditable, setEdu }) => {
