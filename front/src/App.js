@@ -4,10 +4,10 @@ import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import * as Api from "./api";
 import { loginReducer } from "./reducer";
 
-import Header from "./components/Header";
-import LoginForm from "./components/user/LoginForm";
-import Network from "./components/user/Network";
-import RegisterForm from "./components/user/RegisterForm";
+import Nav from "./components/common/header/Nav";
+import LoginForm from "./components/pages/users/LoginForm";
+import Network from "./components/pages/users/Network";
+import RegisterForm from "./components/pages/users/RegisterForm";
 import Portfolio from "./components/Portfolio";
 
 export const UserStateContext = createContext(null);
@@ -56,7 +56,7 @@ function App() {
     <DispatchContext.Provider value={dispatch}>
       <UserStateContext.Provider value={userState}>
         <Router>
-          <Header />
+          <Nav />
           <Routes>
             <Route path="/" exact element={<Portfolio />} />
             <Route path="/login" element={<LoginForm />} />
