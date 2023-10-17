@@ -2,11 +2,10 @@ import { useEffect, useState } from "react";
 import * as Api from "../../api";
 import { Button, Form, Card, Col, Row } from "react-bootstrap";
 
-const EducationForm = ({ portfolioOwnerId, isEditable }) => {
+const EducationForm = ({ portfolioOwnerId, isEditable, setEdu }) => {
   const [edit, setEdit] = useState(false);
   // useState 훅을 통해 user 상태를 생성함.
   const [user, setUser] = useState(null);
-  const [edu, setEdu] = useState("");
   const [school, setSchool] = useState("");
   const [startDate, setStartDate] = useState(0);
   const [endDate, setEndDate] = useState(0);
@@ -27,7 +26,9 @@ const EducationForm = ({ portfolioOwnerId, isEditable }) => {
     });
 
     const updatedEdu = res.data;
-    setEdu(updatedEdu);
+    setEdu((prev) => {
+      return { ...prev, updatedEdu };
+    });
     setEdit(false);
   };
 
