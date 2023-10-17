@@ -54,7 +54,7 @@ educationAuthRouter.put("user/:id/education", async function (req, res, next) {
     }
   });
 
-educationAuthRouter.get("/educations", async function (req, res, next) {
+educationAuthRouter.get("user/:id/educations", async function (req, res, next) {
   try {
     
     const educations = await educationAuthService.getEducations();
@@ -72,7 +72,7 @@ educationAuthRouter.get("/educations", async function (req, res, next) {
 
 // 특정 학력 가져오기
 // param 된 eduId 받아와서 조회
-educationAuthRouter.get("/education/:eduId", async function (req, res, next) {
+educationAuthRouter.get("user/:id/education/:eduId", async function (req, res, next) {
     const { eduId } = req.params;
     console.log(eduId);
     try {
