@@ -6,33 +6,46 @@ class Education {
     return createdNewEducation;
   }
 
-  static async findByEduId({ eduId }) {
-    const Education = await EducationModel.findOne({ eduId });
-    return Education;
+  static async checkUserId({ userid }) {
+    const user = await EducationModel.findOne({ userid: userid });
+    return user;
   }
 
-//   static async findById({ Education_id }) {
-//     const Education = await EducationModel.findOne({ id: Education_id });
-//     return Education;
-//   }
-
-  static async findAll() {
-    const Educations = await EducationModel.find({});
+  // 동일한 userid 내에서의 모든 학력 가져오기
+  static async findAll({ userid }) {
+    const Educations = await EducationModel.find({ userid: userid });
     return Educations;
   }
 
-//   static async update({ Education_id, fieldToUpdate, newValue }) {
-//     const filter = { id: Education_id };
-//     const update = { [fieldToUpdate]: newValue };
-//     const option = { returnOriginal: false };
+  static async findByEduId({ eduId }) {
+    const Education = await EducationModel.findOne({ eduId }).populate("userid");
+    return Education;
+  }
 
-//     const updatedEducation = await EducationModel.findOneAndUpdate(
-//       filter,
-//       update,
-//       option
-//     );
-//     return updatedEducation;
-//   }
+  static async findById({ Education_id }) {
+    const Education = await EducationModel.findOne({ eduId: Education_id });
+    return Education;
+  }
+
+  static async update({ Education_id, fieldToUpdate, newValue }) {
+    const filter = { eduId: Education_id };
+    const update = { [fieldToUpdate]: newValue };
+    const option = { returnOriginal: false };
+
+    const updatedEducation = await EducationModel.findOneAndUpdate(
+      filter,
+      update,
+      option
+    );
+    return updatedEducation;
+  }
+
+  static async delete({ eduId }) {
+    const deletedEducation = await EducationModel.findOneAndDelete({ eduId })
+    return deletedEducation;
+  }
 }
+
+
 
 export { Education };
