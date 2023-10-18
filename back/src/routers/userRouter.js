@@ -2,7 +2,6 @@ import is from "@sindresorhus/is";
 import { Router } from "express";
 import { login_required } from "../middlewares/login_required";
 import { userAuthService } from "../services/userService";
-// import { cookieMiddleware } from "../middlewares/cookieMiddleware";
 
 const userAuthRouter = Router();
 
@@ -57,6 +56,8 @@ userAuthRouter.post("/user/login", async function (req, res, next) {
       sameSite: 'lax', // 쿠키 전송 범위. default
       maxAge: 60 * 60 * 1000, // 쿠키 유효기간. 1시간
     });
+    // secure: true -> HTTPS에서만 사용 가능 (defult false)
+    // sameSite: 우리 사이트에서 다른 사이트로 링크 연결이 필요하다면 lax, 우리 사이트에서만 머무르면 strict
 
     res.status(200).send(user);
   } catch (error) {
@@ -137,10 +138,11 @@ userAuthRouter.get(
   "/users/:id",
   login_required,
   async function (req, res, next) {
-    
+    // 쿠키 확인
     if (req.headers.cookie) {
       console.log(req.headers.cookie);
     }
+
     try {
       const user_id = req.params.id;
       
