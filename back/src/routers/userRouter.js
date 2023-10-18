@@ -40,14 +40,23 @@ userAuthRouter.post("/user/login", async function (req, res, next) {
     // req (request) 에서 데이터 가져오기
     const email = req.body.email;
     const password = req.body.password;
+    
 
     // 위 데이터를 이용하여 유저 db에서 유저 찾기
     const user = await userAuthService.getUser({ email, password });
-
+    console.log('user', user);
     if (user.errorMessage) {
       throw new Error(user.errorMessage);
     }
-
+    // 추가_쿠키 생성 ???ㅜㅜㅜ
+    res.cookie('user_cookie', user.token, {
+      path: '/',
+      // domain: process.env.COOKIE_DOMAIN,
+      httpOnly: true,
+      // secure: true,
+      sameSite: 'none',
+      maxAge: 60 * 60 * 1000,
+    });
     res.status(200).send(user);
   } catch (error) {
     next(error);
@@ -125,6 +134,7 @@ userAuthRouter.get(
   async function (req, res, next) {
     try {
       const user_id = req.params.id;
+      
       const currentUserInfo = await userAuthService.getUserInfo({ user_id });
 
       if (currentUserInfo.errorMessage) {
