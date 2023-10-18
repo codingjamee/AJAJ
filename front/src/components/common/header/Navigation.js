@@ -1,9 +1,9 @@
 import React, { useContext } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import Nav from "react-bootstrap/Nav";
-import { UserStateContext, DispatchContext } from "../App";
+import { UserStateContext, DispatchContext } from "../../../App";
 
-function Header() {
+function Navigation() {
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -43,4 +43,4 @@ function Header() {
   );
 }
 
-export default Header;
+export default Navigation;
