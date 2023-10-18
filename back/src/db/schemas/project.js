@@ -5,19 +5,24 @@ const ProjectSchema = new Schema(
     id: {
       type: String,
       required: true,
+      ref: "User", // 관건 !!!!
     },
-    project: {
+    projectId: {
       type: String,
       required: true,
     },
-    organization: {
+    projectName: {
       type: String,
       required: true,
     },
-    description: {
+    projectDetail: {
       type: String,
       required: true,
     },
+    // projectImg: {
+    //   type: Image,
+    //   required: true,
+    // },
     startDate: {
       type: Date,
       required: false,

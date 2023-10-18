@@ -54,7 +54,7 @@ educationAuthRouter.put("user/:id/education", async function (req, res, next) {
     }
   });
 
-educationAuthRouter.get("user/:id/educations", async function (req, res, next) {
+educationAuthRouter.get("/educations", async function (req, res, next) {
   try {
     
     const educations = await educationAuthService.getEducations();
