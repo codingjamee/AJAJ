@@ -2,8 +2,10 @@ import is from "@sindresorhus/is";
 import { Router } from "express";
 import { login_required } from "../middlewares/login_required";
 import { userAuthService } from "../services/userService";
+// import { cookieMiddleware } from "../middlewares/cookieMiddleware";
 
 const userAuthRouter = Router();
+
 
 userAuthRouter.post("/user/register", async function (req, res, next) {
   try {
@@ -48,24 +50,25 @@ userAuthRouter.post("/user/login", async function (req, res, next) {
     if (user.errorMessage) {
       throw new Error(user.errorMessage);
     }
-    // 추가_쿠키 생성 ???ㅜㅜㅜ
+
     res.cookie('user_cookie', user.token, {
-      path: '/',
-      // domain: process.env.COOKIE_DOMAIN,
-      httpOnly: true,
-      // secure: true,
-      sameSite: 'none',
-      maxAge: 60 * 60 * 1000,
+      path: '/', // 쿠키 저장 경로
+      httpOnly: true, // 클라이언트에서 쿠키 조작 x
+      sameSite: 'lax', // 쿠키 전송 범위. default
+      maxAge: 60 * 60 * 1000, // 쿠키 유효기간. 1시간
     });
+
     res.status(200).send(user);
   } catch (error) {
     next(error);
   }
 });
 
+
+
 userAuthRouter.get(
   "/userlist",
-  //login_required,
+  login_required,
   async function (req, res, next) {
     try {
       // 전체 사용자 목록을 얻음
@@ -81,6 +84,7 @@ userAuthRouter.get(
   "/user/current",
   login_required,
   async function (req, res, next) {
+    
     try {
       // jwt토큰에서 추출된 사용자 id를 가지고 db에서 사용자 정보를 찾음.
       const user_id = req.currentUserId;
@@ -103,6 +107,7 @@ userAuthRouter.put(
   "/users/:id",
   login_required,
   async function (req, res, next) {
+    
     try {
       // URI로부터 사용자 id를 추출함.
       const user_id = req.params.id;
@@ -132,6 +137,10 @@ userAuthRouter.get(
   "/users/:id",
   login_required,
   async function (req, res, next) {
+    
+    if (req.headers.cookie) {
+      console.log(req.headers.cookie);
+    }
     try {
       const user_id = req.params.id;
       
