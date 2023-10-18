@@ -12,7 +12,7 @@ class Education {
   }
 
   static async findByEduId({ eduId }) {
-    const Education = await EducationModel.findOne({ eduId });
+    const Education = await EducationModel.findOne({ eduId }).populate("userid");
     return Education;
   }
 
@@ -39,5 +39,7 @@ class Education {
     return deletedEducation;
   }
 }
+
+
 
 export { Education };

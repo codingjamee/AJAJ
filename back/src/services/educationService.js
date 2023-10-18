@@ -5,8 +5,10 @@ class educationAuthService {
         const eduId = uuidv4();
         const newEducation = { eduId, school, major, degree, startDate, endDate};
         const createdNewUser = await Education.create({ newEducation });
-        createdNewUser.errorMessage = "학력 추가에 실패했습니다";
-
+        if (!createdNewUser) {
+          createdNewUser.errorMessage = "학력 추가에 실패했습니다";
+        }
+      
         return createdNewUser;
     };
 
@@ -17,7 +19,9 @@ class educationAuthService {
 
     static async getEducation({ eduId }) {
         const education = await Education.findByEduId({eduId});
-        education.errorMessage = "해당 학력을 찾을 수 없습니다";
+        if (!education) {
+          education.errorMessage = "해당 학력을 찾을 수 없습니다";
+        }
         return education;
     };
 
@@ -28,8 +32,7 @@ class educationAuthService {
     
         // db에서 찾지 못한 경우, 에러 메시지 반환
         if (!education) {
-          const errorMessage =
-            "해당 학력 없음";
+          const errorMessage = "해당 학력 없습니다";
           return { errorMessage };
         }
     
@@ -68,7 +71,9 @@ class educationAuthService {
       }
     static async deleteEducation({ eduId }) {
         const education = await Education.delete({ eduId });
-        education.errorMessage = "해당 학력을 삭제할 수 없습니다.";
+        if (!education) {
+          education.errorMessage = "해당 학력을 삭제할 수 없습니다.";
+        }
         return education;
     };
 }

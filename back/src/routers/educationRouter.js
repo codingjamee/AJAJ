@@ -6,7 +6,7 @@ import { educationAuthService } from "../services/educationService";
 const educationAuthRouter = Router();
 
 // 학력 추가하기_login_required
-educationAuthRouter.post("user/:id/education", login_required, async function (req, res, next) {
+educationAuthRouter.post("/user/:id/education", login_required, async function (req, res, next) {
     try {
         if (is.emptyObject(req.body)) {
             throw new Error(
@@ -38,7 +38,7 @@ educationAuthRouter.post("user/:id/education", login_required, async function (r
   });
 
 // 학력 전체 가져오기_login_required
-educationAuthRouter.get("user/:id/educations", login_required, async function (req, res, next) {
+educationAuthRouter.get("/user/:id/educations", login_required, async function (req, res, next) {
   try {
     
     const educations = await educationAuthService.getEducations();
@@ -55,17 +55,13 @@ educationAuthRouter.get("user/:id/educations", login_required, async function (r
 
 
 // 특정 학력 가져오기_login_required
-educationAuthRouter.get("user/:id/education/:eduId", login_required, async function (req, res, next) {
-  const { eduId } = req.params;
-  console.log(eduId);
+educationAuthRouter.get("/user/:id/education/:eduId", login_required, async function (req, res, next) {
+  const eduId = req.params.eduId;
   try {
-    
     const educations = await educationAuthService.getEducation({eduId});
-
     if (educations.errorMessage) {
       throw new Error('Error:', educations.errorMessage);
     }
-
     res.status(201).send(educations);
   } catch (error) {
     next(error);
@@ -75,7 +71,7 @@ educationAuthRouter.get("user/:id/education/:eduId", login_required, async funct
 
 
 // 학력 수정하기_login_required
-educationAuthRouter.patch("user/:id/education/:eduId", login_required, async function (req, res, next) {
+educationAuthRouter.patch("/user/:id/education/:eduId", login_required, async function (req, res, next) {
     try {
       const edu_id = req.params.eduId;
 
@@ -101,7 +97,7 @@ educationAuthRouter.patch("user/:id/education/:eduId", login_required, async fun
   });
 
 // 학력 삭제하기_login_required
-educationAuthRouter.delete("user/:id/education/:eduId", login_required, async function (req, res, next) {
+educationAuthRouter.delete("/user/:id/education/:eduId", login_required, async function (req, res, next) {
   const edu_id = req.params.eduId;
   const id = req.params.id;
   try {
