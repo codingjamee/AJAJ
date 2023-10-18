@@ -10,7 +10,7 @@ educationAuthRouter.post("user/:id/education", login_required, async function (r
     try {
         if (is.emptyObject(req.body)) {
             throw new Error(
-                "입력값이 없습니다."
+                "학력추가에 입력값이 없습니다."
             );
         }
     const school = req.body.school;
@@ -77,10 +77,9 @@ educationAuthRouter.get("user/:id/education/:eduId", login_required, async funct
 // 학력 수정하기_login_required
 educationAuthRouter.patch("user/:id/education/:eduId", login_required, async function (req, res, next) {
     try {
-      
       const edu_id = req.params.eduId;
 
-      // body data 로부터 업데이트할 사용자 정보를 추출함.
+      // body data 로부터 업데이트할 사용자 정보를 추출
       const school = req.body.school ?? null;
       const major = req.body.major ?? null;
       const degree = req.body.degree ?? null;
@@ -101,6 +100,23 @@ educationAuthRouter.patch("user/:id/education/:eduId", login_required, async fun
     }
   });
 
+// 학력 삭제하기_login_required
+educationAuthRouter.delete("user/:id/education/:eduId", login_required, async function (req, res, next) {
+  const edu_id = req.params.eduId;
+  const id = req.params.id;
+  try {
+    const deletedEducation = await educationAuthService.deleteEducation({ edu_id });
 
+    if (deletedEducation.errorMessage) {
+      throw new Error('Error:', deletedEducation.errorMessage);
+    }
+
+    res.status(200).json({
+      redirect: `/user/${id}/educations`
+    })
+  } catch (error) {
+    next(error);
+  }
+})
 
 export { educationAuthRouter };

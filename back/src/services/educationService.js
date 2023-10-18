@@ -1,6 +1,15 @@
 import { Education } from "../db"; // from을 폴더(db) 로 설정 시, 디폴트로 index.js 로부터 import함.
 
 class educationAuthService {
+    static async addEducation({school, major, degree, startDate, endDate}) {
+        const eduId = uuidv4();
+        const newEducation = { eduId, school, major, degree, startDate, endDate};
+        const createdNewUser = await Education.create({ newEducation });
+        createdNewUser.errorMessage = "학력 추가에 실패했습니다";
+
+        return createdNewUser;
+    };
+
     static async getEducations() {
         const educations = await Education.findAll();
         return educations;
@@ -8,18 +17,10 @@ class educationAuthService {
 
     static async getEducation({ eduId }) {
         const education = await Education.findByEduId({eduId});
-        education.errorMessage = "eduId를 찾을 수 없음";
+        education.errorMessage = "해당 학력을 찾을 수 없습니다";
         return education;
     };
 
-    static async addEducation({school, major, degree, startDate, endDate}) {
-        const eduId = uuidv4();
-        const newEducation = { eduId, school, major, degree, startDate, endDate};
-        const createdNewUser = await Education.create({ newEducation });
-        createdNewUser.errorMessage = "학력 추가 안됨";
-
-        return createdNewUser;
-    };
 
     static async setEducation({ edu_id, toUpdate }) {
         // 우선 해당 id 의 유저가 db에 존재하는지 여부 확인
@@ -65,6 +66,13 @@ class educationAuthService {
     
         return education;
       }
+    static async deleteEducation({ eduId }) {
+        const education = await Education.findOneAndDelete({eduId:eduId});
+        education.errorMessage = "해당 학력을 삭제할 수 없습니다.";
+        return education;
+    };
 }
+
+
 
 export { educationAuthService };
