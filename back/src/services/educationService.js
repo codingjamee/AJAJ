@@ -28,7 +28,7 @@ class educationAuthService {
     };
 
     static async getEducation({ eduId }) {
-        const education = await Education.findByEduId({eduId});
+        const education = await Education.findByEduId({ eduId });
         if (!education) {
           education.errorMessage = "해당 학력을 찾을 수 없습니다";
         }
@@ -81,9 +81,6 @@ class educationAuthService {
       }
     static async deleteEducation({ eduId }) {
         const education = await Education.delete({ eduId });
-        if (!education) {
-          education.errorMessage = "해당 학력을 삭제할 수 없습니다.";
-        }
         return education;
     };
 }

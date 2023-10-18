@@ -7,6 +7,7 @@ const educationAuthRouter = Router();
 
 // 학력 추가하기_login_required
 educationAuthRouter.post("/user/:id/education", login_required, async function (req, res, next) {
+    
     console.log(req.body);
     try {
         if (is.emptyObject(req.body)) {
@@ -72,12 +73,13 @@ educationAuthRouter.get("/user/:id/education/:eduId", login_required, async func
     // userid가 동일한지 확인
     if (userid) {
       const user = await educationAuthService.checkUser({ userid });
-      if (String(user.userid) !== userid) {
+      if (user.userid != userid) {
         throw new Error('Error:', user.errorMessage);
       }
     }
 
-    const educations = await educationAuthService.getEducation({eduId});
+    const educations = await educationAuthService.getEducation({ eduId });
+
     if (educations.errorMessage) {
       throw new Error('Error:', educations.errorMessage);
     }
@@ -125,26 +127,25 @@ educationAuthRouter.patch("/user/:id/education/:eduId", login_required, async fu
 
 // 학력 삭제하기_login_required
 educationAuthRouter.delete("/user/:id/education/:eduId", login_required, async function (req, res, next) {
-  const edu_id = req.params.eduId;
+  const eduId = req.params.eduId;
   const userid = req.params.id;
   try {
     // userid가 동일한지 확인
     if (userid) {
       const user = await educationAuthService.checkUser({ userid });
-      if (String(user.userid) !== userid) {
+      if (user.userid !== userid) {
         throw new Error('Error:', user.errorMessage);
       }
     }
+    const deletedEducation = await educationAuthService.deleteEducation({ eduId });
 
-    const deletedEducation = await educationAuthService.deleteEducation({ edu_id });
+    // if (deletedEducation) {
+    //   console.log('Error Fail');
+    // }
 
-    if (deletedEducation.errorMessage) {
-      throw new Error('Error:', deletedEducation.errorMessage);
-    }
-
-    res.status(200).json({
-      redirect: `/user/${id}/educations` // 확인필요
-    })
+    // res.status(200).send(
+    //   console.log('삭제 완료')
+    // )
   } catch (error) {
     next(error);
   }
