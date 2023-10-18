@@ -67,7 +67,7 @@ class educationAuthService {
         return education;
       }
     static async deleteEducation({ eduId }) {
-        const education = await Education.findOneAndDelete({eduId:eduId});
+        const education = await Education.delete({ eduId });
         education.errorMessage = "해당 학력을 삭제할 수 없습니다.";
         return education;
     };
