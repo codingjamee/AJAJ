@@ -6,8 +6,14 @@ class Education {
     return createdNewEducation;
   }
 
-  static async findAll() {
-    const Educations = await EducationModel.find({});
+  static async checkUserId({ userid }) {
+    const user = await EducationModel.findOne({ userid: userid });
+    return user;
+  }
+
+  // 동일한 userid 내에서의 모든 학력 가져오기
+  static async findAll({ userid }) {
+    const Educations = await EducationModel.find({ userid: userid });
     return Educations;
   }
 

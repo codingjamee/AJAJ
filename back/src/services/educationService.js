@@ -1,10 +1,12 @@
 import { Education } from "../db"; // from을 폴더(db) 로 설정 시, 디폴트로 index.js 로부터 import함.
+import { v4 as uuidv4 } from "uuid";
 
 class educationAuthService {
-    static async addEducation({school, major, degree, startDate, endDate}) {
+    static async addEducation({userid, school, major, degree, startDate, endDate}) {
         const eduId = uuidv4();
-        const newEducation = { eduId, school, major, degree, startDate, endDate};
+        const newEducation = { userid, eduId, school, major, degree, startDate, endDate};
         const createdNewUser = await Education.create({ newEducation });
+  
         if (!createdNewUser) {
           createdNewUser.errorMessage = "학력 추가에 실패했습니다";
         }
@@ -12,8 +14,16 @@ class educationAuthService {
         return createdNewUser;
     };
 
-    static async getEducations() {
-        const educations = await Education.findAll();
+    static async checkUser({ userid }) {
+      const user = await Education.checkUserId({ userid });
+      if (!user) {
+        user.errorMessage = "해당 학력을 찾을 수 없습니다";
+      }
+      return user;
+  };
+
+    static async getEducations({ userid }) {
+        const educations = await Education.findAll({ userid });
         return educations;
     };
 
@@ -27,7 +37,7 @@ class educationAuthService {
 
 
     static async setEducation({ edu_id, toUpdate }) {
-        // 우선 해당 id 의 유저가 db에 존재하는지 여부 확인
+        // 우선 해당 id가 db에 존재하는지 여부 확인
         let education = await Education.findById({ edu_id });
     
         // db에서 찾지 못한 경우, 에러 메시지 반환
