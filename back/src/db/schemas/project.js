@@ -1,11 +1,12 @@
 import { Schema, model } from "mongoose";
+const mongoose = require('mongoose');
 
 const ProjectSchema = new Schema(
   {
-    id: {
-      type: String,
+    userid: {
+      type: mongoose.Schema.Types.ObjectId,
       required: true,
-      ref: "User", // 관건 !!!!
+      ref: "User",
     },
     projectId: {
       type: String,
