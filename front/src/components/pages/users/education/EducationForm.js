@@ -65,6 +65,7 @@ const EducationForm = ({ portfolioOwnerId, isEditable, setEdu }) => {
                 }}
               >
                 <option>학위를 선택하세요</option>
+                <option value="재학중">재학중</option>
                 <option value="학사학위">학사학위</option>
                 <option value="석사학위">석사학위</option>
                 <option value="박사학위">박사학위</option>
@@ -89,19 +90,21 @@ const EducationForm = ({ portfolioOwnerId, isEditable, setEdu }) => {
               />
             </Form.Group>
 
-            <Form.Group as={Row} className="mt-3 text-center">
-              <Col sm={{ span: 20 }}>
-                <Button variant="primary" type="submit" className="me-3">
-                  추가
-                </Button>
-                <Button
-                  variant="secondary"
-                  onClick={() => setEdit((prev) => !prev)}
-                >
-                  취소
-                </Button>
-              </Col>
-            </Form.Group>
+            {isEditable && (
+              <Form.Group as={Row} className="mt-3 text-center">
+                <Col sm={{ span: 20 }}>
+                  <Button variant="primary" type="submit" className="me-3">
+                    추가
+                  </Button>
+                  <Button
+                    variant="secondary"
+                    onClick={() => setEdit((prev) => !prev)}
+                  >
+                    취소
+                  </Button>
+                </Col>
+              </Form.Group>
+            )}
           </Form>
         )}
       </Card.Body>
