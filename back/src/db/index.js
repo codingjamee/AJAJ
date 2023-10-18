@@ -6,8 +6,7 @@ import { Award } from "./models/Award";
 
 
 
-const DB_URL =
-  process.env.MONGODB_URL = "mongodb+srv://AJAJ:eliceAJAJ@ajaj.yo3gtp4.mongodb.net/";
+const DB_URL = process.env.MONGODB_URL;
 
 mongoose.connect(DB_URL);
 const db = mongoose.connection;

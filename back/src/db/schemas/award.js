@@ -7,29 +7,21 @@ const AwardSchema = new Schema(
       required: true,
       ref: "User",
     },
-    eduId: {
+    awrardId: {
       type: String,
       required: true,
     },
-    school: {
+    award: {
       type: String,
       required: true,
     },
-    major: {
+    awardContent: {
       type: String,
-      required: false,
+      required: true,
     },
-    degree: {
+    awardDate: {
       type: String,
-      required: false,
-    },
-    startDate: {
-      type: Date,
-      required: false,
-    },
-    endDate: {
-      type: Date,
-      required: false,
+      required: true,
     },
   },
   {
