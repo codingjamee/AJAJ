@@ -56,23 +56,23 @@ function Portfolio() {
   return (
     <Container fluid>
       <Row>
-        <Col md="2" lg="2">
+        <Col>
           <User
             portfolioOwnerId={portfolioOwner.id}
             isEditable={portfolioOwner.id === userState.user?.id}
           />
         </Col>
+        <Col style={{ display: "flex", justifyContent: "center" }}>
+          <div style={{ textAlign: "center" }}>
+            <Education
+              portfolioOwnerId={portfolioOwner.id}
+              isEditable={portfolioOwner.id === userState.user?.id}
+              setEdu={setEdu}
+              edu={edu}
+            />
+          </div>
+        </Col>
       </Row>
-      <Col style={{ display: "flex", justifyContent: "center" }}>
-        <div style={{ textAlign: "center" }}>
-          <Education
-            portfolioOwnerId={portfolioOwner.id}
-            isEditable={portfolioOwner.id === userState.user?.id}
-            setEdu={setEdu}
-            edu={edu}
-          />
-        </div>
-      </Col>
     </Container>
   );
 }
