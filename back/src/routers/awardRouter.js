@@ -5,10 +5,11 @@ import { projectAuthService } from "../services/projectService";
 
 const projectAuthRouter = Router();
 
-// 학력전체 가져오기
-projectAuthRouter.post("/award", async function (req, res, next) {
+// 수상 추가
+projectAuthRouter.post("/user/:id/award",
+  login_required,
+  async function (req, res, next) {
     try {
-      
       const projects = await projectAuthService.getprojects();
   
       if (projects.errorMessage) {
