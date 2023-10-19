@@ -1,13 +1,18 @@
 import { EducationModel } from "../schemas/education";
+import { UserModel } from "../schemas/user";
 
 class Education {
   static async create({ newEducation }) {
-    const createdNewEducation = await EducationModel.create(newEducation);
-    return createdNewEducation;
+    try {
+      const createdNewEducation = await EducationModel.create(newEducation);
+      return createdNewEducation;
+    } catch {
+      return null;
+    }
   }
 
   static async checkUserId({ userid }) {
-    const user = await EducationModel.findOne({ userid: userid });
+    const user = await UserModel.findOne({ userid: userid });
     return user;
   }
 
@@ -18,14 +23,15 @@ class Education {
   }
 
   static async findByEduId({ eduId }) {
-    const Education = await EducationModel.findOne({ eduId }); //.populate({path: "id", model: "User"});
+    const Education = await EducationModel.findOne({ eduId: eduId }); //.populate({path: "id", model: "User"});
     return Education;
   }
 
-  static async findById({ Education_id }) {
-    const Education = await EducationModel.findOne({ eduId: Education_id });
-    return Education;
-  }
+  // static async findById({ eduId }) {
+  //   const Education = await EducationModel.findOne({ eduId });
+  //   console.log(Education);
+  //   return Education;
+  // }
 
   static async update({ Education_id, fieldToUpdate, newValue }) {
     const filter = { eduId: Education_id };

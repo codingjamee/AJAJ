@@ -6,23 +6,17 @@ import { educationAuthRouter } from "./routers/educationRouter";
 const cookieParser = require('cookie-parser');
 
 const app = express();
-//const cp = require('cookie-parser');
 
 
 // CORS 에러 방지
-app.use(cors());
-//app.use(cp());
+const corsOption = {
+  origin: "http://localhost:3000",
+  optionsSuccessStatus: 200,
+  credentials: true, // header에 Access-Control-Allow-Credentials 포함 여부
+  exposedHeaders: ['set-cookie'],
+}
+app.use(cors(corsOption));
 
-//   {
-//   origin: 'http://localhost:3000',
-//   // [
-//   //   'http://localhost:3000',
-//   //   process.env.CALLBACK_URL || '',
-//   // ],
-//   credentials: true,
-//   allowedHeaders: ['Origin', 'X-Requested-With', 'Content-Type', 'Accept'],
-//   exposedHeaders: ['set-cookie'],
-// }
 
 // express 기본 제공 middleware
 // express.json(): POST 등의 요청과 함께 오는 json형태의 데이터를 인식하고 핸들링할 수 있게 함.
@@ -33,7 +27,7 @@ app.use(cookieParser());
 
 // 기본 페이지
 app.get("/", (req, res) => {
-  res.send("안녕하세요, 레이서 프로젝트 API 입니다.");
+  res.send("안녕하세요, Elice 레이서 1차 프로젝트 3팀 API 입니다.");
 });
 
 // router, service 구현 (userAuthRouter는 맨 위에 있어야 함.)

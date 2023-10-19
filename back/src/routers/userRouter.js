@@ -54,12 +54,14 @@ userAuthRouter.post("/user/login", async function (req, res, next) {
       path: '/', // 쿠키 저장 경로
       httpOnly: true, // 클라이언트에서 쿠키 조작 x
       sameSite: 'lax', // 쿠키 전송 범위. default
+      domain: 'localhost',
       maxAge: 60 * 60 * 1000, // 쿠키 유효기간. 1시간
     });
-    // secure: true -> HTTPS에서만 사용 가능 (defult false)
+    // secure: true -> HTTPS에서만 사용 가능 (defult false). 
     // sameSite: 우리 사이트에서 다른 사이트로 링크 연결이 필요하다면 lax, 우리 사이트에서만 머무르면 strict
 
     res.status(200).send(user);
+    //res.writeHead(200, { 'Access-Control-Allow-Origin': '*' }); // 이걸 하면 로그인 버튼을 누를 때 다음으로 안넘어감
   } catch (error) {
     next(error);
   }
