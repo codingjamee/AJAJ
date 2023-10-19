@@ -6,37 +6,17 @@ import * as Api from "../../../hooks/api";
 import ButtonCommon from "../../../common/ButtonCommon";
 
 const Education = (props) => {
-  // const [educations, setEducations] = useState([]);
   const [edit, setEdit] = useState(false);
   const [school, setSchool] = useState("");
 
   const [startDate, setStartDate] = useState("2023-01-01");
   const [endDate, setEndDate] = useState("2023-01-01");
   const [degree, setDegree] = useState("");
-  const [educations, setEducations] = useState([]);
+  // const [educations, setEducations] = useState([]);
 
   const [major, setMajor] = useState("");
   const { portfolioOwnerId, isEditable, id } = props;
   const userState = useContext(UserStateContext);
-
-  // const educations = [
-  //   {
-  //     id: "1",
-  //     school: "스쿨1",
-  //     major: "전공1",
-  //     degree: "학사학위",
-  //     startDate: "0000-01-01",
-  //     endDate: "1111-01-01",
-  //   },
-  //   {
-  //     id: "2",
-  //     school: "스쿨2",
-  //     major: "전공2",
-  //     degree: "석사학위",
-  //     startDate: "0000-01-02",
-  //     endDate: "1111-01-01",
-  //   },
-  // ];
 
   //option 상세설정 어레이
   const optionArr = [
@@ -115,24 +95,24 @@ const Education = (props) => {
   ];
 
   //서버와 통신 전 더미 어레이
-  // const educations = [
-  //   {
-  //     id: "1",
-  //     school: "스쿨1",
-  //     major: "전공1",
-  //     degree: "학사학위",
-  //     startDate: "0000-01-01",
-  //     endDate: "1111-01-01",
-  //   },
-  //   {
-  //     id: "2",
-  //     school: "스쿨2",
-  //     major: "전공2",
-  //     degree: "석사학위",
-  //     startDate: "0000-01-02",
-  //     endDate: "1111-01-01",
-  //   },
-  // ];
+  const educations = [
+    {
+      id: "1",
+      school: "스쿨1",
+      major: "전공1",
+      degree: "학사학위",
+      startDate: "0000-01-01",
+      endDate: "1111-01-01",
+    },
+    {
+      id: "2",
+      school: "스쿨2",
+      major: "전공2",
+      degree: "석사학위",
+      startDate: "0000-01-02",
+      endDate: "1111-01-01",
+    },
+  ];
 
   //제출버튼 클릭시
   const handleSubmit = (e) => {
@@ -163,12 +143,12 @@ const Education = (props) => {
   };
 
   // 모든 학위 목록 가져오기 서버와 통신
-  useEffect(() => {
-    Api.get(`user/${portfolioOwnerId}/educations`).then((res) => {
-      console.log(res.data);
-      return setEducations(res.data);
-    });
-  }, [educations]);
+  // useEffect(() => {
+  //   Api.get(`user/${portfolioOwnerId}/educations`).then((res) => {
+  //     console.log(res.data);
+  //     return setEducations(res.data);
+  //   });
+  // }, [educations]);
 
   return (
     <>
