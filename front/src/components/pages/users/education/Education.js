@@ -149,19 +149,19 @@ const Education = (props) => {
   return (
     <>
       {educations.map((education) => (
-        <>
+        <React.Fragment key={education.id}>
           {edit && (
-            <>
-              <EducationForm {...props} key={education.id} />
+            <React.Fragment key={education.id}>
+              <EducationForm {...props} />
               <ButtonCommon
                 text="취소"
                 variant="secondary"
                 onClickHandler={() => setEdit((prev) => !prev)}
               />
-            </>
+            </React.Fragment>
           )}
           {!edit && (
-            <Card style={{ width: "80rem" }}>
+            <Card style={{ width: "80rem" }} key={education.id}>
               <Card.Body>
                 <Card.Title>{education.school}</Card.Title>
 
@@ -194,7 +194,7 @@ const Education = (props) => {
               </Card.Body>
             </Card>
           )}
-        </>
+        </React.Fragment>
       ))}
       {isEditable && (
         <EducationForm

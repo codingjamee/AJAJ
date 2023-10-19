@@ -32,8 +32,8 @@ const EducationForm = ({
             isEditable={isEditable}
             btnSet={formBtnArr}
           >
-            {formList.map((form) => (
-              <FormCommon {...form} />
+            {formList.map((formstat) => (
+              <FormCommon {...formstat} key={formstat.controlId} />
             ))}
           </FormWrapper>
         )}
