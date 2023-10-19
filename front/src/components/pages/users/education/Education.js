@@ -130,7 +130,7 @@ const Education = (props) => {
     // });
 
     // const updatedEdu = res.data;
-    // setEdu((prev) => {
+    // setEducations((prev) => {
     //   return { ...prev, updatedEdu };
     // });
     // setEdit(false);
@@ -150,13 +150,23 @@ const Education = (props) => {
   //   });
   // }, [educations]);
 
+  //특정 학위 목록 가져오기 서버와 통신
+  useEffect(() => {}, []);
+
   return (
     <>
       {educations.map((education) => (
         <React.Fragment key={education.id}>
           {edit && (
             <React.Fragment key={education.id}>
-              <EducationForm {...props} />
+              <EducationForm
+                {...props}
+                formList={formList}
+                formBtnArr={formBtnArr}
+                optionArr={optionArr}
+                handleSubmit={handleSubmit}
+                editState="true"
+              />
               <ButtonCommon
                 text="취소"
                 variant="secondary"

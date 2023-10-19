@@ -13,8 +13,9 @@ const EducationForm = ({
   formBtnArr,
   optionArr,
   handleSubmit,
+  editState = false,
 }) => {
-  const [edit, setEdit] = useState(false);
+  const [edit, setEdit] = useState(editState);
   // useState 훅을 통해 user 상태를 생성함.
   const [user, setUser] = useState(null);
 
