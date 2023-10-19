@@ -72,7 +72,7 @@ educationAuthRouter.get("/user/:id/educations", login_required, async function (
 
 // 특정 학력 가져오기_login_required
 educationAuthRouter.get("/user/:id/education/:eduId", login_required, async function (req, res, next) {
-  const eduId = req.params.eduId;
+  const eduid = req.params.eduId;
   const userid = req.params.id;
   try {
     // userid가 동일한지 확인
@@ -83,7 +83,7 @@ educationAuthRouter.get("/user/:id/education/:eduId", login_required, async func
       }
     }
 
-    const educations = await educationAuthService.getEducation({ eduId });
+    const educations = await educationAuthService.getEducation({ eduid });
 
     if (!educations) {
       throw new ValidationError("특정 학력을 가져올 수 없습니다.");
@@ -99,7 +99,7 @@ educationAuthRouter.get("/user/:id/education/:eduId", login_required, async func
 // 학력 수정하기_login_required
 educationAuthRouter.patch("/user/:id/education/:eduId", login_required, async function (req, res, next) {
     try {
-      const edu_id = req.params.eduId;
+      const eduid = req.params.eduId;
       const userid = req.params.id;
 
       // userid가 동일한지 확인
@@ -118,7 +118,7 @@ educationAuthRouter.patch("/user/:id/education/:eduId", login_required, async fu
 
       const toUpdate = { school, major, degree, startDate, endDate };
 
-      const updatedEducation = await educationAuthService.setEducation({ edu_id, toUpdate });
+      const updatedEducation = await educationAuthService.setEducation({ eduid, toUpdate });
 
       if (!updatedEducation) {
         throw new ValidationError("해당 학력이 수정되지 않았습니다.");
@@ -132,7 +132,7 @@ educationAuthRouter.patch("/user/:id/education/:eduId", login_required, async fu
 
 // 학력 삭제하기_login_required
 educationAuthRouter.delete("/user/:id/education/:eduId", login_required, async function (req, res, next) {
-  const eduId = req.params.eduId;
+  const eduid = req.params.eduId;
   const userid = req.params.id;
   try {
     // userid가 동일한지 확인
@@ -142,7 +142,7 @@ educationAuthRouter.delete("/user/:id/education/:eduId", login_required, async f
         throw new AuthorityError("접근 권한이 없습니다");
       }
     }
-    await educationAuthService.deleteEducation({ eduId });
+    await educationAuthService.deleteEducation({ eduid });
 
     // if (deletedEducation) {
     //   console.log('Error Fail');
