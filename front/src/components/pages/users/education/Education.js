@@ -144,9 +144,10 @@ const Education = (props) => {
 
   // 모든 학위 목록 가져오기 서버와 통신
   useEffect(() => {
-    Api.get(`user/${portfolioOwnerId}/educations`).then((res) =>
-      setEducations(res.data)
-    );
+    Api.get(`user/${portfolioOwnerId}/educations`).then((res) => {
+      console.log(res.data);
+      return setEducations(res.data);
+    });
   }, [educations]);
 
   return (
