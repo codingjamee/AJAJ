@@ -6,13 +6,18 @@ class Project {
     return createdNewProject;
   }
 
+  static async checkUserId({ userid }) {
+    const user = await ProjectModel.findOne({ userid: userid });
+    return user;
+  }
+
   static async findAll() {
     const Projects = await ProjectModel.find({});
     return Projects;
   }
 
   static async findByProjectId({ projectId }) {
-    const Project = await ProjectModel.findOne({ projectId }).populate("userid");
+    const Project = await ProjectModel.findOne({ projectId }); // populate("userid");
     return Project;
   }
 
@@ -35,8 +40,17 @@ class Project {
   }
 
   static async delete({ projectId }) {
-    const deletedProject = await ProjectModel.findOneAndDelete({ projectId });
-    return deletedProject;
+    await ProjectModel.findOneAndDelete({ projectId }, (error, deletedDoc) => {
+      if (error) {
+        console.error('삭제 오류:', error);
+      } else {
+        if (deletedDoc) {
+          console.log('삭제된 문서:', deletedDoc);
+        } else {
+          console.log('삭제할 문서를 찾을 수 없습니다.');
+        }
+      }
+    });
   }
 }
 

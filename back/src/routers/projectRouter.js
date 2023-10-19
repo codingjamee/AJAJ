@@ -13,22 +13,26 @@ projectAuthRouter.post("/user/:id/project", login_required, async function (req,
                 "프로젝트 추가에 입력값이 없습니다."
             );
         }
-        const projectName = req.body.project;
+        const userid = req.params.id;
+        const projectId = req.body.projectId;
+        const projectName = req.body.projectName;
         const projectDetail = req.body.projectDetail;
         const startDate = req.body.startDate;
         const endDate = req.body.endDate;
-    
+
         const newProject = await projectAuthService.addProject({
+            userid,
+            projectId,
             projectName,
             projectDetail,
             startDate,
             endDate
         });
-  
+
         if (newProject.errorMessage) {
             throw new Error('Error:', newProject.errorMessage);
         }
-  
+
         res.status(201).json(newProject);
     } catch (error) {
         next(error);
@@ -37,8 +41,17 @@ projectAuthRouter.post("/user/:id/project", login_required, async function (req,
 
 // 프로젝트 전체 가져오기_login_required
 projectAuthRouter.get("/user/:id/projects", login_required, async function (req, res, next) {
+    const userid = req.params.id;
+
     try {
-        const projects = await projectAuthService.getProjects();
+        if (userid) {
+            const user = await projectAuthService.checkUser({ userid });
+            if (String(user.userid) !== userid) {
+                throw new Error('Error:', user.errorMessage);
+            }
+        }
+        const projects = await projectAuthService.getprojects({ userid });
+
 
         if (projects.errorMessage) {
             throw new Error('Error:', projects.errorMessage);
@@ -53,7 +66,15 @@ projectAuthRouter.get("/user/:id/projects", login_required, async function (req,
 // 특정 프로젝트 가져오기_login_required
 projectAuthRouter.get("/user/:id/project/:projectId", login_required, async function (req, res, next) {
     const projectId = req.params.projectId;
+    const userid = req.params.id;
     try {
+        if (userid) {
+            const user = await projectAuthService.checkUser({ userid });
+            if (String(user.userid) !== userid) {
+                throw new Error('Error:', user.errorMessage);
+            }
+        }
+
         const projects = await projectAuthService.getProject({ projectId });
 
         if (projects.errorMessage) {
@@ -70,9 +91,17 @@ projectAuthRouter.get("/user/:id/project/:projectId", login_required, async func
 projectAuthRouter.patch("/user/:id/project/:projectId", login_required, async function (req, res, next) {
     try {
         const project_id = req.params.projectId;
+        const userid = req.params.id;
+
+        if (userid) {
+            const user = await projectAuthService.checkUser({ userid });
+            if (String(user.userid) !== userid) {
+                throw new Error('Error:', user.errorMessage);
+            }
+        }
 
         // body data 로부터 업데이트할 프로젝트 정보를 추출
-        const projectName = req.body.project ?? null;
+        const projectName = req.body.projectName ?? null;
         const projectDetail = req.body.projectDetail ?? null;
         const startDate = req.body.startDate ?? null;
         const endDate = req.body.endDate ?? null;
@@ -94,17 +123,18 @@ projectAuthRouter.patch("/user/:id/project/:projectId", login_required, async fu
 // 프로젝트 삭제하기_login_required
 projectAuthRouter.delete("/user/:id/project/:projectId", login_required, async function (req, res, next) {
     const project_id = req.params.projectId;
-    const id = req.params.id;
+    const userid = req.params.id;
     try {
-        const deletedProject = await projectAuthService.deleteProject({ project_id });
-
-        if (deletedProject.errorMessage) {
-            throw new Error('Error:', deletedProject.errorMessage);
+        if (userid) {
+            const user = await projectAuthService.checkUser({ userid });
+            if (String(user.userid) !== userid) {
+                throw new Error('Error:', user.errorMessage);
+            }
         }
 
-        res.status(200).json({
-            redirect: `/user/${id}/projects`
-        })
+    // const deletedProject = await projectAuthService.deleteProject({ project_id });
+
+    
     } catch (error) {
         next(error);
     }

@@ -1,10 +1,9 @@
 import { Schema, model } from "mongoose";
-const mongoose = require('mongoose');
 
 const EducationSchema = new Schema(
   {
     userid: {
-      type: mongoose.Schema.Types.ObjectId,
+      type: String,
       required: true,
       ref: "User",
     },

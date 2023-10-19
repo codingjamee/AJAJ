@@ -1,10 +1,12 @@
-import { Project } from "../db"; // from을 폴더(db) 로 설정 시, 디폴트로 index.js 로부터 import함.
+import { Project } from "../db";
+import { v4 as uuidv4 } from "uuid";
 
 class projectAuthService {
     static async addProject({ projectName, projectDetail, startDate, endDate }) {
         const projectId = uuidv4();
         const newProject = { projectId, projectName, projectDetail, startDate, endDate };
         const createdNewProject = await Project.create(newProject);
+
         if (!createdNewProject) {
             createdNewProject.errorMessage = "프로젝트 추가에 실패했습니다";
         }
@@ -12,8 +14,16 @@ class projectAuthService {
         return createdNewProject;
     };
 
-    static async getProjects() {
-        const projects = await Project.findAll();
+    static async checkUser({ userid }) {
+        const user = await Project.checkUserId({ userid });
+        if (!user) {
+          user.errorMessage = "해당 학력을 찾을 수 없습니다";
+        }
+        return user;
+    };
+  
+    static async getProjects({ userid }) {
+        const projects = await Project.findAll({ userid });
         return projects;
     };
 
@@ -62,9 +72,6 @@ class projectAuthService {
 
     static async deleteProject({ projectId }) {
         const project = await Project.delete({ projectId });
-        if (!project) {
-            project.errorMessage = "해당 프로젝트를 삭제할 수 없습니다.";
-        }
         return project;
     };
 }
