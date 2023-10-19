@@ -100,8 +100,7 @@ userAuthRouter.get("/user/current",
   }
 );
 
-userAuthRouter.put(
-  "/users/:id",
+userAuthRouter.put("/users/:id",
   login_required,
   async function (req, res, next) {
     
