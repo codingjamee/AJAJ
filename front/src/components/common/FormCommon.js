@@ -1,5 +1,6 @@
 import { Form } from "react-bootstrap";
 
+<<<<<<< HEAD
 const FormCommon = (props) => {
   const {
     controlId,
@@ -14,6 +15,20 @@ const FormCommon = (props) => {
     optionArr = [],
   } = props;
 
+=======
+const FormCommon = ({
+  controlId,
+  select = false,
+  label = "",
+  placeholder = "",
+  type = "text",
+  changeHandler,
+  value,
+  customClassName,
+  optionValue = "",
+  optionArr = [],
+}) => {
+>>>>>>> featureEducationFront
   return (
     <Form.Group controlId={controlId} className={customClassName}>
       {label && <Form.Label>{label}</Form.Label>}
@@ -32,7 +47,11 @@ const FormCommon = (props) => {
           }}
         >
           <option>{optionValue}</option>
+<<<<<<< HEAD
           {optionArr.map((option) => (
+=======
+          {optionArr?.map((option) => (
+>>>>>>> featureEducationFront
             <option value={option.value} key={option.value}>
               {option.text}
             </option>

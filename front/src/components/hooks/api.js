@@ -15,6 +15,8 @@ async function get(endpoint, params = "") {
     headers: {
       Authorization: `Bearer ${sessionStorage.getItem("userToken")}`,
     },
+    // 쿠키를 서버에 보냄
+    withCredentials: true,
   });
 }
 
