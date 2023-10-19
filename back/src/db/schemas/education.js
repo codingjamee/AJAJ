@@ -5,9 +5,9 @@ const EducationSchema = new Schema(
     id: {
       type: String,
       required: true,
-      ref: "User", // 관건 !!!!
+      ref: "User",
     },
-    eduId: {
+    eduid: {
       type: String,
       required: true,
     },
@@ -17,7 +17,7 @@ const EducationSchema = new Schema(
     },
     major: {
       type: String,
-      required: false,
+      required: true,
     },
     degree: {
       type: String,
