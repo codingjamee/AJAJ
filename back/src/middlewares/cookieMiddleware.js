@@ -1,4 +1,4 @@
-function cookieMiddleware ({res, user}) {
+function cookieMiddleware ({req, res}) {
     
 }
 

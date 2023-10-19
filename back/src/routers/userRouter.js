@@ -44,13 +44,14 @@ userAuthRouter.post("/user/login", async function (req, res, next) {
     
 
     // 위 데이터를 이용하여 유저 db에서 유저 찾기
-    const user = await userAuthService.getUser({ email, password });
+    const [ token, user ] = await userAuthService.getUser({ email, password });
+    console.log('token', token);
     console.log('user', user);
     if (user.errorMessage) {
       throw new Error(user.errorMessage);
     }
 
-    res.cookie('user_cookie', user.token, {
+    res.cookie('user_cookie', token, {
       path: '/', // 쿠키 저장 경로
       httpOnly: true, // 클라이언트에서 쿠키 조작 x
       sameSite: 'lax', // 쿠키 전송 범위. default
@@ -60,7 +61,7 @@ userAuthRouter.post("/user/login", async function (req, res, next) {
     // secure: true -> HTTPS에서만 사용 가능 (defult false). 
     // sameSite: 우리 사이트에서 다른 사이트로 링크 연결이 필요하다면 lax, 우리 사이트에서만 머무르면 strict
 
-    res.status(200).send(user);
+    res.status(200).send(user); //## JWT 제외
   } catch (error) {
     next(error);
   }
@@ -139,10 +140,6 @@ userAuthRouter.get(
   "/users/:id",
   login_required,
   async function (req, res, next) {
-    // 쿠키 확인
-    if (req.headers.cookie) {
-      console.log(req.headers.cookie);
-    }
 
     try {
       const userid = req.params.id;

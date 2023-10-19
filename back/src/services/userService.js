@@ -58,7 +58,6 @@ class userAuthService {
     const description = user.description;
 
     const loginUser = {
-      token,
       id,
       email,
       name,
@@ -66,7 +65,7 @@ class userAuthService {
       errorMessage: null,
     };
 
-    return loginUser;
+    return [token, loginUser];
   }
 
   static async getUsers() {
