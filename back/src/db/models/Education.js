@@ -12,18 +12,18 @@ class Education {
   }
 
   static async checkUserId({ userid }) {
-    const user = await UserModel.findOne({ userid: userid });
+    const user = await UserModel.findOne({ userid });
     return user;
   }
 
   // 동일한 userid 내에서의 모든 학력 가져오기
   static async findAll({ userid }) {
-    const Educations = await EducationModel.find({ userid: userid });
+    const Educations = await EducationModel.find({ userid });
     return Educations;
   }
 
-  static async findByEduId({ eduId }) {
-    const Education = await EducationModel.findOne({ eduId: eduId }); //.populate({path: "id", model: "User"});
+  static async findByEduId({ eduid }) {
+    const Education = await EducationModel.findOne({ eduid });
     return Education;
   }
 
@@ -34,7 +34,7 @@ class Education {
   // }
 
   static async update({ Education_id, fieldToUpdate, newValue }) {
-    const filter = { eduId: Education_id };
+    const filter = { eduid: Education_id };
     const update = { [fieldToUpdate]: newValue };
     const option = { returnOriginal: false };
 
@@ -46,8 +46,8 @@ class Education {
     return updatedEducation;
   }
 
-  static async delete({ eduId }) {
-    await EducationModel.findOneAndDelete({ eduId }, (error, deletedDoc) => {
+  static async delete({ eduid }) {
+    await EducationModel.findOneAndDelete({ eduid }, (error, deletedDoc) => {
       if (error) {
         console.error('삭제 오류:', error);
       } else {
