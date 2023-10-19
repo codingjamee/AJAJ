@@ -3,8 +3,8 @@ import { v4 as uuidv4 } from "uuid";
 
 class educationAuthService {
     static async addEducation({userid, school, major, degree, startDate, endDate}) {
-        const eduId = uuidv4();
-        const newEducation = { userid, eduId, school, major, degree, startDate, endDate};
+        const eduid = uuidv4();
+        const newEducation = { userid, eduid, school, major, degree, startDate, endDate};
         const createdNewUser = await Education.create({ newEducation });
         return createdNewUser;
     };
