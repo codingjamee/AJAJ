@@ -62,7 +62,7 @@ const Education = (props) => {
             </>
           )}
           {!edit && (
-            <Card style={{ width: "18rem" }}>
+            <Card style={{ width: "80rem" }}>
               <Card.Body>
                 <Card.Title>{education.school}</Card.Title>
 
