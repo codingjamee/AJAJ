@@ -9,8 +9,8 @@ const Education = (props) => {
   // const [educations, setEducations] = useState([]);
   const [edit, setEdit] = useState(false);
   const [school, setSchool] = useState("");
-  const [startDate, setStartDate] = useState(0);
-  const [endDate, setEndDate] = useState(0);
+  const [startDate, setStartDate] = useState("2023-01-01");
+  const [endDate, setEndDate] = useState("2023-01-01");
   const [degree, setDegree] = useState("");
 
   const [major, setMajor] = useState("");
