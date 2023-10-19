@@ -5,6 +5,7 @@ import { userAuthService } from "../services/userService";
 
 const userAuthRouter = Router();
 
+
 userAuthRouter.post("/user/register", async function (req, res, next) {
   try {
     if (is.emptyObject(req.body)) {
@@ -40,13 +41,23 @@ userAuthRouter.post("/user/login", async function (req, res, next) {
     // req (request) 에서 데이터 가져오기
     const email = req.body.email;
     const password = req.body.password;
+    
 
     // 위 데이터를 이용하여 유저 db에서 유저 찾기
     const user = await userAuthService.getUser({ email, password });
-
+    console.log('user', user);
     if (user.errorMessage) {
       throw new Error(user.errorMessage);
     }
+
+    res.cookie('user_cookie', user.token, {
+      path: '/', // 쿠키 저장 경로
+      httpOnly: true, // 클라이언트에서 쿠키 조작 x
+      sameSite: 'lax', // 쿠키 전송 범위. default
+      maxAge: 60 * 60 * 1000, // 쿠키 유효기간. 1시간
+    });
+    // secure: true -> HTTPS에서만 사용 가능 (defult false)
+    // sameSite: 우리 사이트에서 다른 사이트로 링크 연결이 필요하다면 lax, 우리 사이트에서만 머무르면 strict
 
     res.status(200).send(user);
   } catch (error) {
@@ -54,9 +65,11 @@ userAuthRouter.post("/user/login", async function (req, res, next) {
   }
 });
 
+
+
 userAuthRouter.get(
   "/userlist",
-  //login_required,
+  login_required,
   async function (req, res, next) {
     try {
       // 전체 사용자 목록을 얻음
@@ -72,6 +85,7 @@ userAuthRouter.get(
   "/user/current",
   login_required,
   async function (req, res, next) {
+    
     try {
       // jwt토큰에서 추출된 사용자 id를 가지고 db에서 사용자 정보를 찾음.
       const user_id = req.currentUserId;
@@ -94,6 +108,7 @@ userAuthRouter.put(
   "/users/:id",
   login_required,
   async function (req, res, next) {
+    
     try {
       // URI로부터 사용자 id를 추출함.
       const user_id = req.params.id;
@@ -123,8 +138,14 @@ userAuthRouter.get(
   "/users/:id",
   login_required,
   async function (req, res, next) {
+    // 쿠키 확인
+    if (req.headers.cookie) {
+      console.log(req.headers.cookie);
+    }
+
     try {
       const user_id = req.params.id;
+      
       const currentUserInfo = await userAuthService.getUserInfo({ user_id });
 
       if (currentUserInfo.errorMessage) {

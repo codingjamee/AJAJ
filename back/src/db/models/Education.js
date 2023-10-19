@@ -2,8 +2,12 @@ import { EducationModel } from "../schemas/education";
 
 class Education {
   static async create({ newEducation }) {
-    const createdNewEducation = await EducationModel.create(newEducation);
-    return createdNewEducation;
+    try {
+      const createdNewEducation = await EducationModel.create(newEducation);
+      return createdNewEducation;
+    } catch {
+      return null;
+    }
   }
 
   static async checkUserId({ userid }) {
@@ -18,14 +22,15 @@ class Education {
   }
 
   static async findByEduId({ eduId }) {
-    const Education = await EducationModel.findOne({ eduId }).populate("userid");
+    const Education = await EducationModel.findOne({ eduId: eduId }); //.populate({path: "id", model: "User"});
     return Education;
   }
 
-  static async findById({ Education_id }) {
-    const Education = await EducationModel.findOne({ eduId: Education_id });
-    return Education;
-  }
+  // static async findById({ eduId }) {
+  //   const Education = await EducationModel.findOne({ eduId });
+  //   console.log(Education);
+  //   return Education;
+  // }
 
   static async update({ Education_id, fieldToUpdate, newValue }) {
     const filter = { eduId: Education_id };
@@ -41,8 +46,17 @@ class Education {
   }
 
   static async delete({ eduId }) {
-    const deletedEducation = await EducationModel.findOneAndDelete({ eduId })
-    return deletedEducation;
+    await EducationModel.findOneAndDelete({ eduId }, (error, deletedDoc) => {
+      if (error) {
+        console.error('삭제 오류:', error);
+      } else {
+        if (deletedDoc) {
+          console.log('삭제된 문서:', deletedDoc);
+        } else {
+          console.log('삭제할 문서를 찾을 수 없습니다.');
+        }
+      }
+    });
   }
 }
 

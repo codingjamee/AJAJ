@@ -3,16 +3,18 @@ import { Router } from "express";
 import { login_required } from "../middlewares/login_required";
 import { educationAuthService } from "../services/educationService";
 
+const { ValidationError, EmptyValueError, AuthorityError } = require('../middlewares/errorHandlingMiddleware')
+
 const educationAuthRouter = Router();
+
 
 // 학력 추가하기_login_required
 educationAuthRouter.post("/user/:id/education", login_required, async function (req, res, next) {
+    
     console.log(req.body);
     try {
         if (is.emptyObject(req.body)) {
-            throw new Error(
-                "학력추가에 입력값이 없습니다."
-            );
+            throw new EmptyValueError("학력 추가에 입력값이 없습니다.");
         }
         const userid = req.params.id;
         const school = req.body.school;
@@ -29,8 +31,8 @@ educationAuthRouter.post("/user/:id/education", login_required, async function (
             endDate
           });
 
-      if (newEducation.errorMessage) {
-        throw new Error('Error:', newEducation.errorMessage);
+      if (!newEducation) {
+        throw new ValidationError("해당 학력이 생성되지 않았습니다.");
       }
   
       res.status(201).json(newEducation);
@@ -47,14 +49,13 @@ educationAuthRouter.get("/user/:id/educations", login_required, async function (
     // userid가 동일한지 확인
     if (userid) {
       const user = await educationAuthService.checkUser({ userid });
-      if (String(user.userid) !== userid) {
-        throw new Error('Error:', user.errorMessage);
+      if (!user) {
+        throw new AuthorityError("접근 권한이 없습니다");
       }
     }
     const educations = await educationAuthService.getEducations({ userid });
-
-    if (educations.errorMessage) {
-      throw new Error('Error:', educations.errorMessage);
+    if (!educations) {
+      throw new ValidationError("학력을 가져올 수 없습니다.");
     }
 
     res.status(201).send(educations);
@@ -72,14 +73,15 @@ educationAuthRouter.get("/user/:id/education/:eduId", login_required, async func
     // userid가 동일한지 확인
     if (userid) {
       const user = await educationAuthService.checkUser({ userid });
-      if (String(user.userid) !== userid) {
-        throw new Error('Error:', user.errorMessage);
+      if (!user) {
+        throw new AuthorityError("접근 권한이 없습니다");
       }
     }
 
-    const educations = await educationAuthService.getEducation({eduId});
-    if (educations.errorMessage) {
-      throw new Error('Error:', educations.errorMessage);
+    const educations = await educationAuthService.getEducation({ eduId });
+
+    if (!educations) {
+      throw new ValidationError("특정 학력을 가져올 수 없습니다.");
     }
     res.status(201).send(educations);
   } catch (error) {
@@ -98,8 +100,8 @@ educationAuthRouter.patch("/user/:id/education/:eduId", login_required, async fu
       // userid가 동일한지 확인
       if (userid) {
         const user = await educationAuthService.checkUser({ userid });
-        if (String(user.userid) !== userid) {
-          throw new Error('Error:', user.errorMessage);
+        if (!user) {
+          throw new AuthorityError("접근 권한이 없습니다");
         }
       }
       // body data 로부터 업데이트할 사용자 정보를 추출
@@ -113,8 +115,8 @@ educationAuthRouter.patch("/user/:id/education/:eduId", login_required, async fu
 
       const updatedEducation = await educationAuthService.setEducation({ edu_id, toUpdate });
 
-      if (updatedEducation.errorMessage) {
-        throw new Error('Error:', updatedEducation.errorMessage);
+      if (!updatedEducation) {
+        throw new ValidationError("해당 학력이 수정되지 않았습니다.");
       }
   
       res.status(201).send(updatedEducation);
@@ -125,26 +127,25 @@ educationAuthRouter.patch("/user/:id/education/:eduId", login_required, async fu
 
 // 학력 삭제하기_login_required
 educationAuthRouter.delete("/user/:id/education/:eduId", login_required, async function (req, res, next) {
-  const edu_id = req.params.eduId;
+  const eduId = req.params.eduId;
   const userid = req.params.id;
   try {
     // userid가 동일한지 확인
     if (userid) {
       const user = await educationAuthService.checkUser({ userid });
-      if (String(user.userid) !== userid) {
-        throw new Error('Error:', user.errorMessage);
+      if (!user) {
+        throw new AuthorityError("접근 권한이 없습니다");
       }
     }
+    await educationAuthService.deleteEducation({ eduId });
 
-    const deletedEducation = await educationAuthService.deleteEducation({ edu_id });
+    // if (deletedEducation) {
+    //   console.log('Error Fail');
+    // }
 
-    if (deletedEducation.errorMessage) {
-      throw new Error('Error:', deletedEducation.errorMessage);
-    }
-
-    res.status(200).json({
-      redirect: `/user/${id}/educations` // 확인필요
-    })
+    // res.status(200).send(
+    //   console.log('삭제 완료')
+    // )
   } catch (error) {
     next(error);
   }

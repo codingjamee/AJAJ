@@ -1,5 +1,4 @@
 import { Schema, model } from "mongoose";
-const mongoose = require('mongoose');
 
 const EducationSchema = new Schema(
   {

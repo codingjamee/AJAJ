@@ -6,6 +6,7 @@ import { UserStateContext } from "../../../App";
 import * as Api from "../../hooks/api";
 import User from "./user/User";
 import Education from "./education/Education";
+import Test from "../../common/Test";
 
 function Portfolio() {
   const navigate = useNavigate();
@@ -70,6 +71,7 @@ function Portfolio() {
               setEdu={setEdu}
               edu={edu}
             />
+            {/* <Test isEditable="true" /> */}
           </div>
         </Col>
       </Row>
