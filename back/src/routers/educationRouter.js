@@ -49,7 +49,8 @@ educationAuthRouter.get("/user/:id/educations", login_required, async function (
     // userid가 동일한지 확인
     if (userid) {
       const user = await educationAuthService.checkUser({ userid });
-      if (!user) {
+      console.log(user);
+      if (user.id !== userid) {
         throw new AuthorityError("접근 권한이 없습니다");
       }
     }
@@ -73,7 +74,7 @@ educationAuthRouter.get("/user/:id/education/:eduId", login_required, async func
     // userid가 동일한지 확인
     if (userid) {
       const user = await educationAuthService.checkUser({ userid });
-      if (!user) {
+      if (user.id !== userid) {
         throw new AuthorityError("접근 권한이 없습니다");
       }
     }
@@ -100,7 +101,7 @@ educationAuthRouter.patch("/user/:id/education/:eduId", login_required, async fu
       // userid가 동일한지 확인
       if (userid) {
         const user = await educationAuthService.checkUser({ userid });
-        if (!user) {
+        if (user.id !== userid) {
           throw new AuthorityError("접근 권한이 없습니다");
         }
       }
@@ -133,7 +134,7 @@ educationAuthRouter.delete("/user/:id/education/:eduId", login_required, async f
     // userid가 동일한지 확인
     if (userid) {
       const user = await educationAuthService.checkUser({ userid });
-      if (!user) {
+      if (user.id !== userid) {
         throw new AuthorityError("접근 권한이 없습니다");
       }
     }

@@ -1,4 +1,5 @@
 import { EducationModel } from "../schemas/education";
+import { UserModel } from "../schemas/user";
 
 class Education {
   static async create({ newEducation }) {
@@ -11,7 +12,7 @@ class Education {
   }
 
   static async checkUserId({ userid }) {
-    const user = await EducationModel.findOne({ userid: userid });
+    const user = await UserModel.findOne({ userid: userid });
     return user;
   }
 
