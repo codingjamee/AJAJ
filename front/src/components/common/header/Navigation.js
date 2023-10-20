@@ -3,6 +3,7 @@ import { useNavigate, useLocation } from "react-router-dom";
 import Nav from "react-bootstrap/Nav";
 import { UserStateContext, DispatchContext } from "../../../App";
 
+//@@@@@@@@@@@@@@@@수정필요@@@@@@@@@@@@@@@@@@@@@성혜님@@@@@@@@@@@@@@@@/
 const navItems = [
   { path: "/", label: "홈페이지" },
   { path: "/login", label: "로그인" },

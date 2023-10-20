@@ -57,9 +57,11 @@ async function put(endpoint, data) {
 async function del(endpoint, params = "") {
   console.log(`DELETE 요청 ${serverUrl + endpoint + "/" + params}`);
   return axios.delete(serverUrl + endpoint + "/" + params, {
-    headers: {
-      // Authorization: `Bearer ${sessionStorage.getItem("userToken")}`,
-    },
+    // headers: {
+    //   // Authorization: `Bearer ${sessionStorage.getItem("userToken")}`,
+    // },
+    // 쿠키를 서버에 보냄
+    withCredentials: true,
   });
 }
 
