@@ -6,22 +6,24 @@ import ButtonCommon from "../../../common/ButtonCommon";
 import { UserStateContext } from "../../../../App";
 
 const Education = ({
+  setAddForm,
   isEditable,
   optionArr,
-  submitHandler,
-  setAddForm,
   education = [],
   setEducations,
 }) => {
   // useState 훅을 통해 user 상태를 생성함.
   const [user, setUser] = useState(null);
   const [editMode, setEditMode] = useState(false);
-  const [schoolName, setSchoolName] = useState("");
-  const [major, setMajor] = useState("");
-  const [degree, setDegree] = useState("");
-  const [admissionDate, setAdmissionDate] = useState("2023-01-01");
-  const [graduationDate, setGraduationDate] = useState("2023-01-01");
-  // const [educations, setEducations] = useState([]);
+  const [schoolName, setSchoolName] = useState(education.schoolName || "");
+  const [major, setMajor] = useState(education.major || "");
+  const [degree, setDegree] = useState(education.degree || "");
+  const [admissionDate, setAdmissionDate] = useState(
+    education.admissionDate || "2023-01-01"
+  );
+  const [graduationDate, setGraduationDate] = useState(
+    education.graduationDate || "2023-01-01"
+  );
   const userState = useContext(UserStateContext);
 
   //form 상세설정 어레이
@@ -71,9 +73,6 @@ const Education = ({
     },
   ];
 
-  // //서버와 통신 특정 학위 목록 가져와서 상태변경!
-  // useEffect(() => {}, []);
-
   //수정해서 onSubmitHandler
   const onSubmitHandler = async (e) => {
     //제출버튼 클릭시
@@ -107,15 +106,25 @@ const Education = ({
       setGraduationDate("2023-01-01");
       setAddForm(false);
     } else if (!res.data.ok) {
-      throw new Error("POST 요청이 실패하였습니다.");
+      throw new Error("POST 요청을 실패하였습니다.");
     }
   };
 
-  //삭제버튼 구현전
+  //삭제함수
 
-  const onClickDel = (eduId) => {
+  const onClickDel = async (eduId) => {
     console.log("delete버튼이 선택됨");
-    Api.delete("users", eduId);
+    console.log(eduId);
+
+    const res = await Api.delete(`user/${userState.user.id}/education`, eduId);
+    console.log(res);
+    // if (res.data.ok) {
+    setEducations((prev) =>
+      prev.filter(({ eduid }) => Number(eduid) !== Number(eduId))
+    );
+    // } else if (!res.data.ok) {
+    // throw new Error("삭제를 실패하였습니다");
+    // }
   };
 
   return (
@@ -129,6 +138,8 @@ const Education = ({
 
                 <Card.Subtitle className="mb-2 text-muted">
                   {education.major}
+                  <br />
+                  {education.degree}
                 </Card.Subtitle>
                 <Card.Text>
                   {education.admissionDate} ~ {education.graduationDate}
@@ -148,7 +159,7 @@ const Education = ({
                       <ButtonCommon
                         variant="secondary"
                         text="삭제"
-                        onClickHandler={() => onClickDel(education.id)}
+                        onClickHandler={() => onClickDel(education.eduid)}
                       />
                     </Col>
                   </Form.Group>
@@ -159,11 +170,11 @@ const Education = ({
         )}
         {editMode && (
           <FormWrapper
+            formList={formList}
             onSubmitHandler={onSubmitHandler}
+            setAddForm={setEditMode}
             isEditable={isEditable}
             onClickHandler={setAddForm}
-            formList={formList}
-            setAddForm={setEditMode}
           />
         )}
       </Card.Body>

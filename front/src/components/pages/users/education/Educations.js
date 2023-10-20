@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useState } from "react";
-import { Card, Col, Form } from "react-bootstrap";
+import { Card } from "react-bootstrap";
 import { UserStateContext } from "../../../../App";
 import * as Api from "../../../utils/api";
 import ButtonCommon from "../../../common/ButtonCommon";
@@ -13,27 +13,6 @@ const optionArr = [
   { value: "박사학위", text: "박사학위" },
 ];
 
-//서버와 통신전 더미어레이
-
-// const educations = [
-//   {
-//     id: "1",
-//     school: "스쿨1",
-//     major: "전공1",
-//     degree: "학사학위",
-//     startDate: "0000-01-01",
-//     endDate: "1111-01-01",
-//   },
-//   {
-//     id: "2",
-//     school: "스쿨2",
-//     major: "전공2",
-//     degree: "석사학위",
-//     startDate: "0000-01-02",
-//     endDate: "1111-01-01",
-//   },
-// ];
-
 const Educations = (props) => {
   const [addForm, setAddForm] = useState(false);
   const [schoolName, setSchoolName] = useState("");
@@ -42,7 +21,7 @@ const Educations = (props) => {
   const [admissionDate, setAdmissionDate] = useState("2023-01-01");
   const [graduationDate, setGraduationDate] = useState("2023-01-01");
   const [educations, setEducations] = useState([]);
-  const { portfolioOwnerId, isEditable, id } = props;
+  const { portfolioOwnerId, isEditable } = props;
   const userState = useContext(UserStateContext);
 
   console.log(userState.user.id);
@@ -141,9 +120,10 @@ const Educations = (props) => {
   return (
     <>
       <h4>학력</h4>
-      {educations.map((education) => (
-        <React.Fragment key={education.id}>
+      {educations.map((education, index) => (
+        <React.Fragment key={`education-${index}`}>
           <Education
+            key={`education-${index}`}
             isEditable={isEditable}
             optionArr={optionArr}
             formList={formList}
