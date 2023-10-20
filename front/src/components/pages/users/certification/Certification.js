@@ -69,7 +69,7 @@ const Certification = ({
       <Card.Body>
         {!editMode && (
           <>
-            <Card style={{ width: "18rem" }}>
+            <Card style={{ width: "100%" }}>
               <Card.Body>
                 <Card.Title>{certification.certName}</Card.Title>
 
