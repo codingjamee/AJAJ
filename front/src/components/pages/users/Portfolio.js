@@ -3,9 +3,9 @@ import { useNavigate, useParams } from "react-router-dom";
 import { Container, Col, Row } from "react-bootstrap";
 
 import { UserStateContext } from "../../../App";
-import * as Api from "../../hooks/api";
+import * as Api from "../../common/utils/api";
 import User from "./user/User";
-import Education from "./education/Education";
+import Educations from "./education/Educations";
 import Test from "../../common/Test";
 
 function Portfolio() {
@@ -48,7 +48,7 @@ function Portfolio() {
       // 해당 유저 id로 fetchPortfolioOwner 함수를 실행함.
       fetchPortfolioOwner(ownerId);
     }
-  }, [params, userState, navigate]);
+  }, []);
 
   if (!isFetchCompleted) {
     return "loading...";
@@ -65,7 +65,7 @@ function Portfolio() {
         </Col>
         <Col style={{ display: "flex", justifyContent: "center" }}>
           <div style={{ textAlign: "center" }}>
-            <Education
+            <Educations
               portfolioOwnerId={portfolioOwner.id}
               isEditable={portfolioOwner.id === userState.user?.id}
               setEdu={setEdu}
