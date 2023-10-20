@@ -36,12 +36,12 @@ const optionArr = [
 
 const Educations = (props) => {
   const [addForm, setAddForm] = useState(false);
-  const [school, setSchool] = useState("");
-  const [startDate, setStartDate] = useState("2023-01-01");
-  const [endDate, setEndDate] = useState("2023-01-01");
-  const [degree, setDegree] = useState("");
-  const [educations, setEducations] = useState([]);
+  const [schoolName, setSchoolName] = useState("");
   const [major, setMajor] = useState("");
+  const [degree, setDegree] = useState("");
+  const [admissionDate, setAdmissionDate] = useState("2023-01-01");
+  const [graduationDate, setGraduationDate] = useState("2023-01-01");
+  const [educations, setEducations] = useState([]);
   const { portfolioOwnerId, isEditable, id } = props;
   const userState = useContext(UserStateContext);
 
@@ -54,8 +54,8 @@ const Educations = (props) => {
       customClassName: "mb-3",
       label: "학교이름",
       placeholder: "학교이름",
-      value: school,
-      changeHandler: (v) => setSchool(v),
+      value: schoolName,
+      changeHandler: (v) => setSchoolName(v),
     },
     {
       controlId: "eduMajor",
@@ -63,7 +63,6 @@ const Educations = (props) => {
       label: "전공",
       placeholder: "전공",
       value: major,
-
       changeHandler: (v) => setMajor(v),
     },
     {
@@ -72,7 +71,7 @@ const Educations = (props) => {
       customClassName: "mb-3",
       label: "학위",
       placeholder: "학위",
-      value: major,
+      value: degree,
       changeHandler: (v) => setDegree(v),
       optionValue: "학위를 선택하세요",
       optionArr: optionArr,
@@ -80,16 +79,16 @@ const Educations = (props) => {
     {
       controlId: "startDate",
       customClassName: "mb-3",
-      value: startDate,
-      changeHandler: (v) => setStartDate(v),
+      value: admissionDate,
+      changeHandler: (v) => setAdmissionDate(v),
       label: "입학연월일",
       type: "date",
     },
     {
       controlId: "endDate",
       customClassName: "mb-3",
-      value: endDate,
-      changeHandler: (v) => setEndDate(v),
+      value: graduationDate,
+      changeHandler: (v) => setGraduationDate(v),
       label: "졸업연월일",
       type: "date",
     },
@@ -99,23 +98,36 @@ const Educations = (props) => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     console.log("handler clicked");
-    console.log({ school, degree, major, startDate, endDate });
+    console.log({ schoolName, major, degree, admissionDate, graduationDate });
 
     //portfolioOwnerId는 portfolio에서 받아옴
 
     //post 서버와 통신
     const res = await Api.post(`user/${userState.user.id}/education`, {
-      school,
-      degree,
+      schoolName,
       major,
-      startDate,
-      endDate,
+      degree,
+      admissionDate,
+      graduationDate,
     });
 
-    setEducations((prev) => {
-      return [...prev, { school, degree, major, startDate, endDate }];
-    });
-    setAddForm(false);
+    console.log(res);
+    if (res.data.ok) {
+      setEducations((prev) => {
+        return [
+          ...prev,
+          { schoolName, major, degree, admissionDate, graduationDate },
+        ];
+      });
+      setSchoolName("");
+      setMajor("");
+      setDegree("");
+      setAdmissionDate("2023-01-01");
+      setGraduationDate("2023-01-01");
+      setAddForm(false);
+    } else if (!res.data.ok) {
+      throw new Error("POST 요청이 실패하였습니다.");
+    }
   };
 
   // 모든 학위 목록 가져오기 서버와 통신
@@ -135,6 +147,7 @@ const Educations = (props) => {
             isEditable={isEditable}
             optionArr={optionArr}
             formList={formList}
+            setEducations={setEducations}
             education={education}
           />
         </React.Fragment>

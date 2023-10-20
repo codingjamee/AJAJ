@@ -11,16 +11,17 @@ const Education = ({
   submitHandler,
   setAddForm,
   education = [],
+  setEducations,
 }) => {
   // useState 훅을 통해 user 상태를 생성함.
   const [user, setUser] = useState(null);
   const [editMode, setEditMode] = useState(false);
-  const [school, setSchool] = useState("");
-  const [startDate, setStartDate] = useState("2023-01-01");
-  const [endDate, setEndDate] = useState("2023-01-01");
-  const [degree, setDegree] = useState("");
-  const [educations, setEducations] = useState([]);
+  const [schoolName, setSchoolName] = useState("");
   const [major, setMajor] = useState("");
+  const [degree, setDegree] = useState("");
+  const [admissionDate, setAdmissionDate] = useState("2023-01-01");
+  const [graduationDate, setGraduationDate] = useState("2023-01-01");
+  // const [educations, setEducations] = useState([]);
   const userState = useContext(UserStateContext);
 
   //form 상세설정 어레이
@@ -30,8 +31,8 @@ const Education = ({
       customClassName: "mb-3",
       label: "학교이름",
       placeholder: "학교이름",
-      value: school,
-      changeHandler: (v) => setSchool(v),
+      value: schoolName,
+      changeHandler: (v) => setSchoolName(v),
     },
     {
       controlId: "eduMajor",
@@ -47,7 +48,7 @@ const Education = ({
       customClassName: "mb-3",
       label: "학위",
       placeholder: "학위",
-      value: major,
+      value: degree,
       changeHandler: (v) => setDegree(v),
       optionValue: "학위를 선택하세요",
       optionArr: optionArr,
@@ -55,16 +56,16 @@ const Education = ({
     {
       controlId: "startDate",
       customClassName: "mb-3",
-      value: startDate,
-      changeHandler: (v) => setStartDate(v),
+      value: admissionDate,
+      changeHandler: (v) => setAdmissionDate(v),
       label: "입학연월일",
       type: "date",
     },
     {
       controlId: "endDate",
       customClassName: "mb-3",
-      value: endDate,
-      changeHandler: (v) => setEndDate(v),
+      value: graduationDate,
+      changeHandler: (v) => setGraduationDate(v),
       label: "졸업연월일",
       type: "date",
     },
@@ -78,30 +79,36 @@ const Education = ({
     //제출버튼 클릭시
     e.preventDefault();
     console.log("handler clicked");
-    console.log({ school, degree, major, startDate, endDate });
+
+    console.log({ schoolName, major, degree, admissionDate, graduationDate });
 
     //portfolioOwnerId는 portfolio에서 받아옴
 
     //post 서버와 통신
     const res = await Api.post(`user/${userState.user.id}/education`, {
-      school,
-      degree,
+      schoolName,
       major,
-      startDate,
-      endDate,
+      degree,
+      admissionDate,
+      graduationDate,
     });
-    // if (res.ok) {
-    setEducations((prev) => {
-      return [...prev, { school, degree, major, startDate, endDate }];
-    });
-    setSchool("");
-    setStartDate("2023-01-01");
-    setEndDate("2023-01-01");
-    setDegree("");
-    setAddForm(false);
-    // } else if (!res.ok) {
-    //   throw new Error("POST 요청이 실패하였습니다.");
-    // }
+    console.log(res.ok);
+    if (res.data.ok) {
+      setEducations((prev) => {
+        return [
+          ...prev,
+          { schoolName, major, degree, admissionDate, graduationDate },
+        ];
+      });
+      setSchoolName("");
+      setMajor("");
+      setDegree("");
+      setAdmissionDate("2023-01-01");
+      setGraduationDate("2023-01-01");
+      setAddForm(false);
+    } else if (!res.data.ok) {
+      throw new Error("POST 요청이 실패하였습니다.");
+    }
   };
 
   //삭제버튼 구현전
@@ -118,13 +125,13 @@ const Education = ({
           <>
             <Card style={{ width: "100%" }}>
               <Card.Body>
-                <Card.Title>{education.school}</Card.Title>
+                <Card.Title>{education.schoolName}</Card.Title>
 
                 <Card.Subtitle className="mb-2 text-muted">
                   {education.major}
                 </Card.Subtitle>
                 <Card.Text>
-                  {education.startDate} ~ {education.endDate}
+                  {education.admissionDate} ~ {education.graduationDate}
                 </Card.Text>
 
                 {isEditable && (
