@@ -7,7 +7,7 @@ const EducationSchema = new Schema(
       required: true,
       ref: "User",
     },
-    eduId: {
+    eduid: {
       type: String,
       required: true,
     },
