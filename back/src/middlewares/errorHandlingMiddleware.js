@@ -1,10 +1,3 @@
-// class Error {
-//     constructor(message) {
-//     this.message = message;
-//     this.name = "Error";
-//     };
-// }
-
 class NotFoundError extends Error {
     constructor(message) {
     super(message);

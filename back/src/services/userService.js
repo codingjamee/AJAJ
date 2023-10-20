@@ -50,7 +50,7 @@ class userAuthService {
 
     // 로그인 성공 -> JWT 웹 토큰 생성
     const secretKey = process.env.JWT_SECRET_KEY || "jwt-secret-key";
-    const token = jwt.sign({ user_id: user.id }, secretKey);
+    const token = jwt.sign({ user_id: user.id, expiresIn: '1h' }, secretKey);
 
     const id = user.id;
     const name = user.name;
@@ -107,8 +107,6 @@ class userAuthService {
   static async getUserInfo({ userid }) {
     const user = await User.findById({ userid });
 
-    
-    // db에서 찾지 못한 경우, 에러 메시지 반환
     if (!user) {
       const errorMessage =
         "해당 이메일은 가입 내역이 없습니다. 다시 한 번 확인해 주세요.";
