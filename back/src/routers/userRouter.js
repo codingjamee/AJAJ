@@ -5,8 +5,6 @@ const { userAuthService } = require('../services/userService');
 
 const userAuthRouter = Router();
 
-///////// 상태코드와 에러메시지 부분만 //////////
-
 // 회원가입하기
 userAuthRouter.post("/user/register", request_checked, async function (req, res, next) {
   try {
@@ -18,8 +16,7 @@ userAuthRouter.post("/user/register", request_checked, async function (req, res,
       throw new Error(newUser.errorMessage);
     }
 
-    // 수정필요
-    res.status(201).json(newUser);
+    res.status(201).json({ok: true});
   } catch (error) {
     next(error);
   }
@@ -44,7 +41,7 @@ userAuthRouter.post("/user/login", request_checked, async function (req, res, ne
     // secure: true -> HTTPS에서만 사용 가능 (defult false).
     // sameSite: 우리 사이트에서 다른 사이트로 링크 연결이 필요하다면 lax, 우리 사이트에서만 머무르면 strict
 
-    res.status(200).send(user); //## JWT 제외
+    res.status(201).send(user);
   } catch (error) {
     next(error);
   }
@@ -55,7 +52,7 @@ userAuthRouter.get("/userlist", login_required, async function (req, res, next) 
     try {
       const users = await userAuthService.getUsers();
 
-      res.status(200).send(users);
+      res.status(201).send(users);
     } catch (error) {
       next(error);
     }
@@ -65,8 +62,6 @@ userAuthRouter.get("/userlist", login_required, async function (req, res, next) 
 // 회원 정보 가져오기
 userAuthRouter.get("/user/current", login_required, async function (req, res, next) {
     try {
-      // 확인 필요
-      // jwt토큰에서 추출된 사용자 id를 가지고 db에서 사용자 정보를 찾음.
       const userid = req.currentUserId;
       const currentUserInfo = await userAuthService.getUserInfo({ userid });
 
@@ -74,7 +69,7 @@ userAuthRouter.get("/user/current", login_required, async function (req, res, ne
         throw new Error(currentUserInfo.errorMessage);
       }
 
-      res.status(200).send(currentUserInfo);
+      res.status(201).send(currentUserInfo);
     } catch (error) {
       next(error);
     }
@@ -95,7 +90,7 @@ userAuthRouter.patch("/users/:id", login_required, request_checked, async functi
         throw new Error(updatedUser.errorMessage);
       }
 
-      res.status(200).json(updatedUser);
+      res.status(200).json({ok: true});
     } catch (error) {
       next(error);
     }
