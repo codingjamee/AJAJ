@@ -67,6 +67,34 @@ userAuthRouter.post("/user/login", async function (req, res, next) {
   }
 });
 
+// 회원 임시 화면
+userAuthRouter.get("/user/register", async function (req, res, next) {
+  res.render('register.ejs');
+  // res.redirect('/user/login')
+});
+
+userAuthRouter.get("/user/login", async function (req, res, next) {
+  res.render('login.ejs');
+});
+
+userAuthRouter.get("/users/:id/edit", login_required, async function (req, res, next) {
+  try {
+    const userid = req.params.id;
+    const user = await userAuthService.getUserInfo({ userid });
+    // console.log(user)
+    // if (user.errorMessage) {
+    //   throw new Error(user.errorMessage);
+    // }
+    console.log(user)
+    // userEdit.ejs 템플릿을 렌더링하며 user 데이터를 전달
+    res.render("userEdit.ejs", { user });
+  } catch (error) {
+    next(error);
+  }
+});
+
+
+
 
 
 userAuthRouter.get(

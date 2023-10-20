@@ -5,8 +5,14 @@ import { errorMiddleware } from "./middlewares/errorMiddleware";
 import { educationAuthRouter } from "./routers/educationRouter";
 const cookieParser = require('cookie-parser');
 
+
 const app = express();
 
+// CRUD 예시 merge할때 삭제 예정
+app.use(express.static(__dirname + '/public')) // css파일 등록부분
+app.set('view engine', 'ejs') // ejs 설정
+app.use(express.json())
+app.use(express.urlencoded({extended:true}))
 
 // CORS 에러 방지
 const corsOption = {

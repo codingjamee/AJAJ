@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+   <meta charset="UTF-8">
+   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+   <title>Document</title>
+</head>
+<body>
+
+   <form action="/users/:id" method="PUT">
+     <h1>사용자 정보 수정</h1>
+     <label for="name">이름:</label>
+     <input type="text" id="name" name="name" value="<%= user.name %>"><br>
+     
+     <label for="email">이메일:</label>
+     <input type="email" id="email" name="email" value="<%= user.email %>"><br>
+     
+     <label for="password">비밀번호:</label>
+     <input type="password" id="password" name="password" value="<%= user.password %>"><br>
+     
+     <label for="description">설명:</label>
+     <textarea id="description" name="description"><%= user.description %></textarea><br>
+     
+     <button type="submit">저장</button>
+   </form>
+ </body>
+</html>

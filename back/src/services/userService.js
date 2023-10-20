@@ -115,6 +115,7 @@ class userAuthService {
   static async getUserInfo({ userid }) {
     const user = await User.findById({ userid });
 
+    
     // db에서 찾지 못한 경우, 에러 메시지 반환
     if (!user) {
       const errorMessage =
