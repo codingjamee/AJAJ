@@ -45,15 +45,6 @@ educationAuthRouter.get("/user/:id/educations", login_required, async function (
   const userid = req.params.id;
   
   try {
-    // userid가 동일한지 확인
-    if (userid) {
-      const user = await educationAuthService.checkUser({ userid });
-      console.log(user);
-      if (user.id !== userid) {
-        throw new AuthorityError("접근 권한이 없습니다");
-      }
-    }
-
     const educations = await educationAuthService.getEducations({ userid });
     if (!educations) {
       throw new ValidationError("학력을 가져올 수 없습니다.");

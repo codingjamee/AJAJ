@@ -7,6 +7,7 @@ const userAuthRouter = Router();
 
 userAuthRouter.post("/user/register", async function (req, res, next) {
   try {
+    // 수정 필요
     if (is.emptyObject(req.body)) {
       throw new Error(
         "headers의 Content-Type을 application/json으로 설정해주세요"
@@ -132,7 +133,7 @@ userAuthRouter.put(
 
 userAuthRouter.get(
   "/users/:id",
-  // login_required,
+  login_required,
   async function (req, res, next) {
     try {
       const userid = req.params.id;
