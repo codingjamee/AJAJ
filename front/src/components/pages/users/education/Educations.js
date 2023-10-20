@@ -1,7 +1,7 @@
 import React, { useContext, useEffect, useState } from "react";
 import { Card, Col, Form } from "react-bootstrap";
 import { UserStateContext } from "../../../../App";
-import * as Api from "../../../common/utils/api";
+import * as Api from "../../../utils/api";
 import ButtonCommon from "../../../common/ButtonCommon";
 import FormWrapper from "../../../common/FormWrapper";
 import Education from "./Education";
@@ -15,24 +15,24 @@ const optionArr = [
 
 //서버와 통신전 더미어레이
 
-// const educations = [
-//   {
-//     id: "1",
-//     school: "스쿨1",
-//     major: "전공1",
-//     degree: "학사학위",
-//     startDate: "0000-01-01",
-//     endDate: "1111-01-01",
-//   },
-//   {
-//     id: "2",
-//     school: "스쿨2",
-//     major: "전공2",
-//     degree: "석사학위",
-//     startDate: "0000-01-02",
-//     endDate: "1111-01-01",
-//   },
-// ];
+const educations = [
+  {
+    id: "1",
+    school: "스쿨1",
+    major: "전공1",
+    degree: "학사학위",
+    startDate: "0000-01-01",
+    endDate: "1111-01-01",
+  },
+  {
+    id: "2",
+    school: "스쿨2",
+    major: "전공2",
+    degree: "석사학위",
+    startDate: "0000-01-02",
+    endDate: "1111-01-01",
+  },
+];
 
 const Educations = (props) => {
   const [addForm, setAddForm] = useState(false);
@@ -41,7 +41,7 @@ const Educations = (props) => {
   const [startDate, setStartDate] = useState("2023-01-01");
   const [endDate, setEndDate] = useState("2023-01-01");
   const [degree, setDegree] = useState("");
-  const [educations, setEducations] = useState([]);
+  // const [educations, setEducations] = useState([]);
   const [major, setMajor] = useState("");
   const { portfolioOwnerId, isEditable, id } = props;
   const userState = useContext(UserStateContext);
@@ -119,12 +119,12 @@ const Educations = (props) => {
   };
 
   // 모든 학위 목록 가져오기 서버와 통신
-  useEffect(() => {
-    Api.get(`user/${portfolioOwnerId}/educations`).then((res) => {
-      console.log(res.data);
-      return setEducations(res.data);
-    });
-  }, [educations]);
+  // useEffect(() => {
+  //   Api.get(`user/${portfolioOwnerId}/educations`).then((res) => {
+  //     console.log(res.data);
+  //     return setEducations(res.data);
+  //   });
+  // }, [educations]);
 
   return (
     <>

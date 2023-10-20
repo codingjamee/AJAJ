@@ -3,10 +3,11 @@ import { useNavigate, useParams } from "react-router-dom";
 import { Container, Col, Row } from "react-bootstrap";
 
 import { UserStateContext } from "../../../App";
-import * as Api from "../../common/utils/api";
+import * as Api from "../../hooks/api";
 import User from "./user/User";
-import Educations from "./education/Educations";
+import Education from "./education/Education";
 import Test from "../../common/Test";
+import Educations from "./education/Educations";
 
 function Portfolio() {
   const navigate = useNavigate();
@@ -48,7 +49,7 @@ function Portfolio() {
       // 해당 유저 id로 fetchPortfolioOwner 함수를 실행함.
       fetchPortfolioOwner(ownerId);
     }
-  }, []);
+  }, [params, userState, navigate]);
 
   if (!isFetchCompleted) {
     return "loading...";

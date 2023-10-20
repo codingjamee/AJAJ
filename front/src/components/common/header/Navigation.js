@@ -3,13 +3,6 @@ import { useNavigate, useLocation } from "react-router-dom";
 import Nav from "react-bootstrap/Nav";
 import { UserStateContext, DispatchContext } from "../../../App";
 
-const navItems = [
-  { path: "/", label: "홈페이지" },
-  { path: "/login", label: "로그인" },
-  { path: "/users", label: "유저페이지" },
-  { path: "/network", label: "네트워크" },
-];
-
 function Navigation() {
   const navigate = useNavigate();
   const location = useLocation();
@@ -32,11 +25,6 @@ function Navigation() {
 
   return (
     <Nav activeKey={location.pathname}>
-      {navItems.map(({ path, label }, index) => (
-        <Nav.Item key={`navitem-${index}`} className="me-auto mb-5">
-          <Nav.Link onClick={() => navigate(path)}>{label}</Nav.Link>
-        </Nav.Item>
-      ))}
       <Nav.Item className="me-auto mb-5">
         <Nav.Link disabled>안녕하세요, 포트폴리오 공유 서비스입니다.</Nav.Link>
       </Nav.Item>

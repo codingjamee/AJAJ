@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Container, Col, Row, Form, Button } from "react-bootstrap";
 
-import * as Api from "../../common/utils/api";
+import * as Api from "../../hooks/api";
 
 function RegisterForm() {
   const navigate = useNavigate();

@@ -1,28 +1,15 @@
 import { useEffect, useState } from "react";
-import * as Api from "../../../common/utils/api";
-import { Button, Form, Card, Col, Row } from "react-bootstrap";
-import FormCommon from "../../../common/FormCommon";
+import * as Api from "../../../utils/api";
+import { Form, Card, Col } from "react-bootstrap";
 import FormWrapper from "../../../common/FormWrapper";
 import ButtonCommon from "../../../common/ButtonCommon";
 
-//서버와 통신 전 더미 어레이
-// const education = [
-//   {
-//     id: "1",
-//     school: "스쿨1",
-//     major: "전공1",
-//     degree: "학사학위",
-//     startDate: "0000-01-01",
-//     endDate: "1111-01-01",
-//   },
-// ];
-
 const Education = ({
   isEditable,
-  education,
   optionArr,
   submitHandler,
   setAddForm,
+  education = [],
 }) => {
   // useState 훅을 통해 user 상태를 생성함.
   const [user, setUser] = useState(null);
