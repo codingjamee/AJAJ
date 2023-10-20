@@ -79,15 +79,16 @@ userAuthRouter.get("/user/login", async function (req, res, next) {
 
 userAuthRouter.get("/users/:id/edit", login_required, async function (req, res, next) {
   try {
-    const userid = req.params.id;
-    const user = await userAuthService.getUserInfo({ userid });
-    // console.log(user)
-    // if (user.errorMessage) {
-    //   throw new Error(user.errorMessage);
-    // }
-    console.log(user)
-    // userEdit.ejs 템플릿을 렌더링하며 user 데이터를 전달
-    res.render("userEdit.ejs", { user });
+    const userid = req.currentUserId;
+    const currentUserInfo = await userAuthService.getUserInfo({
+      userid,
+    });
+    console.log(currentUserInfo)
+    if (userid.errorMessage) {
+      throw new Error(user.errorMessage);
+    }
+    // userEdit.ejs 템플릿을 렌더링하며 데이터를 전달
+    res.render("userEdit.ejs", { currentUserInfo });
   } catch (error) {
     next(error);
   }
