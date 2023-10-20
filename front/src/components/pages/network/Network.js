@@ -2,7 +2,7 @@ import React, { useEffect, useContext, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Container, Row } from "react-bootstrap";
 
-import * as Api from "../../hooks/api";
+import * as Api from "../../utils/api";
 import UserCard from "../users/user/UserCard";
 import { UserStateContext } from "../../../App";
 

@@ -4,7 +4,7 @@ import { UserStateContext } from "../../../../App";
 import * as Api from "../../../utils/api";
 import ButtonCommon from "../../../common/ButtonCommon";
 import FormWrapper from "../../../common/FormWrapper";
-import Education from "./Education";
+import Education from "./Project";
 //option 상세설정 어레이
 const optionArr = [
   { value: "재학중", text: "재학중" },
@@ -15,56 +15,53 @@ const optionArr = [
 
 //서버와 통신전 더미어레이
 
-// const educations = [
-//   {
-//     id: "1",
-//     school: "스쿨1",
-//     major: "전공1",
-//     degree: "학사학위",
-//     startDate: "0000-01-01",
-//     endDate: "1111-01-01",
-//   },
-//   {
-//     id: "2",
-//     school: "스쿨2",
-//     major: "전공2",
-//     degree: "석사학위",
-//     startDate: "0000-01-02",
-//     endDate: "1111-01-01",
-//   },
-// ];
+const projectsArr = [
+  {
+    id: "1",
+    projectName: "프로젝트1",
+    projectDetail: "이것은 프로젝트1 설명입니다.",
+    projectImg: "프로젝트 이미지",
+    startDate: "2023-01-01",
+    endDate: "2023-06-09",
+  },
+  {
+    id: "2",
+    projectName: "프로젝트2",
+    projectDetail: "이것은 프로젝트2 설명입니다.",
+    projectImgUrl: "프로젝트 이미지",
+    projectStartDate: "2020-07-05",
+    projectEndDate: "2020-08-05",
+  },
+];
 
-const Educations = (props) => {
+const Projects = (props) => {
   const [addForm, setAddForm] = useState(false);
-  const [school, setSchool] = useState("");
-  const [startDate, setStartDate] = useState("2023-01-01");
-  const [endDate, setEndDate] = useState("2023-01-01");
-  const [degree, setDegree] = useState("");
-  const [educations, setEducations] = useState([]);
-  const [major, setMajor] = useState("");
+  const [projectName, setProjectName] = useState("");
+  const [projectDetail, setProjectDetail] = useState("");
+  const [projectImgUrl, setProjectImgUrl] = useState("");
+  const [projectStartDate, setProjectStartDate] = useState("2023-01-01");
+  const [projectEndDate, setProjectEndDate] = useState("2023-01-01");
+  // const [projectArr, setProjectArr] = useState([]);
   const { portfolioOwnerId, isEditable, id } = props;
   const userState = useContext(UserStateContext);
-
-  console.log(userState.user.id);
 
   //form 상세설정 어레이
   const formList = [
     {
-      controlId: "eduSchoolName",
+      controlId: "projectName",
       customClassName: "mb-3",
-      label: "학교이름",
-      placeholder: "학교이름",
-      value: school,
-      changeHandler: (v) => setSchool(v),
+      label: "프로젝트명",
+      placeholder: "프로젝트명",
+      value: projectName,
+      changeHandler: (v) => setProjectName(v),
     },
     {
-      controlId: "eduMajor",
+      controlId: "projectDetail",
       customClassName: "mb-3",
-      label: "전공",
-      placeholder: "전공",
-      value: major,
-
-      changeHandler: (v) => setMajor(v),
+      label: "프로젝트설명",
+      placeholder: "프로젝트설명",
+      value: projectDetail,
+      changeHandler: (v) => setProjectDetail(v),
     },
     {
       controlId: "eduDegree",
@@ -96,7 +93,7 @@ const Educations = (props) => {
   ];
 
   //제출버튼 클릭시
-  const handleSubmit = async (e) => {
+  const handleSubmit = (e) => {
     e.preventDefault();
     console.log("handler clicked");
     console.log({ school, degree, major, startDate, endDate });
@@ -104,28 +101,28 @@ const Educations = (props) => {
     //portfolioOwnerId는 portfolio에서 받아옴
 
     //post 서버와 통신
-    const res = await Api.post(`user/${userState.user.id}/education`, {
-      school,
-      degree,
-      major,
-      startDate,
-      endDate,
-    });
+    // const res = await Api.post(`user/${user.id}/education`, {
+    //   school,
+    //   degree,
+    //   major,
+    //   startDate,
+    //   endDate,
+    // });
 
-    const updatedEdu = res.data;
-    setEducations((prev) => {
-      return { ...prev, updatedEdu };
-    });
-    setAddForm(false);
+    // const updatedEdu = res.data;
+    // setEducations((prev) => {
+    //   return { ...prev, updatedEdu };
+    // });
+    // setEdit(false);
   };
 
   // 모든 학위 목록 가져오기 서버와 통신
-  useEffect(() => {
-    Api.get(`user/${portfolioOwnerId}/educations`).then((res) => {
-      console.log(res.data);
-      return setEducations(res.data);
-    });
-  }, [educations]);
+  // useEffect(() => {
+  //   Api.get(`user/${portfolioOwnerId}/educations`).then((res) => {
+  //     console.log(res.data);
+  //     return setEducations(res.data);
+  //   });
+  // }, [educations]);
 
   return (
     <>
@@ -163,4 +160,4 @@ const Educations = (props) => {
   );
 };
 
-export default Educations;
+export default Projects;

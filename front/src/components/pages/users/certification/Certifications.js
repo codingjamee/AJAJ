@@ -32,7 +32,6 @@ const certifications = [
 
 const Certifications = (props) => {
   const [addForm, setAddForm] = useState(false);
-  const [edit, setEdit] = useState(false);
   // const [certification, setCertification] = useState([]);
   const [certName, setCertName] = useState("");
   const [organization, setOrganization] = useState("");
