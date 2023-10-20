@@ -8,6 +8,7 @@ import User from "./user/User";
 import Education from "./education/Education";
 import Test from "../../common/Test";
 import Educations from "./education/Educations";
+import Certifications from "./certification/Certifications";
 
 function Portfolio() {
   const navigate = useNavigate();
@@ -67,6 +68,12 @@ function Portfolio() {
         <Col style={{ display: "flex", justifyContent: "center" }}>
           <div style={{ textAlign: "center" }}>
             <Educations
+              portfolioOwnerId={portfolioOwner.id}
+              isEditable={portfolioOwner.id === userState.user?.id}
+              setEdu={setEdu}
+              edu={edu}
+            />
+            <Certifications
               portfolioOwnerId={portfolioOwner.id}
               isEditable={portfolioOwner.id === userState.user?.id}
               setEdu={setEdu}

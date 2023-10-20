@@ -4,7 +4,7 @@ import { UserStateContext } from "../../../../App";
 import * as Api from "../../../utils/api";
 import ButtonCommon from "../../../common/ButtonCommon";
 import FormWrapper from "../../../common/FormWrapper";
-import Education from "./Education";
+import Certification from "./Certification";
 //option 상세설정 어레이
 const optionArr = [
   { value: "재학중", text: "재학중" },
@@ -15,82 +15,57 @@ const optionArr = [
 
 //서버와 통신전 더미어레이
 
-const educations = [
+const certifications = [
   {
     id: "1",
-    school: "스쿨1",
-    major: "전공1",
-    degree: "학사학위",
-    startDate: "0000-01-01",
-    endDate: "1111-01-01",
+    certName: "자격증 이름1",
+    organization: "자격증 수여 기관",
+    acquisitionDate: "2003-02-02",
   },
   {
     id: "2",
-    school: "스쿨2",
-    major: "전공2",
-    degree: "석사학위",
-    startDate: "0000-01-02",
-    endDate: "1111-01-01",
+    certName: "자격증 이름2",
+    organization: "자격증 수여 기관222",
+    acquisitionDate: "2023-01-01",
   },
 ];
 
-const Educations = (props) => {
+const Certifications = (props) => {
   const [addForm, setAddForm] = useState(false);
   const [edit, setEdit] = useState(false);
-  const [school, setSchool] = useState("");
-  const [startDate, setStartDate] = useState("2023-01-01");
-  const [endDate, setEndDate] = useState("2023-01-01");
-  const [degree, setDegree] = useState("");
-  // const [educations, setEducations] = useState([]);
-  const [major, setMajor] = useState("");
+  // const [certification, setCertification] = useState([]);
+  const [certName, setCertName] = useState("");
+  const [organization, setOrganization] = useState("");
+  const [acquisitionDate, setAcquisitionDate] = useState("2023-01-01");
   const { portfolioOwnerId, isEditable, id } = props;
   const userState = useContext(UserStateContext);
 
   //form 상세설정 어레이
   const formList = [
     {
-      controlId: "eduSchoolName",
+      controlId: "certSchoolName",
       customClassName: "mb-3",
-      label: "학교이름",
-      placeholder: "학교이름",
-      value: school,
-      changeHandler: (v) => setSchool(v),
+      label: "자격증 명",
+      placeholder: "자격증 명",
+      value: certName,
+      changeHandler: (v) => setCertName(v),
     },
     {
-      controlId: "eduMajor",
+      controlId: "certOrganization",
       customClassName: "mb-3",
-      label: "전공",
-      placeholder: "전공",
-      value: major,
+      label: "기관",
+      placeholder: "기관",
+      value: organization,
+      changeHandler: (v) => setOrganization(v),
+    },
 
-      changeHandler: (v) => setMajor(v),
-    },
     {
-      controlId: "eduDegree",
-      select: "true",
+      controlId: "acquisitionDate",
       customClassName: "mb-3",
-      label: "학위",
-      placeholder: "학위",
-      value: major,
-      changeHandler: (v) => setDegree(v),
-      optionValue: "학위를 선택하세요",
-      optionArr: optionArr,
-    },
-    {
-      controlId: "startDate",
-      customClassName: "mb-3",
-      value: startDate,
-      changeHandler: (v) => setStartDate(v),
-      label: "입학연월일",
+      value: acquisitionDate,
+      label: "취득일자",
       type: "date",
-    },
-    {
-      controlId: "endDate",
-      customClassName: "mb-3",
-      value: endDate,
-      changeHandler: (v) => setEndDate(v),
-      label: "졸업연월일",
-      type: "date",
+      changeHandler: (v) => setAcquisitionDate(v),
     },
   ];
 
@@ -98,12 +73,12 @@ const Educations = (props) => {
   const handleSubmit = (e) => {
     e.preventDefault();
     console.log("handler clicked");
-    console.log({ school, degree, major, startDate, endDate });
+    console.log({ certName, organization, acquisitionDate });
 
     //portfolioOwnerId는 portfolio에서 받아옴
 
     //post 서버와 통신
-    // const res = await Api.post(`user/${user.id}/education`, {
+    // const res = await Api.post(`user/${user.id}/certification`, {
     //   school,
     //   degree,
     //   major,
@@ -112,7 +87,7 @@ const Educations = (props) => {
     // });
 
     // const updatedEdu = res.data;
-    // setEducations((prev) => {
+    // setCertification((prev) => {
     //   return { ...prev, updatedEdu };
     // });
     // setEdit(false);
@@ -120,22 +95,22 @@ const Educations = (props) => {
 
   // 모든 학위 목록 가져오기 서버와 통신
   // useEffect(() => {
-  //   Api.get(`user/${portfolioOwnerId}/educations`).then((res) => {
+  //   Api.get(`user/${portfolioOwnerId}/certification`).then((res) => {
   //     console.log(res.data);
-  //     return setEducations(res.data);
+  //     return setCertification(res.data);
   //   });
-  // }, [educations]);
+  // }, [certification]);
 
   return (
     <>
-      <h4>학력</h4>
-      {educations.map((education) => (
-        <React.Fragment key={education.id}>
-          <Education
+      <h4>자격증</h4>
+      {certifications.map((certification, index) => (
+        <React.Fragment key={`certification-${index}`}>
+          <Certification
             isEditable={isEditable}
             optionArr={optionArr}
             formList={formList}
-            education={education}
+            certification={certification}
           />
         </React.Fragment>
       ))}
@@ -162,4 +137,4 @@ const Educations = (props) => {
   );
 };
 
-export default Educations;
+export default Certifications;
