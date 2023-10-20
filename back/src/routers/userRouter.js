@@ -45,13 +45,13 @@ userAuthRouter.post("/user/login", async function (req, res, next) {
     
     // 위 데이터를 이용하여 유저 db에서 유저 찾기
     const [ token, user ] = await userAuthService.getUser({ email, password });
-    console.log('user', user);    console.log('token', token);
+    console.log('token', token);
     console.log('user', user);
     if (user.errorMessage) {
       throw new Error(user.errorMessage);
     }
 
-    res.cookie('user_cookie', user.token, {
+    res.cookie('user_cookie', token, {
       path: '/', // 쿠키 저장 경로
       httpOnly: true, // 클라이언트에서 쿠키 조작 x
       sameSite: 'lax', // 쿠키 전송 범위. default
