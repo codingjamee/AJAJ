@@ -4,68 +4,47 @@ import { Form, Card, Col } from "react-bootstrap";
 import FormWrapper from "../../../common/FormWrapper";
 import ButtonCommon from "../../../common/ButtonCommon";
 
-const Education = ({
+const Certification = ({
   isEditable,
   optionArr,
   submitHandler,
   setAddForm,
-  education = [],
+  certification = [],
 }) => {
   // useState 훅을 통해 user 상태를 생성함.
   const [user, setUser] = useState(null);
   const [editMode, setEditMode] = useState(false);
-  const [school, setSchool] = useState("");
-  const [startDate, setStartDate] = useState("2023-01-01");
-  const [endDate, setEndDate] = useState("2023-01-01");
-  const [degree, setDegree] = useState("");
-  // const [educations, setEducations] = useState([]);
-  const [major, setMajor] = useState("");
+  // const [certification, setCertification] = useState([]);
+  const [certName, setCertName] = useState("");
+  const [organization, setOrganization] = useState("");
+  const [acquisitionDate, setAcquisitionDate] = useState("2023-01-01");
 
   //form 상세설정 어레이
   const formList = [
     {
-      controlId: "eduSchoolName",
+      controlId: "certSchoolName",
       customClassName: "mb-3",
-      label: "학교이름",
-      placeholder: "학교이름",
-      value: school,
-      changeHandler: (v) => setSchool(v),
+      label: "자격증 명",
+      placeholder: "자격증 명",
+      value: certName,
+      changeHandler: (v) => setCertName(v),
     },
     {
-      controlId: "eduMajor",
+      controlId: "certOrganization",
       customClassName: "mb-3",
-      label: "전공",
-      placeholder: "전공",
-      value: major,
+      label: "기관",
+      placeholder: "기관",
+      value: organization,
+      changeHandler: (v) => setOrganization(v),
+    },
 
-      changeHandler: (v) => setMajor(v),
-    },
     {
-      controlId: "eduDegree",
-      select: "true",
+      controlId: "acquisitionDate",
       customClassName: "mb-3",
-      label: "학위",
-      placeholder: "학위",
-      value: major,
-      changeHandler: (v) => setDegree(v),
-      optionValue: "학위를 선택하세요",
-      optionArr: optionArr,
-    },
-    {
-      controlId: "startDate",
-      customClassName: "mb-3",
-      value: startDate,
-      changeHandler: (v) => setStartDate(v),
-      label: "입학연월일",
+      value: acquisitionDate,
+      label: "취득일자",
       type: "date",
-    },
-    {
-      controlId: "endDate",
-      customClassName: "mb-3",
-      value: endDate,
-      changeHandler: (v) => setEndDate(v),
-      label: "졸업연월일",
-      type: "date",
+      changeHandler: (v) => setAcquisitionDate(v),
     },
   ];
 
@@ -75,7 +54,7 @@ const Education = ({
   //수정해서 onSubmitHandler
   const onSubmitHandler = (e) => {
     e.preventDefault();
-    console.log({ school, degree, major, startDate, endDate });
+    console.log({ certName, organization, acquisitionDate });
   };
 
   //삭제버튼 구현전
@@ -92,14 +71,12 @@ const Education = ({
           <>
             <Card style={{ width: "18rem" }}>
               <Card.Body>
-                <Card.Title>{education.school}</Card.Title>
+                <Card.Title>{certification.certName}</Card.Title>
 
                 <Card.Subtitle className="mb-2 text-muted">
-                  {education.major}
+                  {certification.organization}
                 </Card.Subtitle>
-                <Card.Text>
-                  {education.startDate} ~ {education.endDate}
-                </Card.Text>
+                <Card.Text>{certification.acquisitionDate}</Card.Text>
 
                 {isEditable && (
                   <Form.Group className="mt-3 text-center">
@@ -115,7 +92,7 @@ const Education = ({
                       <ButtonCommon
                         variant="secondary"
                         text="삭제"
-                        onClickHandler={() => onClickDel(education.id)}
+                        onClickHandler={() => onClickDel(certification.id)}
                       />
                     </Col>
                   </Form.Group>
@@ -138,4 +115,4 @@ const Education = ({
   );
 };
 
-export default Education;
+export default Certification;
