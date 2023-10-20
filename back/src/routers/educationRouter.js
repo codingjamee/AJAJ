@@ -1,33 +1,19 @@
-import is from "@sindresorhus/is";
-import { Router } from "express";
-import { login_required } from "../middlewares/login_required";
-import { educationAuthService } from "../services/educationService";
+const { Router } = require('express');
+const { login_required } = require('../middlewares/login_required');
+const { request_checked } = require('../middlewares/middleware');
+const { ValidationError, EmptyValueError, AuthorityError } = require('../middlewares/errorHandlingMiddleware');
 
-const { ValidationError, EmptyValueError, AuthorityError } = require('../middlewares/errorHandlingMiddleware')
+const { educationAuthService } = require('../services/educationService');
 
 const educationAuthRouter = Router();
 
 // 학력 추가하기_login_required_login_required
-educationAuthRouter.post("/user/:id/user/:id/education", login_required, async function (req, res, next) {
-    
-    console.log(req.body);
+educationAuthRouter.post("/user/:id/education", login_required, request_checked, async function (req, res, next) {
     try {
-        if (is.emptyObject(req.body)) {
-            throw new EmptyValueError("학력 추가에 입력값이 없습니다.");
-        }
         const userid = req.params.id;
-        const school = req.body.school;
-        const major = req.body.major;
-        const degree = req.body.degree;
-        const startDate = req.body.startDate;
-        const endDate = req.body.endDate;
+        const { school, major, degree, startDate, endDate } = req.body;
         const newEducation = await educationAuthService.addEducation({
-            userid,
-            school,
-            major,
-            degree,
-            startDate,
-            endDate
+            userid, school, major, degree, startDate, endDate
           });
 
       if (!newEducation) {
@@ -42,10 +28,10 @@ educationAuthRouter.post("/user/:id/user/:id/education", login_required, async f
 
 // 학력 전체 가져오기_login_required
 educationAuthRouter.get("/user/:id/educations", login_required, async function (req, res, next) {
-  const userid = req.params.id;
-  
   try {
+    const userid = req.params.id;
     const educations = await educationAuthService.getEducations({ userid });
+
     if (!educations) {
       throw new ValidationError("학력을 가져올 수 없습니다.");
     }
@@ -58,33 +44,32 @@ educationAuthRouter.get("/user/:id/educations", login_required, async function (
 
 
 // 특정 학력 가져오기_login_required
-educationAuthRouter.get("/user/:id/education/:eduId", login_required, async function (req, res, next) {
-  const eduid = req.params.eduId;
-  const userid = req.params.id;
-  try {
-    // userid가 동일한지 확인
-    if (userid) {
-      const user = await educationAuthService.checkUser({ userid });
-      if (user.id !== userid) {
-        throw new AuthorityError("접근 권한이 없습니다");
-      }
-    }
+// educationAuthRouter.get("/user/:id/education/:eduId", login_required, async function (req, res, next) {
+//   try {
+//     const eduid = req.params.eduId;
+//     const userid = req.params.id;
+//     // userid가 동일한지 확인
+//     if (userid) {
+//       const user = await educationAuthService.checkUser({ userid });
+//       if (user.id !== userid) {
+//         throw new AuthorityError("접근 권한이 없습니다");
+//       }
+//     }
 
-    const educations = await educationAuthService.getEducation({ eduid });
+//     const educations = await educationAuthService.getEducation({ eduid });
 
-    if (!educations) {
-      throw new ValidationError("특정 학력을 가져올 수 없습니다.");
-    }
-    res.status(201).send(educations);
-  } catch (error) {
-    next(error);
-  }
-});
-
+//     if (!educations) {
+//       throw new ValidationError("특정 학력을 가져올 수 없습니다.");
+//     }
+//     res.status(201).send(educations);
+//   } catch (error) {
+//     next(error);
+//   }
+// });
 
 
 // 학력 수정하기_login_required
-educationAuthRouter.patch("/user/:id/education/:eduId", login_required, async function (req, res, next) {
+educationAuthRouter.patch("/user/:id/education/:eduId", login_required, request_checked, async function (req, res, next) {
     try {
       const eduid = req.params.eduId;
       const userid = req.params.id;
@@ -102,7 +87,6 @@ educationAuthRouter.patch("/user/:id/education/:eduId", login_required, async fu
       const degree = req.body.degree ?? null;
       const startDate = req.body.startDate ?? null;
       const endDate = req.body.endDate ?? null;
-
       const toUpdate = { school, major, degree, startDate, endDate };
 
       const updatedEducation = await educationAuthService.setEducation({ eduid, toUpdate });
@@ -119,9 +103,10 @@ educationAuthRouter.patch("/user/:id/education/:eduId", login_required, async fu
 
 // 학력 삭제하기_login_required
 educationAuthRouter.delete("/user/:id/education/:eduId", login_required, async function (req, res, next) {
-  const eduid = req.params.eduId;
-  const userid = req.params.id;
   try {
+    const eduid = req.params.eduId;
+    const userid = req.params.id;
+
     // userid가 동일한지 확인
     if (userid) {
       const user = await educationAuthService.checkUser({ userid });

@@ -13,10 +13,8 @@ function login_required(req, res, next) {
 
   // 해당 token 이 정상적인 token인지 확인 -> 토큰에 담긴 user_id 정보 추출
   try {
-    console.log('토큰 정상적으로 받음', userToken);
     const secretKey = process.env.JWT_SECRET_KEY || "secret-key";
     const jwtDecoded = jwt.verify(userToken, secretKey);
-    console.log('토큰 인증 완료', jwtDecoded);
     const user_id = jwtDecoded.user_id;
     req.currentUserId = user_id;
 
