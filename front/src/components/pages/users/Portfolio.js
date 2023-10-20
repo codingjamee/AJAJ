@@ -2,11 +2,13 @@ import React, { useContext, useState, useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { Container, Col, Row } from "react-bootstrap";
 
-import { UserStateContext } from "../App";
-import * as Api from "../api";
+import { UserStateContext } from "../../../App";
+import * as Api from "../../utils/api";
 import User from "./user/User";
-import EducationForm from "./user/EducationForm";
-import Education from "./user/Education";
+import Education from "./education/Education";
+import Test from "../../common/Test";
+import Educations from "./education/Educations";
+import Certifications from "./certification/Certifications";
 
 function Portfolio() {
   const navigate = useNavigate();
@@ -19,14 +21,14 @@ function Portfolio() {
   const [edu, setEdu] = useState("");
   const userState = useContext(UserStateContext);
 
-  const fetchPorfolioOwner = async (ownerId) => {
+  const fetchPortfolioOwner = async (ownerId) => {
     // 유저 id를 가지고 "/users/유저id" 엔드포인트로 요청해 사용자 정보를 불러옴.
     const res = await Api.get("users", ownerId);
     // 사용자 정보는 response의 data임.
     const ownerData = res.data;
     // portfolioOwner을 해당 사용자 정보로 세팅함.
     setPortfolioOwner(ownerData);
-    // fetchPorfolioOwner 과정이 끝났으므로, isFetchCompleted를 true로 바꿈.
+    // fetchPortfolioOwner 과정이 끝났으므로, isFetchCompleted를 true로 바꿈.
     setIsFetchCompleted(true);
   };
 
@@ -40,13 +42,13 @@ function Portfolio() {
     if (params.userId) {
       // 만약 현재 URL이 "/users/:userId" 라면, 이 userId를 유저 id로 설정함.
       const ownerId = params.userId;
-      // 해당 유저 id로 fetchPorfolioOwner 함수를 실행함.
-      fetchPorfolioOwner(ownerId);
+      // 해당 유저 id로 fetchPortfolioOwner 함수를 실행함.
+      fetchPortfolioOwner(ownerId);
     } else {
       // 이외의 경우, 즉 URL이 "/" 라면, 전역 상태의 user.id를 유저 id로 설정함.
       const ownerId = userState.user.id;
-      // 해당 유저 id로 fetchPorfolioOwner 함수를 실행함.
-      fetchPorfolioOwner(ownerId);
+      // 해당 유저 id로 fetchPortfolioOwner 함수를 실행함.
+      fetchPortfolioOwner(ownerId);
     }
   }, [params, userState, navigate]);
 
@@ -57,28 +59,30 @@ function Portfolio() {
   return (
     <Container fluid>
       <Row>
-        <Col md="2" lg="2">
+        <Col>
           <User
             portfolioOwnerId={portfolioOwner.id}
             isEditable={portfolioOwner.id === userState.user?.id}
           />
         </Col>
+        <Col style={{ display: "flex", justifyContent: "center" }}>
+          <div style={{ textAlign: "center" }}>
+            <Educations
+              portfolioOwnerId={portfolioOwner.id}
+              isEditable={portfolioOwner.id === userState.user?.id}
+              setEdu={setEdu}
+              edu={edu}
+            />
+            <Certifications
+              portfolioOwnerId={portfolioOwner.id}
+              isEditable={portfolioOwner.id === userState.user?.id}
+              setEdu={setEdu}
+              edu={edu}
+            />
+            {/* <Test isEditable="true" /> */}
+          </div>
+        </Col>
       </Row>
-      <Col style={{ display: "flex", justifyContent: "center" }}>
-        <div style={{ textAlign: "center" }}>
-          <Education
-            portfolioOwnerId={portfolioOwner.id}
-            isEditable={portfolioOwner.id === userState.user?.id}
-            edu={edu}
-          />
-          <EducationForm
-            portfolioOwnerId={portfolioOwner.id}
-            isEditable={portfolioOwner.id === userState.user?.id}
-            setEdu={setEdu}
-            edu={edu}
-          />
-        </div>
-      </Col>
     </Container>
   );
 }

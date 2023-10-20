@@ -1,14 +1,14 @@
 import React, { useState, useEffect, useReducer, createContext } from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 
-import * as Api from "./api";
-import { loginReducer } from "./reducer";
+import * as Api from "./components/utils/api";
+import { loginReducer } from "./components/hooks/reducer";
 
-import Header from "./components/Header";
-import LoginForm from "./components/user/LoginForm";
-import Network from "./components/user/Network";
-import RegisterForm from "./components/user/RegisterForm";
-import Portfolio from "./components/Portfolio";
+import Navigation from "./components/common/header/Navigation";
+import Login from "./components/pages/login/Login";
+import Network from "./components/pages/network/Network";
+import RegisterForm from "./components/pages/register/RegisterForm";
+import Portfolio from "./components/pages/users/Portfolio";
 
 export const UserStateContext = createContext(null);
 export const DispatchContext = createContext(null);
@@ -56,10 +56,10 @@ function App() {
     <DispatchContext.Provider value={dispatch}>
       <UserStateContext.Provider value={userState}>
         <Router>
-          <Header />
+          <Navigation />
           <Routes>
             <Route path="/" exact element={<Portfolio />} />
-            <Route path="/login" element={<LoginForm />} />
+            <Route path="/login" element={<Login />} />
             <Route path="/register" element={<RegisterForm />} />
             <Route path="/users/:userId" element={<Portfolio />} />
             <Route path="/network" element={<Network />} />

@@ -7,9 +7,8 @@ const { ValidationError, EmptyValueError, AuthorityError } = require('../middlew
 
 const educationAuthRouter = Router();
 
-
 // 학력 추가하기_login_required
-educationAuthRouter.post("/user/:id/education", login_required, async function (req, res, next) {
+educationAuthRouter.post("user/:id/education", login_required, async function (req, res, next) {
     
     console.log(req.body);
     try {
@@ -35,7 +34,7 @@ educationAuthRouter.post("/user/:id/education", login_required, async function (
         throw new ValidationError("해당 학력이 생성되지 않았습니다.");
       }
   
-      res.status(201).send(educations);
+      res.status(201).json(newEducation);
     } catch (error) {
       next(error);
     }
@@ -46,15 +45,6 @@ educationAuthRouter.get("/user/:id/educations", login_required, async function (
   const userid = req.params.id;
   
   try {
-    // userid가 동일한지 확인
-    if (userid) {
-      const user = await educationAuthService.checkUser({ userid });
-      console.log(user);
-      if (user.id !== userid) {
-        throw new AuthorityError("접근 권한이 없습니다");
-      }
-    }
-
     const educations = await educationAuthService.getEducations({ userid });
     if (!educations) {
       throw new ValidationError("학력을 가져올 수 없습니다.");

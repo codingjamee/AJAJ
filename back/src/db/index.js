@@ -4,8 +4,7 @@ import { Education } from "./models/Education";
 import { Project } from "./models/Project";
 
 
-const DB_URL =
-  process.env.MONGODB_URL = "mongodb+srv://AJAJ:12341234@ajaj.yo3gtp4.mongodb.net/";
+const DB_URL = process.env.MONGODB_URL;
 
 mongoose.connect(DB_URL);
 const db = mongoose.connection;
