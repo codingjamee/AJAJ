@@ -112,9 +112,8 @@ const Educations = (props) => {
       endDate,
     });
 
-    const updatedEdu = res.data;
     setEducations((prev) => {
-      return { ...prev, updatedEdu };
+      return [...prev, { school, degree, major, startDate, endDate }];
     });
     setAddForm(false);
   };
@@ -125,7 +124,7 @@ const Educations = (props) => {
       console.log(res.data);
       return setEducations(res.data);
     });
-  }, [educations]);
+  }, [portfolioOwnerId]);
 
   return (
     <>
