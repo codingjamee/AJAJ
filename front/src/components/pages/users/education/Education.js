@@ -37,7 +37,6 @@ const Education = ({
       label: "전공",
       placeholder: "전공",
       value: major,
-
       changeHandler: (v) => setMajor(v),
     },
     {
@@ -90,7 +89,7 @@ const Education = ({
       <Card.Body>
         {!editMode && (
           <>
-            <Card style={{ width: "18rem" }}>
+            <Card style={{ width: "100%" }}>
               <Card.Body>
                 <Card.Title>{education.school}</Card.Title>
 
