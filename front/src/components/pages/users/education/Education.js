@@ -1,8 +1,9 @@
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import * as Api from "../../../utils/api";
 import { Form, Card, Col } from "react-bootstrap";
 import FormWrapper from "../../../common/FormWrapper";
 import ButtonCommon from "../../../common/ButtonCommon";
+import { UserStateContext } from "../../../../App";
 
 const Education = ({
   isEditable,
@@ -18,8 +19,9 @@ const Education = ({
   const [startDate, setStartDate] = useState("2023-01-01");
   const [endDate, setEndDate] = useState("2023-01-01");
   const [degree, setDegree] = useState("");
-  // const [educations, setEducations] = useState([]);
+  const [educations, setEducations] = useState([]);
   const [major, setMajor] = useState("");
+  const userState = useContext(UserStateContext);
 
   //form 상세설정 어레이
   const formList = [
@@ -37,7 +39,6 @@ const Education = ({
       label: "전공",
       placeholder: "전공",
       value: major,
-
       changeHandler: (v) => setMajor(v),
     },
     {
@@ -73,9 +74,34 @@ const Education = ({
   // useEffect(() => {}, []);
 
   //수정해서 onSubmitHandler
-  const onSubmitHandler = (e) => {
+  const onSubmitHandler = async (e) => {
+    //제출버튼 클릭시
     e.preventDefault();
+    console.log("handler clicked");
     console.log({ school, degree, major, startDate, endDate });
+
+    //portfolioOwnerId는 portfolio에서 받아옴
+
+    //post 서버와 통신
+    const res = await Api.post(`user/${userState.user.id}/education`, {
+      school,
+      degree,
+      major,
+      startDate,
+      endDate,
+    });
+    // if (res.ok) {
+    setEducations((prev) => {
+      return [...prev, { school, degree, major, startDate, endDate }];
+    });
+    setSchool("");
+    setStartDate("2023-01-01");
+    setEndDate("2023-01-01");
+    setDegree("");
+    setAddForm(false);
+    // } else if (!res.ok) {
+    //   throw new Error("POST 요청이 실패하였습니다.");
+    // }
   };
 
   //삭제버튼 구현전
@@ -90,7 +116,7 @@ const Education = ({
       <Card.Body>
         {!editMode && (
           <>
-            <Card style={{ width: "18rem" }}>
+            <Card style={{ width: "100%" }}>
               <Card.Body>
                 <Card.Title>{education.school}</Card.Title>
 

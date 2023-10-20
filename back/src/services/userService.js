@@ -52,18 +52,10 @@ class userAuthService {
     const secretKey = process.env.JWT_SECRET_KEY || "jwt-secret-key";
     const token = jwt.sign({ user_id: user.id }, secretKey);
 
-    // 반환할 loginuser 객체를 위한 변수 설정
     const id = user.id;
     const name = user.name;
     const description = user.description;
-
-    const loginUser = {
-      id,
-      email,
-      name,
-      description,
-      errorMessage: null,
-    };
+    const loginUser = { id, email, name, description, errorMessage: null };
 
     return [token, loginUser];
   }

@@ -38,11 +38,7 @@ class Education {
     const update = { [fieldToUpdate]: newValue };
     const option = { returnOriginal: false };
 
-    const updatedEducation = await EducationModel.findOneAndUpdate(
-      filter,
-      update,
-      option
-    );
+    const updatedEducation = await EducationModel.findOneAndUpdate(filter, update, option);
     return updatedEducation;
   }
 

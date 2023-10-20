@@ -57,15 +57,15 @@ function Portfolio() {
   }
 
   return (
-    <Container fluid>
+    <Container fluid style={{ overflow: "auto" }}>
       <Row>
-        <Col>
+        <Col md={3} style={{ textAlign: "center" }}>
           <User
             portfolioOwnerId={portfolioOwner.id}
             isEditable={portfolioOwner.id === userState.user?.id}
           />
         </Col>
-        <Col style={{ display: "flex", justifyContent: "center" }}>
+        <Col md={9}>
           <div style={{ textAlign: "center" }}>
             <Educations
               portfolioOwnerId={portfolioOwner.id}

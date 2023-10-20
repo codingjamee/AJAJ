@@ -11,7 +11,7 @@ const EducationSchema = new Schema(
       type: String,
       required: true,
     },
-    school: {
+    schoolName: {
       type: String,
       required: true,
     },
@@ -23,11 +23,11 @@ const EducationSchema = new Schema(
       type: String,
       required: false,
     },
-    startDate: {
+    admissionDate: {
       type: Date,
       required: false,
     },
-    endDate: {
+    graduationDate: {
       type: Date,
       required: false,
     },
