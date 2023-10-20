@@ -5,12 +5,13 @@ const { userAuthService } = require('../services/userService');
 
 const userAuthRouter = Router();
 
+///////// 상태코드와 에러메시지 부분만 //////////
+
+// 회원가입하기
 userAuthRouter.post("/user/register", request_checked, async function (req, res, next) {
   try {
-    // req (request) 에서 데이터 가져오기
     const { name, email, password } = req.body;
 
-    // 위 데이터를 유저 db에 추가하기
     const newUser = await userAuthService.addUser({ name, email, password });
 
     if (newUser.errorMessage) {
@@ -24,12 +25,11 @@ userAuthRouter.post("/user/register", request_checked, async function (req, res,
   }
 });
 
+// 로그인하기
 userAuthRouter.post("/user/login", request_checked, async function (req, res, next) {
   try {
-    // req (request) 에서 데이터 가져오기
     const { email, password } = req.body;
 
-    // 위 데이터를 이용하여 유저 db에서 유저 찾기
     const [ token, user ] = await userAuthService.getUser({ email, password });
     if (user.errorMessage) {
       throw new Error(user.errorMessage);
@@ -50,10 +50,11 @@ userAuthRouter.post("/user/login", request_checked, async function (req, res, ne
   }
 });
 
+// 전체 사용자목록 가져오기
 userAuthRouter.get("/userlist", login_required, async function (req, res, next) {
     try {
-      // 전체 사용자 목록을 얻음
       const users = await userAuthService.getUsers();
+
       res.status(200).send(users);
     } catch (error) {
       next(error);
@@ -61,6 +62,7 @@ userAuthRouter.get("/userlist", login_required, async function (req, res, next) 
   }
 );
 
+// 회원 정보 가져오기
 userAuthRouter.get("/user/current", login_required, async function (req, res, next) {
     try {
       // 확인 필요
@@ -79,11 +81,10 @@ userAuthRouter.get("/user/current", login_required, async function (req, res, ne
   }
 );
 
-userAuthRouter.put( "/users/:id", login_required, request_checked, async function (req, res, next) {
+// 회원 정보 수정
+userAuthRouter.patch("/users/:id", login_required, request_checked, async function (req, res, next) {
     try {
-      // URI로부터 사용자 id를 추출함.
       const userid = req.params.id;
-      // body data 로부터 업데이트할 사용자 정보를 추출함.
       const { name, email, password, description } = req.body;
       const toUpdate = { name, email, password, description };
 
@@ -101,6 +102,7 @@ userAuthRouter.put( "/users/:id", login_required, request_checked, async functio
   }
 );
 
+// 회원 정보 가져오기
 userAuthRouter.get("/users/:id", login_required, async function (req, res, next) {
     try {
       const userid = req.params.id;

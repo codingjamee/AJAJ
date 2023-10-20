@@ -2,12 +2,12 @@ import { Education } from "../db"; // from을 폴더(db) 로 설정 시, 디폴�
 import { v4 as uuidv4 } from "uuid";
 
 class educationAuthService {
-    static async addEducation({userid, school, major, degree, startDate, endDate}) {
-        const eduid = uuidv4();
-        const newEducation = { userid, eduid, school, major, degree, startDate, endDate};
-        const createdNewUser = await Education.create({ newEducation });
-        return createdNewUser;
-    };
+    static async addEducation( educationInfo ) {
+      const eduid = uuidv4();
+      const newEducation = { eduid, ...educationInfo };
+      const createdNewUser = await Education.create({ newEducation });
+      return createdNewUser;
+  };
 
     static async checkUser({ userid }) {
       const user = await Education.checkUserId({ userid });
@@ -45,7 +45,6 @@ class educationAuthService {
         if (toUpdate.major) {
           const fieldToUpdate = "major";
           const newValue = toUpdate.major;
-
           education = await Education.update({ eduid, fieldToUpdate, newValue });
         }
     
@@ -58,7 +57,6 @@ class educationAuthService {
         if (toUpdate.startDate) {
           const fieldToUpdate = "startDate";
           const newValue = toUpdate.startDate
-
           education = await Education.update({ eduid, fieldToUpdate, newValue });
 
         }
@@ -76,9 +74,6 @@ class educationAuthService {
         return education;
     };
 }
-
-
-
 
 
 export { educationAuthService };
