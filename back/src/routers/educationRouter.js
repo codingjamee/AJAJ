@@ -54,9 +54,6 @@ educationAuthRouter.get("/user/:id/educations", login_required, async function (
         throw new AuthorityError("접근 권한이 없습니다");
       }
     }
-    // 쿠키 확인
-    
-
 
     const educations = await educationAuthService.getEducations({ userid });
     if (!educations) {
