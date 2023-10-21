@@ -55,14 +55,14 @@ class educationAuthService {
     
         if (toUpdate.admissionDate) {
           const fieldToUpdate = "admissionDate";
-          const newValue = toUpdate.startDate
+          const newValue = toUpdate.admissionDate
           education = await Education.update({ eduid, fieldToUpdate, newValue });
 
         }
 
         if (toUpdate.graduationDate) {
             const fieldToUpdate = "graduationDate";
-            const newValue = toUpdate.endDate
+            const newValue = toUpdate.graduationDate
             education = await Education.update({ eduid, fieldToUpdate, newValue });
         }
     

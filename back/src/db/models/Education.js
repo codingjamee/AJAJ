@@ -27,12 +27,6 @@ class Education {
     return Education;
   }
 
-  // static async findById({ eduId }) {
-  //   const Education = await EducationModel.findOne({ eduId });
-  //   console.log(Education);
-  //   return Education;
-  // }
-
   static async update({ eduid, fieldToUpdate, newValue }) {
     const filter = { eduid: eduid };
     const update = { [fieldToUpdate]: newValue };
