@@ -18,8 +18,7 @@ userAuthRouter.post("/user/register", request_checked, async function (req, res,
 
     res.status(200).json({
       statusCode: 200,
-      message: '성공 메시지', 
-      // data: "1"
+      message: '회원가입 성공', 
     });
   } catch (error) {
     next(error);
@@ -44,12 +43,8 @@ userAuthRouter.post("/user/login", request_checked, async function (req, res, ne
     });
     // secure: true -> HTTPS에서만 사용 가능 (defult false).
     // sameSite: 우리 사이트에서 다른 사이트로 링크 연결이 필요하다면 lax, 우리 사이트에서만 머무르면 strict
-
-    res.status(200).json({
-      statusCode: 200,
-      message: '성공 메시지', 
-      // data: "1"
-    });
+    const { id, name, description } = user;
+    res.status(200).json({ id, email, name, description });
   } catch (error) {
     next(error);
   }
@@ -60,7 +55,7 @@ userAuthRouter.get("/userlist", login_required, async function (req, res, next) 
     try {
       const users = await userAuthService.getUsers();
 
-      res.status(200).json({users});
+      res.status(200).json(users);
     } catch (error) {
       next(error);
     }
@@ -76,8 +71,8 @@ userAuthRouter.get("/user/current", login_required, async function (req, res, ne
       if (currentUserInfo.errorMessage) {
         throw new Error(currentUserInfo.errorMessage);
       }
-
-      res.status(200).json({currentUserInfo});
+      const { id, email, name, description } = currentUserInfo;
+      res.status(200).json({ id, email, name, description });
     } catch (error) {
       next(error);
     }
@@ -100,8 +95,7 @@ userAuthRouter.patch("/users/:id", login_required, request_checked, async functi
 
       res.status(200).json({
         statusCode: 200,
-        message: '성공 메시지', 
-        // data: "1"
+        message: '회원정보 수정 성공', 
       });
     } catch (error) {
       next(error);
@@ -119,7 +113,8 @@ userAuthRouter.get("/users/:id", login_required, async function (req, res, next)
         throw new Error(currentUserInfo.errorMessage);
       }
 
-      res.status(200).json({currentUserInfo});
+      const { id, email, name, description } = currentUserInfo;
+      res.status(200).json({ id, email, name, description });
     } catch (error) {
       next(error);
     }
