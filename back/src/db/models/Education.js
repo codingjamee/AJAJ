@@ -12,7 +12,7 @@ class Education {
     return user;
   }
 
-  static async findAll() {
+  static async findAll({userId}) {
     const Educations = await EducationModel.find({userId});
     return Educations;
   }
@@ -22,11 +22,10 @@ class Education {
     return Education;
   }
 
-  static async update({ Education_id, fieldToUpdate, newValue }) {
-    const filter = { eduId: Education_id };
+  static async update({ eduId, fieldToUpdate, newValue }) {
+    const filter = { eduId: eduId };
     const update = { [fieldToUpdate]: newValue };
     const option = { returnOriginal: false };
-
     const updatedEducation = await EducationModel.findOneAndUpdate(filter, update, option);
     return updatedEducation;
   }
