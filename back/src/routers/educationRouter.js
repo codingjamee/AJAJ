@@ -33,16 +33,13 @@ educationAuthRouter.post("/user/:id/education", login_required, request_checked,
 educationAuthRouter.get("/user/:id/educations", login_required, async function (req, res, next) {
   try {
     const userId = req.params.id;
-    const educations = await educationAuthService.getEducations({ userId });
+    const educations = await educationAuthService.getEducations();
 
     if (!educations) {
       throw new NotFoundError("학력을 가져올 수 없습니다.");
     }
-    res.status(200).json({
-      statusCode: 200,
-      message: '성공 메시지', 
-      // data: "1"
-    });
+    console.log(educations);
+    res.status(200).json({educations});
   } catch (error) {
     next(error);
   }
