@@ -1,5 +1,5 @@
 import { EducationModel } from "../schemas/education";
-import { UserModel } from "../schemas/user";
+// import { UserModel } from "../schemas/user";
 
 class Education {
   static async create({ newEducation }) {
@@ -7,8 +7,8 @@ class Education {
     return createdNewEducation;
   }
 
-  static async checkuserId({ userId }) {
-    const user = await UserModel.findOne({ userId });
+  static async checkUserId({ eduId }) {
+    const user = await EducationModel.findOne({ eduId });
     return user;
   }
 
@@ -23,12 +23,6 @@ class Education {
     return Education;
   }
 
-  // static async findById({ eduId }) {
-  //   const Education = await EducationModel.findOne({ eduId });
-  //   console.log(Education);
-  //   return Education;
-  // }
-
   static async update({ Education_id, fieldToUpdate, newValue }) {
     const filter = { eduId: Education_id };
     const update = { [fieldToUpdate]: newValue };
@@ -39,17 +33,8 @@ class Education {
   }
 
   static async delete({ eduId }) {
-    await EducationModel.findOneAndDelete({ eduId }, (error, deletedDoc) => {
-      // if (error) {
-      //   
-      // } 
-      res.status(200).json({
-        statusCode: 200,
-        message: '성공 메시지', 
-        // data: "1"
-      });
-      
-    });
+    const result = await EducationModel.findOneAndDelete({ eduId });
+    return result;
   }
 }
 

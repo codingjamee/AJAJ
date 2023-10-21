@@ -75,7 +75,7 @@ educationAuthRouter.get("/user/:id/educations", login_required, async function (
 
 
 // 학력 수정하기_login_required
-educationAuthRouter.patch("/user/:id/education/:eduId", login_required, userId_checked, request_checked, async function (req, res, next) {
+educationAuthRouter.put("/user/:id/education/:eduId", login_required, userId_checked, request_checked, async function (req, res, next) {
     try {
       const eduId = req.params.eduId;
 
@@ -91,7 +91,6 @@ educationAuthRouter.patch("/user/:id/education/:eduId", login_required, userId_c
       res.status(200).json({
         statusCode: 200,
         message: '성공 메시지', 
-        // data: "1"
       });
     } catch (error) {
       next(error);
@@ -100,22 +99,23 @@ educationAuthRouter.patch("/user/:id/education/:eduId", login_required, userId_c
 
 // 학력 삭제하기_login_required
 educationAuthRouter.delete("/user/:id/education/:eduId", login_required, userId_checked, async function (req, res, next) {
+  const eduId = req.params.eduId;
   try {
-    const eduId = req.params.eduId;
+    const deleteEducation = await educationAuthService.deleteEducation({ eduId });
 
-    const deletedEducation = await educationAuthService.deleteEducation({ eduId });
-    if (!deletedEducation) {
+    if (!deleteEducation) {
       throw new NotFoundError("해당 학력이 삭제되지 않았습니다.");
     }
 
     res.status(200).json({
       statusCode: 200,
       message: '성공 메시지', 
-      // data: "1"
     });
+
   } catch (error) {
     next(error);
   }
+  
 })
 
 export { educationAuthRouter };

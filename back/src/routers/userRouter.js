@@ -130,7 +130,6 @@ userAuthRouter.get("/users/:id", login_required, async function (req, res, next)
       res.status(200).json({
         statusCode: 200,
         message: '성공 메시지', 
-        // data: "1"
       });
     } catch (error) {
       next(error);
