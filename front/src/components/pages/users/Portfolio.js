@@ -56,7 +56,7 @@ function Portfolio() {
   }
 
   return (
-    <Container fluid style={{ overflow: "auto" }}>
+    <Container fluid style={{ overflow: "auto", marginTop: "50px" }}>
       <Row>
         <Col md={3} style={{ textAlign: "center" }}>
           <User
