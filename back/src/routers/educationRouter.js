@@ -31,7 +31,8 @@ educationAuthRouter.post("/user/:id/education", login_required, request_checked,
 // 학력 전체 가져오기_login_required
 educationAuthRouter.get("/user/:id/educations", login_required, async function (req, res, next) {
   try {
-    const educations = await educationAuthService.getEducations();
+    const userId = req.params.id;
+    const educations = await educationAuthService.getEducations({userId});
 
     if (!educations) {
       throw new NotFoundError("학력을 가져올 수 없습니다.");

@@ -13,7 +13,7 @@ class Education {
   }
 
   static async findAll() {
-    const Educations = await EducationModel.find({});
+    const Educations = await EducationModel.find({userId});
     return Educations;
   }
 
