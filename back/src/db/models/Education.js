@@ -7,9 +7,9 @@ class Education {
     return createdNewEducation;
   }
 
-  static async checkuserId({ userId }) {
+  static async checkUserId({ userId }) {
     const user = await UserModel.findOne({ userId });
-    return user;
+    return user; 
   }
 
   // 동일한 userId 내에서의 모든 학력 가져오기

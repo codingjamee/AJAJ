@@ -50,14 +50,18 @@ class userAuthService {
 
     // 로그인 성공 -> JWT 웹 토큰 생성
     const secretKey = process.env.JWT_SECRET_KEY || "jwt-secret-key";
-    const token = jwt.sign({ user_id: user.id, expiresIn: '1h' }, secretKey);
+    const accessToken = jwt.sign({ user_id: user.id }, secretKey, { expiresIn: '1h' });
+    const refreshToken = uuidv4(); // 새로운 리프래시 토큰 생성
+
+    // 리프래시 토큰을 안전한 저장소에 저장 (예: 데이터베이스)
+    // 이 때, 리프래시 토큰과 사용자 ID를 연결하여 관리
 
     const id = user.id;
     const name = user.name;
     const description = user.description;
     const loginUser = { id, email, name, description, errorMessage: null };
 
-    return [token, loginUser];
+    return { accessToken, refreshToken, loginUser };
   }
 
   static async getUsers() {
