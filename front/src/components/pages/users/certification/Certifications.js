@@ -94,7 +94,7 @@ const Certifications = (props) => {
 
   // 모든 학위 목록 가져오기 서버와 통신
   // useEffect(() => {
-  //   Api.get(`user/${portfolioOwnerId}/certification`).then((res) => {
+  //   Api.get(`user/${portfolioOwnerId}/certification`,"", "Certifications").then((res) => {
   //     console.log(res.data);
   //     return setCertification(res.data);
   //   });

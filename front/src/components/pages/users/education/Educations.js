@@ -24,7 +24,8 @@ const Educations = (props) => {
   const { portfolioOwnerId, isEditable } = props;
   const userState = useContext(UserStateContext);
 
-  console.log(userState.user.id);
+  console.log("userState.user.id", userState.user.id);
+  console.log("portfolioOwnerId", portfolioOwnerId);
 
   //form 상세설정 어레이
   const formList = [
@@ -111,10 +112,12 @@ const Educations = (props) => {
 
   // 모든 학위 목록 가져오기 서버와 통신
   useEffect(() => {
-    Api.get(`user/${portfolioOwnerId}/educations`).then((res) => {
-      console.log(res.data);
-      return setEducations(res.data);
-    });
+    Api.get(`user/${portfolioOwnerId}/educations`, "", "Educations").then(
+      (res) => {
+        console.log(res.data.educations);
+        return setEducations(res.data.educations);
+      }
+    );
   }, [portfolioOwnerId]);
 
   return (
