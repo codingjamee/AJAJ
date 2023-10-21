@@ -1,52 +1,39 @@
 import { EducationModel } from "../schemas/education";
-import { UserModel } from "../schemas/user";
+// import { UserModel } from "../schemas/user";
 
 class Education {
   static async create({ newEducation }) {
-    try {
-      const createdNewEducation = await EducationModel.create(newEducation);
-      return createdNewEducation;
-    } catch {
-      return null;
-    }
+    const createdNewEducation = await EducationModel.create(newEducation);
+    return createdNewEducation;
   }
 
-  static async checkUserId({ userid }) {
-    const user = await UserModel.findOne({ userid });
+  static async checkUserId({ eduId }) {
+    const user = await EducationModel.findOne({ eduId });
     return user;
   }
 
-  // 동일한 userid 내에서의 모든 학력 가져오기
-  static async findAll({ userid }) {
-    const Educations = await EducationModel.find({ userid });
+  // 동일한 userId 내에서의 모든 학력 가져오기
+  static async findAll({ userId }) {
+    const Educations = await EducationModel.find({ userId });
     return Educations;
   }
 
-  static async findByEduId({ eduid }) {
-    const Education = await EducationModel.findOne({ eduid });
+  static async findByEduId({ eduId }) {
+    const Education = await EducationModel.findOne({ eduId });
     return Education;
   }
 
-  static async update({ eduid, fieldToUpdate, newValue }) {
-    const filter = { eduid: eduid };
+  static async update({ eduId, fieldToUpdate, newValue }) {
+    const filter = { eduId: eduId };
     const update = { [fieldToUpdate]: newValue };
     const option = { returnOriginal: false };
     const updatedEducation = await EducationModel.findOneAndUpdate(filter, update, option);
     return updatedEducation;
   }
 
-  static async delete({ eduid }) {
-    await EducationModel.findOneAndDelete({ eduid }, (error, deletedDoc) => {
-      if (error) {
-        console.error('삭제 오류:', error);
-      } else {
-        if (deletedDoc) {
-          console.log('삭제된 문서:', deletedDoc);
-        } else {
-          console.log('삭제할 문서를 찾을 수 없습니다.');
-        }
-      }
-    });
+  static async delete({ eduId }) {
+    const result = await EducationModel.findOneAndDelete({ eduId });
+    return result;
   }
 }
 

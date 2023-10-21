@@ -65,9 +65,9 @@ class userAuthService {
     return users;
   }
 
-  static async setUser({ userid, toUpdate }) {
+  static async setUser({ userId, toUpdate }) {
     // 우선 해당 id 의 유저가 db에 존재하는지 여부 확인
-    let user = await User.findById({ userid });
+    let user = await User.findById({ userId });
 
     // db에서 찾지 못한 경우, 에러 메시지 반환
     if (!user) {
@@ -80,32 +80,32 @@ class userAuthService {
     if (toUpdate.name) {
       const fieldToUpdate = "name";
       const newValue = toUpdate.name;
-      user = await User.update({ userid, fieldToUpdate, newValue });
+      user = await User.update({ userId, fieldToUpdate, newValue });
     }
 
     if (toUpdate.email) {
       const fieldToUpdate = "email";
       const newValue = toUpdate.email;
-      user = await User.update({ userid, fieldToUpdate, newValue });
+      user = await User.update({ userId, fieldToUpdate, newValue });
     }
 
     if (toUpdate.password) {
       const fieldToUpdate = "password";
       const newValue = bcrypt.hash(toUpdate.password, 10);
-      user = await User.update({ userid, fieldToUpdate, newValue });
+      user = await User.update({ userId, fieldToUpdate, newValue });
     }
 
     if (toUpdate.description) {
       const fieldToUpdate = "description";
       const newValue = toUpdate.description;
-      user = await User.update({ userid, fieldToUpdate, newValue });
+      user = await User.update({ userId, fieldToUpdate, newValue });
     }
 
     return user;
   }
 
-  static async getUserInfo({ userid }) {
-    const user = await User.findById({ userid });
+  static async getUserInfo({ userId }) {
+    const user = await User.findById({ userId });
 
     if (!user) {
       const errorMessage =

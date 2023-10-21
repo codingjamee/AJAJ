@@ -16,7 +16,11 @@ userAuthRouter.post("/user/register", request_checked, async function (req, res,
       throw new Error(newUser.errorMessage);
     }
 
-    res.status(201).json({ok: true});
+    res.status(200).json({
+      statusCode: 200,
+      message: '성공 메시지', 
+      // data: "1"
+    });
   } catch (error) {
     next(error);
   }
@@ -41,7 +45,11 @@ userAuthRouter.post("/user/login", request_checked, async function (req, res, ne
     // secure: true -> HTTPS에서만 사용 가능 (defult false).
     // sameSite: 우리 사이트에서 다른 사이트로 링크 연결이 필요하다면 lax, 우리 사이트에서만 머무르면 strict
 
-    res.status(201).send(user);
+    res.status(200).json({
+      statusCode: 200,
+      message: '성공 메시지', 
+      // data: "1"
+    });
   } catch (error) {
     next(error);
   }
@@ -52,7 +60,11 @@ userAuthRouter.get("/userlist", login_required, async function (req, res, next) 
     try {
       const users = await userAuthService.getUsers();
 
-      res.status(201).send(users);
+      res.status(200).json({
+        statusCode: 200,
+        message: '성공 메시지', 
+        // data: "1"
+      });
     } catch (error) {
       next(error);
     }
@@ -62,14 +74,18 @@ userAuthRouter.get("/userlist", login_required, async function (req, res, next) 
 // 회원 정보 가져오기
 userAuthRouter.get("/user/current", login_required, async function (req, res, next) {
     try {
-      const userid = req.currentUserId;
-      const currentUserInfo = await userAuthService.getUserInfo({ userid });
+      const userId = req.currentUserId;
+      const currentUserInfo = await userAuthService.getUserInfo({ userId });
 
       if (currentUserInfo.errorMessage) {
         throw new Error(currentUserInfo.errorMessage);
       }
 
-      res.status(201).send(currentUserInfo);
+      res.status(200).json({
+        statusCode: 200,
+        message: '성공 메시지', 
+        // data: "1"
+      });
     } catch (error) {
       next(error);
     }
@@ -79,18 +95,22 @@ userAuthRouter.get("/user/current", login_required, async function (req, res, ne
 // 회원 정보 수정
 userAuthRouter.patch("/users/:id", login_required, request_checked, async function (req, res, next) {
     try {
-      const userid = req.params.id;
+      const userId = req.params.id;
       const { name, email, password, description } = req.body;
       const toUpdate = { name, email, password, description };
 
       // 해당 사용자 아이디로 사용자 정보를 db에서 찾아 업데이트함. 업데이트 요소가 없을 시 생략함
-      const updatedUser = await userAuthService.setUser({ userid, toUpdate });
+      const updatedUser = await userAuthService.setUser({ userId, toUpdate });
 
       if (updatedUser.errorMessage) {
         throw new Error(updatedUser.errorMessage);
       }
 
-      res.status(200).json({ok: true});
+      res.status(200).json({
+        statusCode: 200,
+        message: '성공 메시지', 
+        // data: "1"
+      });
     } catch (error) {
       next(error);
     }
@@ -100,14 +120,17 @@ userAuthRouter.patch("/users/:id", login_required, request_checked, async functi
 // 회원 정보 가져오기
 userAuthRouter.get("/users/:id", login_required, async function (req, res, next) {
     try {
-      const userid = req.params.id;
-      const currentUserInfo = await userAuthService.getUserInfo({ userid });
+      const userId = req.params.id;
+      const currentUserInfo = await userAuthService.getUserInfo({ userId });
 
       if (currentUserInfo.errorMessage) {
         throw new Error(currentUserInfo.errorMessage);
       }
 
-      res.status(200).send(currentUserInfo);
+      res.status(200).json({
+        statusCode: 200,
+        message: '성공 메시지', 
+      });
     } catch (error) {
       next(error);
     }
