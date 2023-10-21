@@ -24,11 +24,11 @@ const EducationSchema = new Schema(
       required: true,
     },
     admissionDate: {
-      type: Date,
+      type: String,
       required: true,
     },
     graduationDate: {
-      type: Date,
+      type: String,
       required: false,
     },
   },
