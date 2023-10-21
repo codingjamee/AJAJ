@@ -23,13 +23,14 @@ function Navigation() {
   const isLogin = !!userState.user;
 
   // 로그아웃 클릭 시 실행되는 함수
+  //api 작성되면 추후에 구현
   const logout = () => {
-    // sessionStorage 에 저장했던 JWT 토큰을 삭제함.
-    sessionStorage.removeItem("userToken");
-    // dispatch 함수를 이용해 로그아웃함.
-    dispatch({ type: "LOGOUT" });
-    // 기본 페이지로 돌아감.
-    navigate("/");
+    //   // sessionStorage 에 저장했던 JWT 토큰을 삭제함.
+    //   sessionStorage.removeItem("userToken");
+    //   // dispatch 함수를 이용해 로그아웃함.
+    //   dispatch({ type: "LOGOUT" });
+    //   // 기본 페이지로 돌아감.
+    //   navigate("/");
   };
 
   return (

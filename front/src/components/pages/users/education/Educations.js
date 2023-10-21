@@ -5,6 +5,7 @@ import * as Api from "../../../utils/api";
 import ButtonCommon from "../../../common/ButtonCommon";
 import FormWrapper from "../../../common/FormWrapper";
 import Education from "./Education";
+import { PortfolioOwnerDataContext } from "../Portfolio";
 //option 상세설정 어레이
 const optionArr = [
   { value: "재학중", text: "재학중" },
@@ -21,8 +22,9 @@ const Educations = (props) => {
   const [admissionDate, setAdmissionDate] = useState("2023-01-01");
   const [graduationDate, setGraduationDate] = useState("2023-01-01");
   const [educations, setEducations] = useState([]);
-  const { portfolioOwnerId, isEditable } = props;
+  const { isEditable } = props;
   const userState = useContext(UserStateContext);
+  const portfolioOwnerData = useContext(PortfolioOwnerDataContext);
 
   // console.log("userState.user.id", userState.user.id);
   // console.log("portfolioOwnerId", portfolioOwnerId);
@@ -112,13 +114,13 @@ const Educations = (props) => {
 
   // 모든 학위 목록 가져오기 서버와 통신
   useEffect(() => {
-    Api.get(`user/${portfolioOwnerId}/educations`, "", "Educations").then(
+    Api.get(`user/${portfolioOwnerData.id}/educations`, "", "Educations").then(
       (res) => {
         console.log(res.data.educations);
         return setEducations(res.data.educations);
       }
     );
-  }, [portfolioOwnerId]);
+  }, [portfolioOwnerData.id]);
 
   return (
     <>

@@ -1,25 +1,27 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import UserEditForm from "./UserEditForm";
 import UserCard from "./UserCard";
 import * as Api from "../../../utils/api";
+import { PortfolioOwnerDataContext } from "../Portfolio";
 
 function User({ portfolioOwnerId, isEditable }) {
-  // useState 훅을 통해 isEditing 상태를 생성함.
   const [isEditing, setIsEditing] = useState(false);
-  // useState 훅을 통해 user 상태를 생성함.
-  const [user, setUser] = useState(null);
+  const portfolioOwnerData = useContext(PortfolioOwnerDataContext);
+  const [user, setUser] = useState(portfolioOwnerData);
+
+  console.log("User", portfolioOwnerData);
 
   return (
     <>
       {isEditing ? (
         <UserEditForm
-          user={user}
+          user={portfolioOwnerData}
           setIsEditing={setIsEditing}
           setUser={setUser}
         />
       ) : (
         <UserCard
-          user={user}
+          user={portfolioOwnerData}
           setIsEditing={setIsEditing}
           isEditable={isEditable}
         />
