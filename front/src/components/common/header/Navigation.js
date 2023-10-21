@@ -1,9 +1,9 @@
 import React, { useContext } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
-import Nav from "react-bootstrap/Nav";
-import Navbar from "react-bootstrap/Navbar";
-import Container from "react-bootstrap/Container";
+import { Nav, Navbar } from "react-bootstrap";
 import { UserStateContext, DispatchContext } from "../../../App";
+import "bootstrap/dist/css/bootstrap.min.css";
+import "./Nav.css";
 
 //@@@@@@@@@@@@@@@@수정필요@@@@@@@@@@@@@@@@@@@@@성혜님@@@@@@@@@@@@@@@@/
 const navItems = [
@@ -34,28 +34,21 @@ function Navigation() {
   };
 
   return (
-    <Navbar
-      bg="light"
-      data-bs-theme="light"
-      expand="lg"
-      className="bg-body-tertiary"
-      activeKey={location.pathname}
-    >
-      <Container>
-        <Nav.Link onClick={() => navigate("/")}>
-          안녕하세요, 포트폴리오 공유 서비스입니다.
-        </Nav.Link>
+    <Navbar bg="dark" variant="dark" activeKey={location.pathname}>
+      <Navbar.Brand onClick={() => navigate("/")}>
+        안녕하세요, 포트폴리오 공유 서비스입니다.
+      </Navbar.Brand>
+      <Navbar.Toggle aria-controls="basic-navbar-nav" />
+      <Navbar.Collapse id="basic-navbar-nav" />
+      <Nav className="mr-auto">
         {navItems.map(({ path, label }, index) => (
-          <Nav.Item key={`navitem-${index}`} className="me-auto, mr-1">
-            <Nav.Link onClick={() => navigate(path)}> {label} </Nav.Link>
-          </Nav.Item>
+          <Nav.Link key={`navitem-${index}`} onClick={() => navigate(path)}>
+            {" "}
+            {label}{" "}
+          </Nav.Link>
         ))}
-        {isLogin && (
-          <Nav.Item>
-            <Nav.Link onClick={logout}>로그아웃</Nav.Link>
-          </Nav.Item>
-        )}
-      </Container>
+        {isLogin && <Nav.Link onClick={logout}>로그아웃</Nav.Link>}
+      </Nav>
     </Navbar>
   );
 }

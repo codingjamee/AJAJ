@@ -1,10 +1,11 @@
 import React, { useContext, useEffect, useState } from "react";
-import { Card, Col, Form } from "react-bootstrap";
+import { Card, Col, Container, Form } from "react-bootstrap";
 import { UserStateContext } from "../../../../App";
 import * as Api from "../../../utils/api";
 import ButtonCommon from "../../../common/ButtonCommon";
 import FormWrapper from "../../../common/FormWrapper";
 import Certification from "./Certification";
+
 //option 상세설정 어레이
 const optionArr = [
   { value: "재학중", text: "재학중" },
