@@ -9,13 +9,13 @@ class educationAuthService {
       return createdNewUser;
   };
 
-    static async checkUser({ userId }) {
-      const user = await Education.checkUserId({ userId });
+    static async checkUser({ eduId }) {
+      const user = await Education.checkUserId({ eduId });
       return user;
   };
 
-    static async getEducations({ userId }) {
-        const educations = await Education.findAll({ userId });
+    static async getEducations() {
+        const educations = await Education.findAll();
         return educations;
     };
 
@@ -26,7 +26,7 @@ class educationAuthService {
 
 
     static async setEducation({ eduId, toUpdate }) {
-        const education = await Education.findByEduId({ eduId });
+        let education = await Education.findByEduId({ eduId });
     
         // db에서 찾지 못한 경우, 에러 메시지 반환
         if (!education) {
@@ -35,9 +35,9 @@ class educationAuthService {
         }
     
         // 업데이트 대상에 school이 있다면, 즉 school 값이 null 이 아니라면 업데이트 진행
-        if (toUpdate.school) {
-          const fieldToUpdate = "school";
-          const newValue = toUpdate.school;
+        if (toUpdate.schoolName) {
+          const fieldToUpdate = "schoolName";
+          const newValue = toUpdate.schoolName;
           education = await Education.update({ eduId, fieldToUpdate, newValue });
         }
     
@@ -53,24 +53,24 @@ class educationAuthService {
           education = await Education.update({ eduId, fieldToUpdate, newValue });
         }
     
-        if (toUpdate.startDate) {
-          const fieldToUpdate = "startDate";
-          const newValue = toUpdate.startDate
+        if (toUpdate.admissionDate) {
+          const fieldToUpdate = "admissionDate";
+          const newValue = toUpdate.admissionDate
           education = await Education.update({ eduId, fieldToUpdate, newValue });
 
         }
 
-        if (toUpdate.endDate) {
-            const fieldToUpdate = "endDate";
-            const newValue = toUpdate.endDate
+        if (toUpdate.graduationDate) {
+            const fieldToUpdate = "graduationDate";
+            const newValue = toUpdate.graduationDate
             education = await Education.update({ eduId, fieldToUpdate, newValue });
         }
     
         return education;
       }
     static async deleteEducation({ eduId }) {
-        const education = await Education.delete({ eduId });
-        return education;
+        const result = await Education.delete({ eduId });
+        return result;
     };
 }
 

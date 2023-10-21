@@ -69,11 +69,7 @@ userAuthRouter.get("/userlist", login_required, async function (req, res, next) 
     try {
       const users = await userAuthService.getUsers();
 
-      res.status(200).json({
-        statusCode: 200,
-        message: '성공 메시지', 
-        // data: "1"
-      });
+      res.status(200).json({users});
     } catch (error) {
       next(error);
     }
@@ -90,11 +86,7 @@ userAuthRouter.get("/user/current", login_required, async function (req, res, ne
         throw new Error(currentUserInfo.errorMessage);
       }
 
-      res.status(200).json({
-        statusCode: 200,
-        message: '성공 메시지', 
-        // data: "1"
-      });
+      res.status(200).json({currentUserInfo});
     } catch (error) {
       next(error);
     }
@@ -136,11 +128,7 @@ userAuthRouter.get("/users/:id", login_required, async function (req, res, next)
         throw new Error(currentUserInfo.errorMessage);
       }
 
-      res.status(200).json({
-        statusCode: 200,
-        message: '성공 메시지', 
-        // data: "1"
-      });
+      res.status(200).json({currentUserInfo});
     } catch (error) {
       next(error);
     }

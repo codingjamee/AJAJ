@@ -21,14 +21,14 @@ const EducationSchema = new Schema(
     },
     degree: {
       type: String,
-      required: false,
+      required: true,
     },
     admissionDate: {
-      type: Date,
-      required: false,
+      type: String,
+      required: true,
     },
     graduationDate: {
-      type: Date,
+      type: String,
       required: false,
     },
   },
