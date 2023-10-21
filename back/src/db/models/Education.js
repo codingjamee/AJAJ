@@ -12,9 +12,8 @@ class Education {
     return user;
   }
 
-  // 동일한 userId 내에서의 모든 학력 가져오기
-  static async findAll({ userId }) {
-    const Educations = await EducationModel.find({ userId });
+  static async findAll() {
+    const Educations = await EducationModel.find({});
     return Educations;
   }
 
