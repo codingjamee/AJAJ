@@ -13,11 +13,12 @@ async function userid_checked(req, res, next) {
   const userid = req.params.id;
   if (userid) {
     const user = await educationAuthService.checkUser({ userid });
-    if (user.id !== userid) {
+    if (user.userid !== userid) {
       res.status(401).send("접근 권한이 없습니다.");
       return;
     }
   }
+  next();
 }
   
   

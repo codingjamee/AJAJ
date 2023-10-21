@@ -26,7 +26,7 @@ class educationAuthService {
 
 
     static async setEducation({ eduid, toUpdate }) {
-        const education = await Education.findByEduId({ eduid });
+        let education = await Education.findByEduId({ eduid });
     
         // db에서 찾지 못한 경우, 에러 메시지 반환
         if (!education) {
@@ -34,10 +34,10 @@ class educationAuthService {
           return { errorMessage };
         }
     
-        // 업데이트 대상에 school이 있다면, 즉 school 값이 null 이 아니라면 업데이트 진행
-        if (toUpdate.school) {
-          const fieldToUpdate = "school";
-          const newValue = toUpdate.school;
+        // 업데이트 대상에 schoolName이 있다면, 즉 school 값이 null 이 아니라면 업데이트 진행
+        if (toUpdate.schoolName) {
+          const fieldToUpdate = "schoolName";
+          const newValue = toUpdate.schoolName;
           education = await Education.update({ eduid, fieldToUpdate, newValue });
         }
     
@@ -53,15 +53,15 @@ class educationAuthService {
           education = await Education.update({ eduid, fieldToUpdate, newValue });
         }
     
-        if (toUpdate.startDate) {
-          const fieldToUpdate = "startDate";
+        if (toUpdate.admissionDate) {
+          const fieldToUpdate = "admissionDate";
           const newValue = toUpdate.startDate
           education = await Education.update({ eduid, fieldToUpdate, newValue });
 
         }
 
-        if (toUpdate.endDate) {
-            const fieldToUpdate = "endDate";
+        if (toUpdate.graduationDate) {
+            const fieldToUpdate = "graduationDate";
             const newValue = toUpdate.endDate
             education = await Education.update({ eduid, fieldToUpdate, newValue });
         }

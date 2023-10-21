@@ -68,15 +68,12 @@ educationAuthRouter.get("/user/:id/educations", login_required, async function (
 
 
 // 학력 수정하기_login_required
-educationAuthRouter.patch("/user/:id/education/:eduId", login_required, userid_checked, request_checked, async function (req, res, next) {
+educationAuthRouter.put("/user/:id/education/:eduId", login_required, userid_checked, request_checked, async function (req, res, next) {
     try {
       const eduid = req.params.eduId;
-
       const { schoolName, major, degree, admissionDate, graduationDate } = req.body;
       const toUpdate = { schoolName, major, degree, admissionDate, graduationDate };
-
       const updatedEducation = await educationAuthService.setEducation({ eduid, toUpdate });
-
       if (!updatedEducation) {
         throw new NotFoundError("해당 학력이 수정되지 않았습니다.");
       }
