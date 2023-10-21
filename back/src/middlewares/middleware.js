@@ -9,11 +9,11 @@ function request_checked(req, res, next) {
     next();
   }
 
-async function userid_checked(req, res, next) {
-  const userid = req.params.id;
-  if (userid) {
-    const user = await educationAuthService.checkUser({ userid });
-    if (user.id !== userid) {
+async function userId_checked(req, res, next) {
+  const userId = req.params.id;
+  if (userId) {
+    const user = await educationAuthService.checkUser({ userId });
+    if (user.id !== userId) {
       res.status(401).send("접근 권한이 없습니다.");
       return;
     }
@@ -21,4 +21,4 @@ async function userid_checked(req, res, next) {
 }
   
   
-export { userid_checked, request_checked };
+export { userId_checked, request_checked };

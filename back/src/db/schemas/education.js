@@ -2,12 +2,12 @@ import { Schema, model } from "mongoose";
 
 const EducationSchema = new Schema(
   {
-    userid: {
+    userId: {
       type: String,
       required: true,
       ref: "User",
     },
-    eduid: {
+    eduId: {
       type: String,
       required: true,
     },

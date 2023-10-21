@@ -3,30 +3,30 @@ import { v4 as uuidv4 } from "uuid";
 
 class educationAuthService {
     static async addEducation( educationInfo ) {
-      const eduid = uuidv4();
-      const newEducation = { eduid, ...educationInfo };
+      const eduId = uuidv4();
+      const newEducation = { eduId, ...educationInfo };
       const createdNewUser = await Education.create({ newEducation });
       return createdNewUser;
   };
 
-    static async checkUser({ userid }) {
-      const user = await Education.checkUserId({ userid });
+    static async checkUser({ userId }) {
+      const user = await Education.checkUserId({ userId });
       return user;
   };
 
-    static async getEducations({ userid }) {
-        const educations = await Education.findAll({ userid });
+    static async getEducations({ userId }) {
+        const educations = await Education.findAll({ userId });
         return educations;
     };
 
-    static async getEducation({ eduid }) {
-        const education = await Education.findByEduId({ eduid });
+    static async getEducation({ eduId }) {
+        const education = await Education.findByEduId({ eduId });
         return education;
     };
 
 
-    static async setEducation({ eduid, toUpdate }) {
-        const education = await Education.findByEduId({ eduid });
+    static async setEducation({ eduId, toUpdate }) {
+        const education = await Education.findByEduId({ eduId });
     
         // db에서 찾지 못한 경우, 에러 메시지 반환
         if (!education) {
@@ -38,38 +38,38 @@ class educationAuthService {
         if (toUpdate.school) {
           const fieldToUpdate = "school";
           const newValue = toUpdate.school;
-          education = await Education.update({ eduid, fieldToUpdate, newValue });
+          education = await Education.update({ eduId, fieldToUpdate, newValue });
         }
     
         if (toUpdate.major) {
           const fieldToUpdate = "major";
           const newValue = toUpdate.major;
-          education = await Education.update({ eduid, fieldToUpdate, newValue });
+          education = await Education.update({ eduId, fieldToUpdate, newValue });
         }
     
         if (toUpdate.degree) {
           const fieldToUpdate = "degree";
           const newValue = toUpdate.degree;
-          education = await Education.update({ eduid, fieldToUpdate, newValue });
+          education = await Education.update({ eduId, fieldToUpdate, newValue });
         }
     
         if (toUpdate.startDate) {
           const fieldToUpdate = "startDate";
           const newValue = toUpdate.startDate
-          education = await Education.update({ eduid, fieldToUpdate, newValue });
+          education = await Education.update({ eduId, fieldToUpdate, newValue });
 
         }
 
         if (toUpdate.endDate) {
             const fieldToUpdate = "endDate";
             const newValue = toUpdate.endDate
-            education = await Education.update({ eduid, fieldToUpdate, newValue });
+            education = await Education.update({ eduId, fieldToUpdate, newValue });
         }
     
         return education;
       }
-    static async deleteEducation({ eduid }) {
-        const education = await Education.delete({ eduid });
+    static async deleteEducation({ eduId }) {
+        const education = await Education.delete({ eduId });
         return education;
     };
 }
