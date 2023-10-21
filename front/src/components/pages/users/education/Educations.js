@@ -24,8 +24,8 @@ const Educations = (props) => {
   const { portfolioOwnerId, isEditable } = props;
   const userState = useContext(UserStateContext);
 
-  console.log("userState.user.id", userState.user.id);
-  console.log("portfolioOwnerId", portfolioOwnerId);
+  // console.log("userState.user.id", userState.user.id);
+  // console.log("portfolioOwnerId", portfolioOwnerId);
 
   //form 상세설정 어레이
   const formList = [
@@ -92,7 +92,7 @@ const Educations = (props) => {
     });
 
     console.log(res);
-    if (res.data.ok) {
+    if (res.data.statusCode == 200) {
       setEducations((prev) => {
         return [
           ...prev,

@@ -84,13 +84,17 @@ const Education = ({
     //portfolioOwnerId는 portfolio에서 받아옴
 
     //post 서버와 통신
-    const res = await Api.post(`user/${userState.user.id}/education`, {
-      schoolName,
-      major,
-      degree,
-      admissionDate,
-      graduationDate,
-    });
+    const res = await Api.post(
+      `user/${userState.user.id}/education`,
+      {
+        schoolName,
+        major,
+        degree,
+        admissionDate,
+        graduationDate,
+      },
+      "Education"
+    );
     console.log(res.ok);
     if (res.data.ok) {
       setEducations((prev) => {
@@ -116,11 +120,15 @@ const Education = ({
     console.log("delete버튼이 선택됨");
     console.log(eduId);
 
-    const res = await Api.delete(`user/${userState.user.id}/education`, eduId);
+    const res = await Api.delete(
+      `user/${userState.user.id}/education`,
+      eduId,
+      "Education"
+    );
     console.log(res);
     // if (res.data.ok) {
     setEducations((prev) =>
-      prev.filter(({ eduid }) => Number(eduid) !== Number(eduId))
+      prev.filter((educations) => Number(educations.eduId) !== Number(eduId))
     );
     // } else if (!res.data.ok) {
     // throw new Error("삭제를 실패하였습니다");
@@ -159,7 +167,7 @@ const Education = ({
                       <ButtonCommon
                         variant="secondary"
                         text="삭제"
-                        onClickHandler={() => onClickDel(education.eduid)}
+                        onClickHandler={() => onClickDel(education.eduId)}
                       />
                     </Col>
                   </Form.Group>
