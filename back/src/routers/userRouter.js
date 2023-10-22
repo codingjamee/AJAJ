@@ -44,7 +44,7 @@ userAuthRouter.post("/user/login", request_checked, async function (req, res, ne
     // secure: true -> HTTPS에서만 사용 가능 (defult false).
     // sameSite: 우리 사이트에서 다른 사이트로 링크 연결이 필요하다면 lax, 우리 사이트에서만 머무르면 strict
     const { id, name, description } = user;
-    res.status(200).json({ id, email, name, description });
+    res.status(200).send({ id, email, name, description });
   } catch (error) {
     next(error);
   }
@@ -55,7 +55,7 @@ userAuthRouter.get("/userlist", login_required, async function (req, res, next) 
     try {
       const users = await userAuthService.getUsers();
 
-      res.status(200).json(users);
+      res.status(200).send(users);
     } catch (error) {
       next(error);
     }
@@ -72,7 +72,7 @@ userAuthRouter.get("/user/current", login_required, async function (req, res, ne
         throw new Error(currentUserInfo.errorMessage);
       }
       const { id, email, name, description } = currentUserInfo;
-      res.status(200).json({ id, email, name, description });
+      res.status(200).send({ id, email, name, description });
     } catch (error) {
       next(error);
     }
@@ -114,11 +114,18 @@ userAuthRouter.get("/users/:id", login_required, async function (req, res, next)
       }
 
       const { id, email, name, description } = currentUserInfo;
-      res.status(200).json({ id, email, name, description });
+      res.status(200).send({ id, email, name, description });
     } catch (error) {
       next(error);
     }
   }
 );
 
+// 로그아웃
+userAuthRouter.get("/logout", async function (req, res, next) {
+  res.clearCookie('user_cookie').json({
+    statusCode: 200,
+    message: '로그아웃 성공', 
+  }).end();
+})
 export { userAuthRouter };
