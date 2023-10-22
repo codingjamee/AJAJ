@@ -93,13 +93,12 @@ const Certificates = (props) => {
     <>
       <h4>자격증</h4>
       {certificates.map((certificate, index) => (
-        <React.Fragment key={`certificate-${index}`}>
-          <Certificate
-            isEditable={isEditable}
-            formList={certificateFormList}
-            certificate={certificate}
-          />
-        </React.Fragment>
+        <Certificate
+          key={`certificate-${index}`}
+          isEditable={isEditable}
+          formList={certificateFormList}
+          certificate={certificate}
+        />
       ))}
       {isEditable && (
         <Card>

@@ -83,15 +83,13 @@ const Educations = (props) => {
     <>
       <h4>학력</h4>
       {educations.map((education, index) => (
-        <React.Fragment key={`education-${index}`}>
-          <Education
-            key={`education-${index}`}
-            isEditable={isEditable}
-            formList={eduFormList}
-            setEducations={setEducations}
-            education={education}
-          />
-        </React.Fragment>
+        <Education
+          key={`education-${index}`}
+          isEditable={isEditable}
+          formList={eduFormList}
+          setEducations={setEducations}
+          education={education}
+        />
       ))}
       {isEditable && (
         <Card>

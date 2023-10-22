@@ -89,15 +89,13 @@ const Awards = (props) => {
     <>
       <h4>상</h4>
       {awards.map((award, index) => (
-        <React.Fragment key={`award-${index}`}>
-          <Award
-            key={`award-${index}`}
-            isEditable={isEditable}
-            formList={awardFormList}
-            // setAwards={setAwards}
-            award={award}
-          />
-        </React.Fragment>
+        <Award
+          key={`award-${index}`}
+          isEditable={isEditable}
+          formList={awardFormList}
+          // setAwards={setAwards}
+          award={award}
+        />
       ))}
       {isEditable && (
         <Card>

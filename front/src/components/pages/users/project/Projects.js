@@ -116,15 +116,13 @@ const Projects = (props) => {
     <>
       <h4>프로젝트</h4>
       {projects.map((project, index) => (
-        <React.Fragment key={`project-${index}`}>
-          <Project
-            key={`project-${index}`}
-            isEditable={isEditable}
-            formList={projectFormList}
-            // setProject={setProject}
-            project={project}
-          />
-        </React.Fragment>
+        <Project
+          key={`project-${index}`}
+          isEditable={isEditable}
+          formList={projectFormList}
+          // setProject={setProject}
+          project={project}
+        />
       ))}
       {isEditable && (
         <Card>
