@@ -7,6 +7,7 @@ import * as Api from "../../utils/api";
 import User from "./user/User";
 import Educations from "./education/Educations";
 import Certifications from "./certification/Certifications";
+import Awards from "./award/Awards";
 
 export const PortfolioOwnerDataContext = createContext({});
 
@@ -67,6 +68,9 @@ function Portfolio() {
                 isEditable={portfolioOwnerData?.id === userState.user?.id}
               />
               <Certifications
+                isEditable={portfolioOwnerData?.id === userState.user?.id}
+              />
+              <Awards
                 isEditable={portfolioOwnerData?.id === userState.user?.id}
               />
             </div>

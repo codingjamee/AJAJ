@@ -87,3 +87,30 @@ export const projectsCommonFormProps = [
     type: "date",
   },
 ];
+
+export const awardsCommonFormProps = [
+  {
+    controlId: "awardName",
+    customClassName: "mb-3",
+    label: "상 명",
+    placeholder: "상 명",
+  },
+  {
+    controlId: "awardDetail",
+    customClassName: "mb-3",
+    label: "수상내용",
+    placeholder: "수상내용",
+  },
+  {
+    controlId: "awardOrganization",
+    customClassName: "mb-3",
+    label: "수상기관",
+    placeholder: "수상기관",
+  },
+  {
+    controlId: "awardDate",
+    customClassName: "mb-3",
+    label: "수상날짜",
+    type: "date",
+  },
+];
