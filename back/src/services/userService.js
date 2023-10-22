@@ -57,7 +57,6 @@ class userAuthService {
     const name = user.name;
     const description = user.description;
     const loginUser = { id, email, name, description, errorMessage: null };
-    console.log(loginUser);
     return { accessToken, refreshToken, loginUser };
   }
 
