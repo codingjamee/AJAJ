@@ -8,7 +8,7 @@ import { PortfolioOwnerDataContext } from "../Portfolio";
 import { awardsCommonFormProps } from "../../../utils/formListCommonProps";
 import Award from "./Award";
 
-//********************************서버와 통신전 설정됨**************************************
+//********************************서버와 통신전**************************************
 
 const awards = [
   {

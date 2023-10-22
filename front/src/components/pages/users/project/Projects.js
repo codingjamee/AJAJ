@@ -8,7 +8,7 @@ import { PortfolioOwnerDataContext } from "../Portfolio";
 import { projectsCommonFormProps } from "../../../utils/formListCommonProps";
 import Project from "./Project";
 
-//********************************서버와 통신전 설정됨**************************************
+//********************************서버와 통신전 **************************************
 
 const projects = [
   {

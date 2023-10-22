@@ -1,4 +1,5 @@
 import React, { useContext, useState, useEffect, createContext } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import { useNavigate, useParams } from "react-router-dom";
 import { Container, Col, Row } from "react-bootstrap";
 
@@ -9,6 +10,8 @@ import Educations from "./education/Educations";
 import Certifications from "./certificate/Certificates";
 import Awards from "./award/Awards";
 import Projects from "./project/Projects";
+import LoadingLayer from "../../common/LoadingLayer";
+import { loadingActions } from "../../../store/loading";
 
 export const PortfolioOwnerDataContext = createContext({});
 
@@ -18,6 +21,8 @@ function Portfolio() {
   const [portfolioOwnerData, setPortfolioOwnerData] = useState({});
   const [isFetchCompleted, setIsFetchCompleted] = useState(false);
   const userState = useContext(UserStateContext);
+  const dispatch = useDispatch();
+  const loadingState = useSelector((state) => state.loading.open);
 
   const fetchPortfolioOwner = async (ownerId) => {
     console.log("포트폴리오 오너 아이디" + ownerId);
@@ -46,8 +51,16 @@ function Portfolio() {
     }
   }, [params, userState, navigate]);
 
+  //리덕스 사용 고민해보기
   if (!isFetchCompleted) {
-    return "loading...";
+    dispatch(loadingActions.open());
+    console.log(loadingState);
+  }
+
+  if (loadingState) {
+    return <LoadingLayer message="Loading....." />;
+  } else {
+    // dispatch(loadingActions.close());
   }
 
   return (

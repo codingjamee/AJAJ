@@ -7,6 +7,7 @@ import FormWrapper from "../../../common/FormWrapper";
 import Education from "./Education";
 import { PortfolioOwnerDataContext } from "../Portfolio";
 import { educationsCommonFormProps } from "../../../utils/formListCommonProps";
+//********************************서버와 통신 ok**************************************
 
 const Educations = (props) => {
   const [addForm, setAddForm] = useState(false);

@@ -7,6 +7,8 @@ import FormWrapper from "../../../common/FormWrapper";
 import Certificate from "./Certificate";
 import { certificatesCommonFormProps } from "../../../utils/formListCommonProps";
 
+//********************************서버와 통신전**************************************
+
 //서버와 통신전 더미어레이
 
 const certificates = [

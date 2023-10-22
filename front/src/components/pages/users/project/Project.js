@@ -7,7 +7,7 @@ import FormWrapper from "../../../common/FormWrapper";
 import { PortfolioOwnerDataContext } from "../Portfolio";
 import { projectsCommonFormProps } from "../../../utils/formListCommonProps";
 
-//********************************서버와 통신전 설정됨**************************************
+//********************************서버와 통신전**************************************
 //*******************프로젝트 이미지 첨부***************/
 
 const Project = ({ isEditable, setAddForm, project = [], setProjects }) => {

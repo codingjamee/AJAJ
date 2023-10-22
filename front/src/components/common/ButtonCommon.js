@@ -8,7 +8,7 @@ const ButtonCommon = (props) => {
     className,
     onClickHandler,
     size = "",
-    text,
+    text = "",
   } = props;
   return (
     <Button
