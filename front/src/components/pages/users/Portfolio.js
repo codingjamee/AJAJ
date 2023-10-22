@@ -6,7 +6,7 @@ import { UserStateContext } from "../../../App";
 import * as Api from "../../utils/api";
 import User from "./user/User";
 import Educations from "./education/Educations";
-import Certifications from "./certification/Certifications";
+import Certifications from "./certificate/Certificates";
 import Awards from "./award/Awards";
 
 export const PortfolioOwnerDataContext = createContext({});
