@@ -50,14 +50,15 @@ class userAuthService {
 
     // 로그인 성공 -> JWT 웹 토큰 생성
     const secretKey = process.env.JWT_SECRET_KEY || "jwt-secret-key";
-    const token = jwt.sign({ user_id: user.id, expiresIn: '1h' }, secretKey);
+    const accessToken = jwt.sign({ user_id: user.id, expiresIn: '1h' }, secretKey);
+    const refreshToken = uuidv4();
 
     const id = user.id;
     const name = user.name;
     const description = user.description;
     const loginUser = { id, email, name, description, errorMessage: null };
-
-    return [token, loginUser];
+    console.log(loginUser);
+    return { accessToken, refreshToken, loginUser };
   }
 
   static async getUsers() {

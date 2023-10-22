@@ -14,8 +14,8 @@ class educationAuthService {
       return user;
   };
 
-    static async getEducations() {
-        const educations = await Education.findAll();
+    static async getEducations({ userId }) {
+        const educations = await Education.findAll({ userId });
         return educations;
     };
 
