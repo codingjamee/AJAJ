@@ -4,13 +4,7 @@ import { Nav, Navbar } from "react-bootstrap";
 import { UserStateContext, DispatchContext } from "../../../App";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "./Nav.css";
-
-//@@@@@@@@@@@@@@@@수정필요@@@@@@@@@@@@@@@@@@@@@성혜님@@@@@@@@@@@@@@@@/
-const navItems = [
-  { path: "/", label: "홈페이지" },
-  { path: "/users/:userId", label: "마이페이지" },
-  { path: "/network", label: "네트워크" },
-];
+import { PortfolioOwnerDataContext } from "../../pages/users/Portfolio";
 
 function Navigation() {
   const navigate = useNavigate();
@@ -18,6 +12,16 @@ function Navigation() {
 
   const userState = useContext(UserStateContext);
   const dispatch = useContext(DispatchContext);
+  const portfolioOwnerData = useContext(PortfolioOwnerDataContext);
+
+  console.log(portfolioOwnerData);
+
+  //@@@@@@@@@@@@@@@@수정필요@@@@@@@@@@@@@@@@@@@@@성혜님@@@@@@@@@@@@@@@@/
+  const navItems = [
+    { path: "/", label: "홈페이지" },
+    { path: `/users/${portfolioOwnerData.id}`, label: "마이페이지" },
+    { path: "/network", label: "네트워크" },
+  ];
 
   // 전역상태에서 user가 null이 아니라면 로그인 성공 상태임.
   const isLogin = !!userState.user;

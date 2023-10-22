@@ -9,7 +9,7 @@ const Project = ({
   optionArr,
   submitHandler,
   setAddForm,
-  education = [],
+  project = [],
 }) => {
   // useState 훅을 통해 user 상태를 생성함.
   const [user, setUser] = useState(null);
