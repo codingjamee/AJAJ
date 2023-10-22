@@ -6,10 +6,10 @@ import { useState } from "react";
 //form button 상세설정 어레이
 
 const FormWrapper = ({
-  onSubmitHandler,
-  isEditable,
   formList = [],
+  onSubmitHandler,
   setAddForm,
+  isEditable,
 }) => {
   // const [formView, setFormView] = useState(false);
   // const btnToggle = () => {

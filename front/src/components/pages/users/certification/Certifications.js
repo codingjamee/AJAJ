@@ -1,10 +1,11 @@
 import React, { useContext, useEffect, useState } from "react";
-import { Card, Col, Form } from "react-bootstrap";
+import { Card, Col, Container, Form } from "react-bootstrap";
 import { UserStateContext } from "../../../../App";
 import * as Api from "../../../utils/api";
 import ButtonCommon from "../../../common/ButtonCommon";
 import FormWrapper from "../../../common/FormWrapper";
 import Certification from "./Certification";
+
 //option 상세설정 어레이
 const optionArr = [
   { value: "재학중", text: "재학중" },
@@ -94,7 +95,7 @@ const Certifications = (props) => {
 
   // 모든 학위 목록 가져오기 서버와 통신
   // useEffect(() => {
-  //   Api.get(`user/${portfolioOwnerId}/certification`).then((res) => {
+  //   Api.get(`user/${portfolioOwnerId}/certification`,"", "Certifications").then((res) => {
   //     console.log(res.data);
   //     return setCertification(res.data);
   //   });

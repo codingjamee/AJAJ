@@ -64,7 +64,7 @@ userAuthRouter.get("/userlist", login_required, async function (req, res, next) 
     try {
       const users = await userAuthService.getUsers();
 
-      res.status(200).send({users});
+      res.status(200).send(users);
     } catch (error) {
       next(error);
     }
@@ -80,7 +80,7 @@ userAuthRouter.get("/user/current", login_required, async function (req, res, ne
       if (currentUserInfo.errorMessage) {
         throw new Error(currentUserInfo.errorMessage);
       }
-
+      
       const { id, email, name, description } = currentUserInfo;
       res.status(200).send({ id, email, name, description });
     } catch (error) {
@@ -138,6 +138,5 @@ userAuthRouter.get("/logout", async function (req, res, next) {
     message: '로그아웃 성공', 
   }).end();
 })
-
 
 export { userAuthRouter };

@@ -118,7 +118,7 @@ const Projects = (props) => {
 
   // 모든 학위 목록 가져오기 서버와 통신
   // useEffect(() => {
-  //   Api.get(`user/${portfolioOwnerId}/educations`).then((res) => {
+  //   Api.get(`user/${portfolioOwnerId}/educations`, "Projects").then((res) => {
   //     console.log(res.data);
   //     return setEducations(res.data);
   //   });
