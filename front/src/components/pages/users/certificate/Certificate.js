@@ -1,52 +1,48 @@
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import * as Api from "../../../utils/api";
 import { Form, Card, Col } from "react-bootstrap";
 import FormWrapper from "../../../common/FormWrapper";
 import ButtonCommon from "../../../common/ButtonCommon";
+import { certificatesCommonFormProps } from "../../../utils/formListCommonProps";
+import { PortfolioOwnerDataContext } from "../Portfolio";
+import { UserStateContext } from "../../../../App";
 
-const Certification = ({
+const Certificate = ({
   isEditable,
-  optionArr,
-  submitHandler,
   setAddForm,
-  certification = [],
+  certificate = [],
+  setCertificates,
 }) => {
-  // useState 훅을 통해 user 상태를 생성함.
   const [user, setUser] = useState(null);
   const [editMode, setEditMode] = useState(false);
-  // const [certification, setCertification] = useState([]);
-  const [certName, setCertName] = useState("");
-  const [organization, setOrganization] = useState("");
-  const [acquisitionDate, setAcquisitionDate] = useState("2023-01-01");
+  const [certificateName, setCertificateName] = useState(
+    certificate.certificateName || ""
+  );
+  const [certificateDetail, setCertificateDetail] = useState(
+    certificate.certificateName || ""
+  );
+  const [certificateOrganization, setCertificateOrganization] = useState("");
+  const [certificateDate, setCertificateDate] = useState("2023-01-01");
+
+  const userState = useContext(UserStateContext);
+  const portfolioOwnerData = useContext(PortfolioOwnerDataContext);
 
   //form 상세설정 어레이
-  const formList = [
+  const certificateState = [
+    { value: certificateName, changeHandler: (v) => setCertificateName(v) },
+    { value: certificateDetail, changeHandler: (v) => setCertificateDetail(v) },
     {
-      controlId: "certSchoolName",
-      customClassName: "mb-3",
-      label: "자격증 명",
-      placeholder: "자격증 명",
-      value: certName,
-      changeHandler: (v) => setCertName(v),
+      value: certificateOrganization,
+      changeHandler: (v) => setCertificateOrganization(v),
     },
-    {
-      controlId: "certOrganization",
-      customClassName: "mb-3",
-      label: "기관",
-      placeholder: "기관",
-      value: organization,
-      changeHandler: (v) => setOrganization(v),
-    },
-
-    {
-      controlId: "acquisitionDate",
-      customClassName: "mb-3",
-      value: acquisitionDate,
-      label: "취득일자",
-      type: "date",
-      changeHandler: (v) => setAcquisitionDate(v),
-    },
+    { value: certificateDate, changeHandler: (v) => setCertificateDate(v) },
   ];
+
+  const certificateFormList = certificatesCommonFormProps.map(
+    (certificateCommon, index) => {
+      return { ...certificateCommon, ...certificateState[index] };
+    }
+  );
 
   // //서버와 통신 특정 학위 목록 가져와서 상태변경!
   // useEffect(() => {}, []);
@@ -54,14 +50,36 @@ const Certification = ({
   //수정해서 onSubmitHandler
   const onSubmitHandler = (e) => {
     e.preventDefault();
-    console.log({ certName, organization, acquisitionDate });
+    console.log({
+      certificateName,
+      certificateDetail,
+      certificateOrganization,
+      certificateDate,
+    });
   };
 
-  //삭제버튼 구현전
-
-  const onClickDel = (eduId) => {
+  //삭제함수
+  const onClickDel = async (certificateId) => {
+    console.log(certificate);
     console.log("delete버튼이 선택됨");
-    Api.delete("users", eduId);
+    console.log(certificateId);
+
+    const res = await Api.delete(
+      `user/${userState.user.id}/certificate`,
+      certificateId,
+      "certificate"
+    );
+    console.log(res);
+    // if (res.data.ok) {
+    setCertificates((prev) =>
+      prev.filter(
+        (certificates) =>
+          Number(certificates.certificateId) !== Number(certificateId)
+      )
+    );
+    // } else if (!res.data.ok) {
+    // throw new Error("삭제를 실패하였습니다");
+    // }
   };
 
   return (
@@ -71,12 +89,13 @@ const Certification = ({
           <>
             <Card style={{ width: "100%" }}>
               <Card.Body>
-                <Card.Title>{certification.certName}</Card.Title>
+                <Card.Title>{certificate.certificateName}</Card.Title>
 
                 <Card.Subtitle className="mb-2 text-muted">
-                  {certification.organization}
+                  {certificate.certificateDetail}
+                  {certificate.certificateOrganization}
                 </Card.Subtitle>
-                <Card.Text>{certification.acquisitionDate}</Card.Text>
+                <Card.Text>{certificate.certificateDate}</Card.Text>
 
                 {isEditable && (
                   <Form.Group className="mt-3 text-center">
@@ -92,7 +111,7 @@ const Certification = ({
                       <ButtonCommon
                         variant="secondary"
                         text="삭제"
-                        onClickHandler={() => onClickDel(certification.id)}
+                        onClickHandler={() => onClickDel(certificate.id)}
                       />
                     </Col>
                   </Form.Group>
@@ -106,7 +125,7 @@ const Certification = ({
             onSubmitHandler={onSubmitHandler}
             isEditable={isEditable}
             onClickHandler={setAddForm}
-            formList={formList}
+            formList={certificateFormList}
             setAddForm={setEditMode}
           />
         )}
@@ -115,4 +134,4 @@ const Certification = ({
   );
 };
 
-export default Certification;
+export default Certificate;

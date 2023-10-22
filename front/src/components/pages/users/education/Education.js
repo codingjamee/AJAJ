@@ -9,7 +9,7 @@ import { educationsCommonFormProps } from "../../../utils/formListCommonProps";
 const Education = ({
   setAddForm,
   isEditable,
-  education = [],
+  education = {},
   setEducations,
 }) => {
   // useState 훅을 통해 user 상태를 생성함.

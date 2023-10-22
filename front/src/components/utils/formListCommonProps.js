@@ -1,9 +1,6 @@
 //리팩토링!!! 생각해보기
 
-import {
-  educationsCommonOptionProps,
-  projectsCommonOptionProps,
-} from "./optionListCommonProps";
+import { educationsCommonOptionProps } from "./optionListCommonProps";
 
 //각각의 formset을 저장... form을 사용할 때마다 불러오기?!
 //state와 setState함수 관리문제...
@@ -66,24 +63,15 @@ export const projectsCommonFormProps = [
     placeholder: "프로젝트설명",
   },
   {
-    controlId: "eduDegree",
-    select: "true",
+    controlId: "projectStartDate",
     customClassName: "mb-3",
-    label: "학위",
-    placeholder: "학위",
-    optionValue: "학위를 선택하세요",
-    optionArr: projectsCommonOptionProps,
-  },
-  {
-    controlId: "startDate",
-    customClassName: "mb-3",
-    label: "입학연월일",
+    label: "프로젝트 시작일",
     type: "date",
   },
   {
-    controlId: "endDate",
+    controlId: "projectEndDate",
     customClassName: "mb-3",
-    label: "졸업연월일",
+    label: "프로젝트 완성일",
     type: "date",
   },
 ];
@@ -111,6 +99,33 @@ export const awardsCommonFormProps = [
     controlId: "awardDate",
     customClassName: "mb-3",
     label: "수상날짜",
+    type: "date",
+  },
+];
+
+export const certificatesCommonFormProps = [
+  {
+    controlId: "certificateName",
+    customClassName: "mb-3",
+    label: "자격증 명",
+    placeholder: "자격증 명",
+  },
+  {
+    controlId: "certificateDetail",
+    customClassName: "mb-3",
+    label: "자격증 설명",
+    placeholder: "자격증 설명",
+  },
+  {
+    controlId: "certificateOrganization",
+    customClassName: "mb-3",
+    label: "자격증 발급 기관",
+    placeholder: "자격증 발급 기관",
+  },
+  {
+    controlId: "certificateDate",
+    customClassName: "mb-3",
+    label: "자격증 발급 일자",
     type: "date",
   },
 ];

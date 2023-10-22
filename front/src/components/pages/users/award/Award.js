@@ -6,6 +6,7 @@ import FormWrapper from "../../../common/FormWrapper";
 import ButtonCommon from "../../../common/ButtonCommon";
 import { UserStateContext } from "../../../../App";
 import { awardsCommonFormProps } from "../../../utils/formListCommonProps";
+import { PortfolioOwnerDataContext } from "../Portfolio";
 
 const Award = ({ setAddForm, isEditable, award = [], setAwards }) => {
   // useState 훅을 통해 user 상태를 생성함.
@@ -18,6 +19,7 @@ const Award = ({ setAddForm, isEditable, award = [], setAwards }) => {
   );
   const [awardDate, setAwardDate] = useState(award.awardDate || "2023-01-01");
   const userState = useContext(UserStateContext);
+  const portfolioOwnerData = useContext(PortfolioOwnerDataContext);
 
   //form 상세설정 어레이
   const awardState = [

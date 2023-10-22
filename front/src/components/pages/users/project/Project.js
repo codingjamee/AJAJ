@@ -1,88 +1,124 @@
-import { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
+import { Card, Col, Form } from "react-bootstrap";
+import { UserStateContext } from "../../../../App";
 import * as Api from "../../../utils/api";
-import { Form, Card, Col } from "react-bootstrap";
-import FormWrapper from "../../../common/FormWrapper";
 import ButtonCommon from "../../../common/ButtonCommon";
+import FormWrapper from "../../../common/FormWrapper";
+import { PortfolioOwnerDataContext } from "../Portfolio";
+import { projectsCommonFormProps } from "../../../utils/formListCommonProps";
 
-const Project = ({
-  isEditable,
-  optionArr,
-  submitHandler,
-  setAddForm,
-  project = [],
-}) => {
-  // useState 훅을 통해 user 상태를 생성함.
-  const [user, setUser] = useState(null);
+//********************************서버와 통신전 설정됨**************************************
+//*******************프로젝트 이미지 첨부***************/
+
+const Project = ({ isEditable, setAddForm, project = [], setProjects }) => {
+  // const [projects, setProjects] = useState([]);
   const [editMode, setEditMode] = useState(false);
-  const [school, setSchool] = useState("");
-  const [startDate, setStartDate] = useState("2023-01-01");
-  const [endDate, setEndDate] = useState("2023-01-01");
-  const [degree, setDegree] = useState("");
-  // const [educations, setEducations] = useState([]);
-  const [major, setMajor] = useState("");
+  const [projectName, setProjectName] = useState(project.projectName || "");
+  const [projectDetail, setProjectDetail] = useState(
+    project.projectDetail || ""
+  );
+  const [projectImgUrl, setProjectImgUrl] = useState(
+    project.projectImgUrl || ""
+  );
+  const [projectStartDate, setProjectStartDate] = useState(
+    project.projectStartDate || "2023-10-01"
+  );
+  const [projectEndDate, setProjectEndDate] = useState(
+    project.projectEndDate || "2023-01-01"
+  );
+  const userState = useContext(UserStateContext);
+  const portfolioOwnerData = useContext(PortfolioOwnerDataContext);
 
+  console.log("project array", project);
   //form 상세설정 어레이
-  const formList = [
+  const projectState = [
+    { value: projectName, changeHandler: (v) => setProjectName(v) },
+    { value: projectDetail, changeHandler: (v) => setProjectDetail(v) },
     {
-      controlId: "eduSchoolName",
-      customClassName: "mb-3",
-      label: "학교이름",
-      placeholder: "학교이름",
-      value: school,
-      changeHandler: (v) => setSchool(v),
+      value: projectImgUrl,
+      projectImgUrl: (v) => setProjectImgUrl(v),
     },
-    {
-      controlId: "eduMajor",
-      customClassName: "mb-3",
-      label: "전공",
-      placeholder: "전공",
-      value: major,
-
-      changeHandler: (v) => setMajor(v),
-    },
-    {
-      controlId: "eduDegree",
-      select: "true",
-      customClassName: "mb-3",
-      label: "학위",
-      placeholder: "학위",
-      value: major,
-      changeHandler: (v) => setDegree(v),
-      optionValue: "학위를 선택하세요",
-      optionArr: optionArr,
-    },
-    {
-      controlId: "startDate",
-      customClassName: "mb-3",
-      value: startDate,
-      changeHandler: (v) => setStartDate(v),
-      label: "입학연월일",
-      type: "date",
-    },
-    {
-      controlId: "endDate",
-      customClassName: "mb-3",
-      value: endDate,
-      changeHandler: (v) => setEndDate(v),
-      label: "졸업연월일",
-      type: "date",
-    },
+    { value: projectStartDate, changeHandler: (v) => setProjectStartDate(v) },
+    { value: projectEndDate, changeHandler: (v) => setProjectEndDate(v) },
   ];
 
-  // //서버와 통신 특정 프로젝트 객체 가져와서 상태변경!
-  // useEffect(() => {}, []);
+  const projectFormList = projectsCommonFormProps.map(
+    (projectCommon, index) => {
+      return { ...projectCommon, ...projectState[index] };
+    }
+  );
 
+  console.log(projectFormList);
   //수정해서 onSubmitHandler
-  const onSubmitHandler = (e) => {
+  const onSubmitHandler = async (e) => {
     e.preventDefault();
-    console.log({ school, degree, major, startDate, endDate });
+    console.log("handler clicked");
+    console.log({
+      projectName,
+      projectDetail,
+      projectImgUrl,
+      projectStartDate,
+      projectEndDate,
+    });
+
+    //portfolioOwnerId는 portfolio에서 받아옴
+
+    //post 서버와 통신
+    // const res = await Api.post(`user/${userState.user.id}/project`, {
+    // projectName,
+    // projectDetail,
+    // projectImgUrl,
+    // projectStartDate,
+    // projectEndDate,
+    // });
+
+    // console.log(res);
+    // if (res.data.statusCode === 201) {
+    //   setProjects((prev) => {
+    //     return [
+    //       ...prev,
+    //       {
+    //         projectName,
+    //         projectDetail,
+    //         projectImgUrl,
+    //         projectStartDate,
+    //         projectEndDate,
+    //       },
+    //     ];
+    //   });
+    //   setProjectName = useState("");
+    //   setProjectDetail = useState("");
+    //   setProjectImgUrl = useState("");
+    //   setProjectStartDate = useState("2023-01-01");
+    //   setProjectEndDate = useState("2023-01-01");
+    //   setAddForm(false);
+    // } else if (!res.data.ok) {
+    //   throw new Error("POST 요청이 실패하였습니다.");
+    // }
   };
 
-  //삭제버튼 구현전
+  //삭제함수
 
-  const onClickDel = (eduId) => {
+  const onClickDel = async (projectId) => {
+    console.log(project);
     console.log("delete버튼이 선택됨");
-    Api.delete("users", eduId);
+    console.log(projectId);
+
+    const res = await Api.delete(
+      `user/${userState.user.id}/project`,
+      projectId,
+      "project"
+    );
+    console.log(res);
+    // if (res.data.ok) {
+    setProjects((prev) =>
+      prev.filter(
+        (projects) => Number(projects.projectId) !== Number(projectId)
+      )
+    );
+    // } else if (!res.data.ok) {
+    // throw new Error("삭제를 실패하였습니다");
+    // }
   };
 
   return (
@@ -90,15 +126,16 @@ const Project = ({
       <Card.Body>
         {!editMode && (
           <>
-            <Card style={{ width: "18rem" }}>
+            <Card style={{ width: "100%" }}>
               <Card.Body>
-                <Card.Title>{education.school}</Card.Title>
+                <Card.Title>{project.projectName}</Card.Title>
 
                 <Card.Subtitle className="mb-2 text-muted">
-                  {education.major}
+                  {project.projectDetail}
+                  <img src={project.projectImgUrl} />
                 </Card.Subtitle>
                 <Card.Text>
-                  {education.startDate} ~ {education.endDate}
+                  {project.projectStartDate} ~ {project.projectEndDate}
                 </Card.Text>
 
                 {isEditable && (
@@ -115,7 +152,7 @@ const Project = ({
                       <ButtonCommon
                         variant="secondary"
                         text="삭제"
-                        onClickHandler={() => onClickDel(education.id)}
+                        onClickHandler={() => onClickDel(project.id)}
                       />
                     </Col>
                   </Form.Group>
@@ -129,7 +166,7 @@ const Project = ({
             onSubmitHandler={onSubmitHandler}
             isEditable={isEditable}
             onClickHandler={setAddForm}
-            formList={formList}
+            formList={projectFormList}
             setAddForm={setEditMode}
           />
         )}
