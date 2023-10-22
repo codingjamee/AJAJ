@@ -10,7 +10,7 @@ import Educations from "./education/Educations";
 import Certifications from "./certificate/Certificates";
 import Awards from "./award/Awards";
 import Projects from "./project/Projects";
-import LoadingLayer from "../../common/LoadingLayer";
+import LoadingLayer from "../../../UI/LoadingLayer";
 import { loadingActions } from "../../../store/loading";
 
 export const PortfolioOwnerDataContext = createContext({});
