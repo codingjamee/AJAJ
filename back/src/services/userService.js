@@ -1,7 +1,7 @@
 import { User } from "../db"; // from을 폴더(db) 로 설정 시, 디폴트로 index.js 로부터 import함.
 import bcrypt from "bcrypt";
 import { v4 as uuidv4 } from "uuid";
-import jwt from "jsonwebtoken";
+const jwt = require('../middlewares/jwtMiddleware');
 
 class userAuthService {
   static async addUser({ name, email, password }) {
@@ -49,8 +49,10 @@ class userAuthService {
     }
 
     // 로그인 성공 -> JWT 웹 토큰 생성
-    const secretKey = process.env.JWT_SECRET_KEY || "jwt-secret-key";
-    const accessToken = jwt.sign({ user_id: user.id }, secretKey, { expiresIn: '1h' });
+    // const secretKey = process.env.JWT_SECRET_KEY || "jwt-secret-key";
+    // const accessToken = jwt.sign({ user_id: user.id }, secretKey, { expiresIn: '1h' });
+    
+    const accessToken = jwt.sign(user);
     const refreshToken = uuidv4(); // 새로운 리프래시 토큰 생성
 
     // 리프래시 토큰을 안전한 저장소에 저장 (예: 데이터베이스)

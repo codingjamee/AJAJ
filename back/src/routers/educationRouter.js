@@ -1,6 +1,5 @@
 const { Router } = require('express');
-const { login_required } = require('../middlewares/login_required');
-const { userId_checked, request_checked } = require('../middlewares/middleware');
+const { login_required, userId_checked, request_checked } = require('../middlewares/requireMiddleware');
 const { NotFoundError } = require('../middlewares/errorHandlingMiddleware');
 
 const { educationAuthService } = require('../services/educationService');
