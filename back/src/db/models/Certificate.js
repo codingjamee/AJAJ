@@ -6,31 +6,27 @@ class Certificate {
     return createdNewCertificate;
   }
 
-  static async checkUserId({ certificateId }) {
+  static async checkCertificateId({ certificateId }) {
     const user = await CertificateModel.findOne({ certificateId });
     return user;
   }
 
-  static async findById({ certificateId }) {
+  static async findByCertificateId({ certificateId }) {
     const certificate = await CertificateModel.findOne({ certificateId });
     return certificate;
   }
 
-  static async findAll() {
-    const certificates = await CertificateModel.find({});
+  static async findAll({ userId }) {
+    const certificates = await CertificateModel.find({ userId });
     return certificates;
   }
 
-  static async update({ Certificate_id, fieldToUpdate, newValue }) {
-    const filter = { id: Certificate_id };
+  static async update({ certificateId, fieldToUpdate, newValue }) {
+    const filter = { certificateId };
     const update = { [fieldToUpdate]: newValue };
     const option = { returnOriginal: false };
 
-    const updatedCertificate = await CertificateModel.findOneAndUpdate(
-      filter,
-      update,
-      option
-    );
+    const updatedCertificate = await CertificateModel.findOneAndUpdate(filter, update, option);
     return updatedCertificate;
   }
 }

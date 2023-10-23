@@ -5,6 +5,7 @@ import { errorMiddleware } from "./middlewares/errorMiddleware";
 import { educationAuthRouter } from "./routers/educationRouter";
 import { projectAuthRouter } from "./routers/projectRouter";
 import { awardAuthRouter } from "./routers/awardRouter";
+import { certificateAuthRouter } from "./routers/certificateRouter";
 const cookieParser = require('cookie-parser');
 
 
@@ -45,6 +46,7 @@ app.use(userAuthRouter);
 app.use(educationAuthRouter);
 app.use(projectAuthRouter);
 app.use(awardAuthRouter);
+app.use(certificateAuthRouter);
 
 // 순서 중요 (router 에서 next() 시 아래의 에러 핸들링  middleware로 전달됨)
 app.use(errorMiddleware);
