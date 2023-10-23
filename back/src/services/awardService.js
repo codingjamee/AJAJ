@@ -9,8 +9,8 @@ class awardAuthService {
       return createdNewUser;
   };
 
-    static async checkUser({ awardId }) {
-      const user = await Award.checkUserId({ awardId });
+    static async checkAward({ awardId }) {
+      const user = await Award.checkAwardId({ awardId });
       return user;
   };
 

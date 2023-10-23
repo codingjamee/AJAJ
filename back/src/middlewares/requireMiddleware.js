@@ -2,6 +2,7 @@ import is from "@sindresorhus/is";
 const { educationAuthService } = require('../services/educationService');
 const { userAuthService } = require('../services/userService');
 const { awardAuthService }= require('../services/awardService');
+const { certificateAuthService }= require('../services/certificateService');
 import { User } from "../db";
 
 
@@ -97,6 +98,7 @@ async function userId_checked(req, res, next) {
   const userId = req.params.id;
   const eduId = req.params.eduId;
   const awardId = req.params.awardId;
+  const certificateId = req.params.certificateId;
 
   if ( userId ) {
     if ( eduId ) {
@@ -111,7 +113,18 @@ async function userId_checked(req, res, next) {
       }
     }
     if ( awardId ) {
-      const user = await awardAuthService.checkUser({ awardId });
+      const user = await awardAuthService.checkAward({ awardId });
+      if (!user) {
+        res.status(404).send("Not Found");
+        return;
+      }
+      if (user.userId !== userId) {
+        res.status(401).send("접근 권한이 없습니다.");
+        return;
+      }
+    }
+    if ( certificateId ) {
+      const user = await certificateAuthService.checkCertificate({ certificateId });
       if (!user) {
         res.status(404).send("Not Found");
         return;
