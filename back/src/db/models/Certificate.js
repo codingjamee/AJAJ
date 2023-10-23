@@ -6,8 +6,13 @@ class Certificate {
     return createdNewCertificate;
   }
 
-  static async findById({ Certificate_id }) {
-    const certificate = await CertificateModel.findOne({ id: Certificate_id });
+  static async checkUserId({ certificateId }) {
+    const user = await CertificateModel.findOne({ certificateId });
+    return user;
+  }
+
+  static async findById({ certificateId }) {
+    const certificate = await CertificateModel.findOne({ certificateId });
     return certificate;
   }
 

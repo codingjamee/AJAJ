@@ -16,8 +16,8 @@ class Award {
     return Award;
   }
 
-  static async findAll({ awardId }) {
-    const Awards = await AwardModel.find({ awardId });
+  static async findAll({ userId }) {
+    const Awards = await AwardModel.find({ userId });
     return Awards;
   }
 
