@@ -114,34 +114,36 @@ const Projects = (props) => {
 
   return (
     <>
-      <h4>프로젝트</h4>
-      {projects.map((project, index) => (
-        <Project
-          key={`project-${index}`}
-          isEditable={isEditable}
-          formList={projectFormList}
-          // setProject={setProject}
-          project={project}
-        />
-      ))}
-      {isEditable && (
-        <Card>
-          {addForm && (
-            <FormWrapper
-              {...props}
-              formList={projectFormList}
-              onSubmitHandler={handleSubmit}
-              setAddForm={setAddForm}
-            />
-          )}
-          <ButtonCommon
-            variant="outline-info"
-            size="sm"
-            onClickHandler={() => setAddForm((prev) => !prev)}
-            text="+"
+      <Card>
+        <h4>프로젝트</h4>
+        {projects.map((project, index) => (
+          <Project
+            key={`project-${index}`}
+            isEditable={isEditable}
+            formList={projectFormList}
+            // setProject={setProject}
+            project={project}
           />
-        </Card>
-      )}
+        ))}
+        {isEditable && (
+          <Card>
+            {addForm && (
+              <FormWrapper
+                {...props}
+                formList={projectFormList}
+                onSubmitHandler={handleSubmit}
+                setAddForm={setAddForm}
+              />
+            )}
+            <ButtonCommon
+              variant="outline-info"
+              size="sm"
+              onClickHandler={() => setAddForm((prev) => !prev)}
+              text="+"
+            />
+          </Card>
+        )}
+      </Card>
     </>
   );
 };

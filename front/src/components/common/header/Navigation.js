@@ -3,7 +3,8 @@ import { useNavigate, useLocation } from "react-router-dom";
 import { Nav, Navbar } from "react-bootstrap";
 import { UserStateContext, DispatchContext } from "../../../App";
 import "bootstrap/dist/css/bootstrap.min.css";
-import "./Nav.css";
+import "../../../UI/design.css";
+import logo from "./logo.png";
 import { PortfolioOwnerDataContext } from "../../pages/users/Portfolio";
 
 function Navigation() {
@@ -38,9 +39,14 @@ function Navigation() {
   };
 
   return (
-    <Navbar bg="dark" variant="dark" activeKey={location.pathname}>
-      <Navbar.Brand onClick={() => navigate("/")}>
-        안녕하세요, 포트폴리오 공유 서비스입니다.
+    <Navbar variant="dark" activeKey={location.pathname}>
+      <Navbar.Brand href="/">
+        <img
+          src={logo}
+          alt="ajaj portfolio logo"
+          width={"160px"}
+          height={"100%"}
+        />
       </Navbar.Brand>
       <Navbar.Toggle aria-controls="basic-navbar-nav" />
       <Navbar.Collapse id="basic-navbar-nav" />

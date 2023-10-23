@@ -85,34 +85,36 @@ const Educations = (props) => {
 
   return (
     <>
-      <h4>학력</h4>
-      {educations.map((education, index) => (
-        <Education
-          key={`education-${index}`}
-          isEditable={isEditable}
-          formList={eduFormList}
-          setEducations={setEducations}
-          education={education}
-        />
-      ))}
-      {isEditable && (
-        <Card>
-          {addForm && (
-            <FormWrapper
-              {...props}
-              formList={eduFormList}
-              onSubmitHandler={handleSubmit}
-              setAddForm={setAddForm}
-            />
-          )}
-          <ButtonCommon
-            variant="outline-info"
-            size="sm"
-            onClickHandler={() => setAddForm((prev) => !prev)}
-            text="+"
+      <Card>
+        <h4>학력</h4>
+        {educations.map((education, index) => (
+          <Education
+            key={`education-${index}`}
+            isEditable={isEditable}
+            formList={eduFormList}
+            setEducations={setEducations}
+            education={education}
           />
-        </Card>
-      )}
+        ))}
+        {isEditable && (
+          <Card>
+            {addForm && (
+              <FormWrapper
+                {...props}
+                formList={eduFormList}
+                onSubmitHandler={handleSubmit}
+                setAddForm={setAddForm}
+              />
+            )}
+            <ButtonCommon
+              variant="outline-info"
+              size="sm"
+              onClickHandler={() => setAddForm((prev) => !prev)}
+              text="+"
+            />
+          </Card>
+        )}
+      </Card>
     </>
   );
 };

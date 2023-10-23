@@ -113,33 +113,35 @@ const Certificates = (props) => {
 
   return (
     <>
-      <h4>자격증</h4>
-      {certificates.map((certificate, index) => (
-        <Certificate
-          key={`certificate-${index}`}
-          isEditable={isEditable}
-          formList={certificateFormList}
-          certificate={certificate}
-        />
-      ))}
-      {isEditable && (
-        <Card>
-          {addForm && (
-            <FormWrapper
-              {...props}
-              formList={certificateFormList}
-              onSubmitHandler={handleSubmit}
-              setAddForm={setAddForm}
-            />
-          )}
-          <ButtonCommon
-            variant="outline-info"
-            size="sm"
-            onClickHandler={() => setAddForm((prev) => !prev)}
-            text="+"
+      <Card>
+        <h4>자격증</h4>
+        {certificates.map((certificate, index) => (
+          <Certificate
+            key={`certificate-${index}`}
+            isEditable={isEditable}
+            formList={certificateFormList}
+            certificate={certificate}
           />
-        </Card>
-      )}
+        ))}
+        {isEditable && (
+          <Card>
+            {addForm && (
+              <FormWrapper
+                {...props}
+                formList={certificateFormList}
+                onSubmitHandler={handleSubmit}
+                setAddForm={setAddForm}
+              />
+            )}
+            <ButtonCommon
+              variant="outline-info"
+              size="sm"
+              onClickHandler={() => setAddForm((prev) => !prev)}
+              text="+"
+            />
+          </Card>
+        )}
+      </Card>
     </>
   );
 };

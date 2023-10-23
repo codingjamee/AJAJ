@@ -87,34 +87,36 @@ const Awards = (props) => {
 
   return (
     <>
-      <h4>상</h4>
-      {awards.map((award, index) => (
-        <Award
-          key={`award-${index}`}
-          isEditable={isEditable}
-          formList={awardFormList}
-          // setAwards={setAwards}
-          award={award}
-        />
-      ))}
-      {isEditable && (
-        <Card>
-          {addForm && (
-            <FormWrapper
-              {...props}
-              formList={awardFormList}
-              onSubmitHandler={handleSubmit}
-              setAddForm={setAddForm}
-            />
-          )}
-          <ButtonCommon
-            variant="outline-info"
-            size="sm"
-            onClickHandler={() => setAddForm((prev) => !prev)}
-            text="+"
+      <Card>
+        <h4>상</h4>
+        {awards.map((award, index) => (
+          <Award
+            key={`award-${index}`}
+            isEditable={isEditable}
+            formList={awardFormList}
+            // setAwards={setAwards}
+            award={award}
           />
-        </Card>
-      )}
+        ))}
+        {isEditable && (
+          <Card>
+            {addForm && (
+              <FormWrapper
+                {...props}
+                formList={awardFormList}
+                onSubmitHandler={handleSubmit}
+                setAddForm={setAddForm}
+              />
+            )}
+            <ButtonCommon
+              variant="outline-info"
+              size="sm"
+              onClickHandler={() => setAddForm((prev) => !prev)}
+              text="+"
+            />
+          </Card>
+        )}
+      </Card>
     </>
   );
 };
