@@ -9,8 +9,8 @@ class projectAuthService {
     return createdNewProject;
   }
 
-  static async checkUser({ projectId }) {
-    const user = await Education.checkUserId({ projectId });
+  static async checkProject({ projectId }) {
+    const user = await Project.checkProjectId({ projectId });
     return user;
   }
 

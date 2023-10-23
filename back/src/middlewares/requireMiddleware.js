@@ -3,6 +3,7 @@ const { educationAuthService } = require('../services/educationService');
 const { userAuthService } = require('../services/userService');
 const { awardAuthService }= require('../services/awardService');
 const { certificateAuthService }= require('../services/certificateService');
+const { projectAuthService }= require('../services/projectService');
 import { User } from "../db";
 
 
@@ -97,12 +98,24 @@ function request_checked(req, res, next) {
 async function userId_checked(req, res, next) {
   const userId = req.params.id;
   const eduId = req.params.eduId;
+  const projectId = req.params.projectId;
   const awardId = req.params.awardId;
   const certificateId = req.params.certificateId;
 
   if ( userId ) {
     if ( eduId ) {
-      const user = await educationAuthService.checkUser({ eduId });
+      const user = await educationAuthService.checkEducation({ eduId });
+      if (!user) {
+        res.status(404).send("Not Found");
+        return;
+      }
+      if (user.userId !== userId) {
+        res.status(401).send("접근 권한이 없습니다.");
+        return;
+      }
+    }
+    if ( projectId ) {
+      const user = await projectAuthService.checkProject({ projectId });
       if (!user) {
         res.status(404).send("Not Found");
         return;
