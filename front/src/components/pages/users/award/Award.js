@@ -42,28 +42,32 @@ const Award = ({ setAddForm, isEditable, award = [], setAwards }) => {
     //portfolioOwnerId는 portfolio에서 받아옴
 
     //post 서버와 통신
-    const res = await Api.post(`user/${userState.user.id}/award`, {
-      awardName,
-      awardDetail,
-      awardOrganization,
-      awardDate,
-    });
-
-    console.log(res);
-    if (res.data.statusCode === 201) {
-      setAwards((prev) => {
-        return [
-          ...prev,
-          { awardName, awardDetail, awardOrganization, awardDate },
-        ];
+    try {
+      const res = await Api.post(`user/${userState.user.id}/award`, {
+        awardName,
+        awardDetail,
+        awardOrganization,
+        awardDate,
       });
-      setAwardName("");
-      setAwardDetail("");
-      setAwardOrganization("");
-      setAwardDate("2023-01-01");
-      setAddForm(false);
-    } else if (!res.data.ok) {
-      throw new Error("POST 요청이 실패하였습니다.");
+
+      console.log(res);
+      if (res.data.statusCode === 201) {
+        setAwards((prev) => {
+          return [
+            ...prev,
+            { awardName, awardDetail, awardOrganization, awardDate },
+          ];
+        });
+        setAwardName("");
+        setAwardDetail("");
+        setAwardOrganization("");
+        setAwardDate("2023-01-01");
+        setAddForm(false);
+      } else if (!res.data.ok) {
+        throw new Error("POST 요청이 실패하였습니다.");
+      }
+    } catch (err) {
+      throw new Error("서버와 통신을 실패하였습니다.");
     }
   };
 
@@ -80,11 +84,11 @@ const Award = ({ setAddForm, isEditable, award = [], setAwards }) => {
       "award"
     );
     console.log(res);
-    // if (res.data.ok) {
+    // if (res.data.statusCode === 200) {
     setAwards((prev) =>
       prev.filter((awards) => Number(awards.awardId) !== Number(awardId))
     );
-    // } else if (!res.data.ok) {
+    // } else if (res.data.statusCode !== 200) {
     // throw new Error("삭제를 실패하였습니다");
     // }
   };

@@ -73,8 +73,7 @@ const Certificate = ({
     // if (res.data.ok) {
     setCertificates((prev) =>
       prev.filter(
-        (certificates) =>
-          Number(certificates.certificateId) !== Number(certificateId)
+        (certificates) => certificates.certificateId !== certificateId
       )
     );
     // } else if (!res.data.ok) {

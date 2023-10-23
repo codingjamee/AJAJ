@@ -3,8 +3,18 @@ import { useDispatch } from "react-redux";
 import { loadingActions } from "../store/loading";
 import ButtonCommon from "../components/common/ButtonCommon";
 import LoadingIndicator from "./LoadingIndicator";
+import { useEffect, useRef } from "react";
 const LoadingLayer = (props) => {
+  const ButtonRef = useRef();
   const dispatch = useDispatch();
+
+  useEffect(() => {
+    ButtonRef.current.focus();
+  }, []);
+
+  const onBtnClickHandler = () => {
+    dispatch(loadingActions.close());
+  };
   return (
     <>
       <div className={styles.backdrop}>
@@ -12,9 +22,10 @@ const LoadingLayer = (props) => {
           <p>{props.children}</p>
           <LoadingIndicator />
           <ButtonCommon
-            onClickHandler={() => dispatch(loadingActions.close())}
+            onClickHandler={onBtnClickHandler}
             variant="outline-light"
             text="Close"
+            ref={ButtonRef}
           />
           <h1 className={styles.loadingLayer}>{props.message}</h1>
         </div>
