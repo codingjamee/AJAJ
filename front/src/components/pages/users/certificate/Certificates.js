@@ -30,7 +30,7 @@ const certificates = [
 
 const Certificates = (props) => {
   const [addForm, setAddForm] = useState(false);
-  // const [certificates, setcertificates] = useState([]);
+  // const [certificates, setCertificates] = useState([]);
   const [certificateName, setCertificateName] = useState("");
   const [certificateDetail, setCertificateDetail] = useState("");
   const [certificateOrganization, setCertificateOrganization] = useState("");
@@ -56,7 +56,7 @@ const Certificates = (props) => {
   );
 
   //제출버튼 클릭시
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     console.log("handler clicked");
     console.log({
@@ -66,30 +66,50 @@ const Certificates = (props) => {
       certificateDate,
     });
 
-    //portfolioOwnerId는 portfolio에서 받아옴
+    // portfolioOwnerId는 portfolio에서 받아옴
 
-    //post 서버와 통신
-    // const res = await Api.post(`user/${user.id}/certificate`, {
-    //  certificateName,
-    // certificateDetail,
-    // certificateOrganization,
-    // certificateDate,
-    // });
+    // post 서버와 통신
+    // try {
+    //   const res = await Api.post(`user/${userState.user.id}/certificate`, {
+    //     certificateName,
+    //     certificateDetail,
+    //     certificateOrganization,
+    //     certificateDate,
+    //   });
 
-    // const updatedEdu = res.data;
-    // setCertificate((prev) => {
-    //   return { ...prev, updatedEdu };
-    // });
-    // setAddForm(false);
+    //   console.log(res);
+    //   if (res.data.statusCode === 201) {
+    //     setCertificates((prev) => {
+    //       return [
+    //         ...prev,
+    //         {
+    //           certificateName,
+    //           certificateDetail,
+    //           certificateOrganization,
+    //           certificateDate,
+    //         },
+    //       ];
+    //     });
+    //     setCertificateName("");
+    //     setCertificateDetail("");
+    //     setCertificateOrganization("");
+    //     setCertificateDate("2023-01-01");
+    //     setAddForm(false);
+    //   } else if (res.data.statusCode !== 201) {
+    //     throw new Error("POST 요청이 실패하였습니다.");
+    //   }
+    // } catch (err) {
+    //   throw new Error("서버와 통신이 실패하였습니다.");
+    // }
   };
 
   // 모든 학위 목록 가져오기 서버와 통신
   // useEffect(() => {
-  //   Api.get(`user/${portfolioOwnerId}/certificate`,"", "Certificate").then((res) => {
+  //   Api.get(`user/${portfolioOwnerData.id}/certificates`,"", "Certificates").then((res) => {
   //     console.log(res.data);
-  //     return setCertificate(res.data);
+  //     return setCertificates(res.data.certificates);
   //   });
-  // }, [certificate]);
+  // }, [portfolioOwnerData.id]);
 
   return (
     <>

@@ -43,30 +43,34 @@ const Educations = (props) => {
     //portfolioOwnerId는 portfolio에서 받아옴
 
     //post 서버와 통신
-    const res = await Api.post(`user/${userState.user.id}/education`, {
-      schoolName,
-      major,
-      degree,
-      admissionDate,
-      graduationDate,
-    });
-
-    console.log(res);
-    if (res.data.statusCode === 201) {
-      setEducations((prev) => {
-        return [
-          ...prev,
-          { schoolName, major, degree, admissionDate, graduationDate },
-        ];
+    try {
+      const res = await Api.post(`user/${userState.user.id}/education`, {
+        schoolName,
+        major,
+        degree,
+        admissionDate,
+        graduationDate,
       });
-      setSchoolName("");
-      setMajor("");
-      setDegree("");
-      setAdmissionDate("2023-01-01");
-      setGraduationDate("2023-01-01");
-      setAddForm(false);
-    } else if (res.data.statusCode !== 201) {
-      throw new Error("POST 요청이 실패하였습니다.");
+
+      console.log(res);
+      if (res.data.statusCode === 201) {
+        setEducations((prev) => {
+          return [
+            ...prev,
+            { schoolName, major, degree, admissionDate, graduationDate },
+          ];
+        });
+        setSchoolName("");
+        setMajor("");
+        setDegree("");
+        setAdmissionDate("2023-01-01");
+        setGraduationDate("2023-01-01");
+        setAddForm(false);
+      } else if (res.data.statusCode !== 201) {
+        throw new Error("POST 요청이 실패하였습니다.");
+      }
+    } catch (err) {
+      throw new Error("서버와 통신이 실패하였습니다.");
     }
   };
 

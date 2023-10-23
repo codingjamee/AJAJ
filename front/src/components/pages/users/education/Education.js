@@ -50,33 +50,37 @@ const Education = ({
     //portfolioOwnerId는 portfolio에서 받아옴
 
     //post 서버와 통신
-    const res = await Api.post(
-      `user/${userState.user.id}/education`,
-      {
-        schoolName,
-        major,
-        degree,
-        admissionDate,
-        graduationDate,
-      },
-      "Education"
-    );
-    console.log(res.data);
-    if (res.data.statusCode === 201) {
-      setEducations((prev) => {
-        return [
-          ...prev,
-          { schoolName, major, degree, admissionDate, graduationDate },
-        ];
-      });
-      setSchoolName("");
-      setMajor("");
-      setDegree("");
-      setAdmissionDate("2023-01-01");
-      setGraduationDate("2023-01-01");
-      setEditMode(false);
-    } else if (res.data.statusCode !== 201) {
-      throw new Error("POST 요청을 실패하였습니다.");
+    try {
+      const res = await Api.post(
+        `user/${userState.user.id}/education`,
+        {
+          schoolName,
+          major,
+          degree,
+          admissionDate,
+          graduationDate,
+        },
+        "Education"
+      );
+      console.log(res.data);
+      if (res.data.statusCode === 201) {
+        setEducations((prev) => {
+          return [
+            ...prev,
+            { schoolName, major, degree, admissionDate, graduationDate },
+          ];
+        });
+        setSchoolName("");
+        setMajor("");
+        setDegree("");
+        setAdmissionDate("2023-01-01");
+        setGraduationDate("2023-01-01");
+        setEditMode(false);
+      } else if (res.data.statusCode !== 201) {
+        throw new Error("POST 요청을 실패하였습니다.");
+      }
+    } catch (err) {
+      throw new Error("서버와 통신이 실패하였습니다");
     }
   };
 
@@ -87,19 +91,23 @@ const Education = ({
     console.log("delete버튼이 선택됨");
     console.log(eduId);
 
-    const res = await Api.delete(
-      `user/${userState.user.id}/education`,
-      eduId,
-      "Education"
-    );
-    console.log(res);
-    if (res.data.statusCode === 200) {
-      setEducations((prevObj) => {
-        console.log(prevObj.filter((edus) => edus.eduId !== eduId));
-        return prevObj.filter((edus) => edus.eduId !== eduId);
-      });
-    } else if (res.data.statusCode !== 200) {
-      throw new Error("삭제를 실패하였습니다");
+    try {
+      const res = await Api.delete(
+        `user/${userState.user.id}/education`,
+        eduId,
+        "Education"
+      );
+      console.log(res);
+      if (res.data.statusCode === 200) {
+        setEducations((prevObj) => {
+          console.log(prevObj.filter((edus) => edus.eduId !== eduId));
+          return prevObj.filter((edus) => edus.eduId !== eduId);
+        });
+      } else if (res.data.statusCode !== 200) {
+        throw new Error("삭제를 실패하였습니다");
+      }
+    } catch (err) {
+      throw new Error("서버와 통신에 실패하였습니다");
     }
   };
 

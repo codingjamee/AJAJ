@@ -51,7 +51,7 @@ const Awards = (props) => {
     //portfolioOwnerId는 portfolio에서 받아옴
 
     //post 서버와 통신
-    // const res = await Api.post(`user/${userState.user.id}/education`, {
+    // const res = await Api.post(`user/${userState.user.id}/award`, {
     //   awardName,
     //   awardDetail,
     //   awardOrganization,
@@ -71,7 +71,7 @@ const Awards = (props) => {
     //   setAwardOrganization("");
     //   setAwardDate("2023-01-01");
     //   setAddForm(false);
-    // } else if (!res.data.ok) {
+    // } else if (res.data.statusCode !== 201) {
     //   throw new Error("POST 요청이 실패하였습니다.");
     // }
   };

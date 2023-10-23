@@ -1,4 +1,4 @@
-import React, { useState, useContext } from "react";
+import React, { useState, useContext, useMemo } from "react";
 import { useNavigate } from "react-router-dom";
 import { Container, Col, Row, Form, Button } from "react-bootstrap";
 
@@ -24,12 +24,15 @@ function LoginForm() {
   };
 
   //위 validateEmail 함수를 통해 이메일 형태 적합 여부를 확인함.
-  const isEmailValid = validateEmail(email);
+  const isEmailValid = useMemo(validateEmail(email), [email]);
   // 비밀번호가 4글자 이상인지 여부를 확인함.
-  const isPasswordValid = password.length >= 4;
+  const isPasswordValid = useMemo(password.length >= 4, [password]);
   //
   // 이메일과 비밀번호 조건이 동시에 만족되는지 확인함.
-  const isFormValid = isEmailValid && isPasswordValid;
+  const isFormValid = useMemo(isEmailValid && isPasswordValid, [
+    isEmailValid,
+    isPasswordValid,
+  ]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
