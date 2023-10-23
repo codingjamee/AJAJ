@@ -1,6 +1,7 @@
 import is from "@sindresorhus/is";
 const { educationAuthService } = require('../services/educationService');
 const { userAuthService } = require('../services/userService');
+const { awardAuthService }= require('../services/awardService');
 import { User } from "../db";
 
 
@@ -44,23 +45,23 @@ async function login_required(req, res, next) {
   //   // refreshToken이 데이터베이스에서 발견되지 않았으므로 유효성 검사 실패
   //   res.status(401).json({ message: '유효하지 않은 refreshToken' });
   // }
+  
+  // if (!userToken && refreshToken) {
+  //   try {
+  //     const user = await userAuthService.getUserInfo(userId);
+  //     const userToken = jwt.sign(user)
 
-  if (!userToken && refreshToken) {
-    try {
-      const user = await userAuthService.getUserInfo(userId);
-      const userToken = jwt.sign(user)
-
-      // 클라이언트로 새로운 유저 토큰을 전송
-      res.cookie("user_cookie", userToken, {
-        path: "/",
-        httpOnly: true,
-        sameSite: "lax",
-        maxAge: 60 * 60 * 1000, // 예: 1시간
-      });
-    } catch (error) {
-      console.error("리프레시 토큰 검증 오류:", error);
-    }
-  }
+  //     // 클라이언트로 새로운 유저 토큰을 전송
+  //     res.cookie("user_cookie", userToken, {
+  //       path: "/",
+  //       httpOnly: true,
+  //       sameSite: "lax",
+  //       maxAge: 60 * 60 * 1000, // 예: 1시간
+  //     });
+  //   } catch (error) {
+  //     console.error("리프레시 토큰 검증 오류:", error);
+  //   }
+  // }
 
   // 두 토큰이 "null" 이면 login이 필요한 서비스 사용을 제한함.
   if (!userToken && !refreshToken) {
@@ -91,19 +92,34 @@ function request_checked(req, res, next) {
 
 // 수정 및 삭제 시 권한 있는지 확인
 // 접근 중인 userId(User)와 eduId(Education)의 userId와 같은지 확인
+// -> 모델에 따라 다르게
 async function userId_checked(req, res, next) {
   const userId = req.params.id;
   const eduId = req.params.eduId;
+  const awardId = req.params.awardId;
 
-  if (userId) {
-    const user = await educationAuthService.checkUser({ eduId });
-    if (!user) {
-      res.status(404).send("Not Found");
-      return;
+  if ( userId ) {
+    if ( eduId ) {
+      const user = await educationAuthService.checkUser({ eduId });
+      if (!user) {
+        res.status(404).send("Not Found");
+        return;
+      }
+      if (user.userId !== userId) {
+        res.status(401).send("접근 권한이 없습니다.");
+        return;
+      }
     }
-    if (user.userId !== userId) {
-      res.status(401).send("접근 권한이 없습니다.");
-      return;
+    if ( awardId ) {
+      const user = await awardAuthService.checkUser({ awardId });
+      if (!user) {
+        res.status(404).send("Not Found");
+        return;
+      }
+      if (user.userId !== userId) {
+        res.status(401).send("접근 권한이 없습니다.");
+        return;
+      }
     }
   }
   next();
