@@ -61,6 +61,7 @@ const Education = ({
       },
       "Education"
     );
+    console.log(res.data);
     if (res.data.statusCode === 201) {
       setEducations((prev) => {
         return [
@@ -92,13 +93,14 @@ const Education = ({
       "Education"
     );
     console.log(res);
-    // if (res.data.ok) {
-    setEducations((prev) =>
-      prev.filter((educations) => Number(educations.eduId) !== Number(eduId))
-    );
-    // } else if (!res.data.ok) {
-    // throw new Error("삭제를 실패하였습니다");
-    // }
+    if (res.data.statusCode === 200) {
+      setEducations((prevObj) => {
+        console.log(prevObj.filter((edus) => edus.eduId !== eduId));
+        return prevObj.filter((edus) => edus.eduId !== eduId);
+      });
+    } else if (res.data.statusCode !== 200) {
+      throw new Error("삭제를 실패하였습니다");
+    }
   };
 
   return (

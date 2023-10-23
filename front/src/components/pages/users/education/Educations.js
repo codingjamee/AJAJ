@@ -33,7 +33,6 @@ const Educations = (props) => {
   const eduFormList = educationsCommonFormProps.map((eduCommon, index) => {
     return { ...eduCommon, ...eduState[index] };
   });
-  console.log(eduFormList);
 
   //제출버튼 클릭시
   const handleSubmit = async (e) => {
@@ -66,7 +65,7 @@ const Educations = (props) => {
       setAdmissionDate("2023-01-01");
       setGraduationDate("2023-01-01");
       setAddForm(false);
-    } else if (!res.data.ok) {
+    } else if (res.data.statusCode !== 201) {
       throw new Error("POST 요청이 실패하였습니다.");
     }
   };
