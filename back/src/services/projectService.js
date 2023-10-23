@@ -1,31 +1,31 @@
 import { Project } from "../db"; // Project 모델을 import
 import { v4 as uuidv4 } from "uuid";
 
-class ProjectAuthService {
-  static async addProject(projectInfo) {
+class projectAuthService {
+  static async addProject( projectInfo ) {
     const projectId = uuidv4();
     const newProject = { projectId, ...projectInfo };
     const createdNewProject = await Project.create({ newProject });
     return createdNewProject;
   }
 
-  static async checkProject({ projectId }) {
-    const project = await Project.findOne({ projectId });
-    return project;
+  static async checkUser({ projectId }) {
+    const user = await Education.checkUserId({ projectId });
+    return user;
   }
 
   static async getProjects({ userId }) {
-    const projects = await Project.find({ userId });
+    const projects = await Project.findAll({ userId });
     return projects;
   }
 
   static async getProject({ projectId }) {
-    const project = await Project.findOne({ projectId });
+    const project = await Project.findByProjectId({ projectId });
     return project;
   }
 
   static async setProject({ projectId, toUpdate }) {
-    let project = await Project.findOne({ projectId });
+    let project = await Project.findByProjectId({ projectId });
 
     // DB에서 찾지 못한 경우, 에러 메시지 반환
     if (!project) {
@@ -51,4 +51,4 @@ class ProjectAuthService {
   }
 }
 
-export { ProjectAuthService };
+export { projectAuthService };
