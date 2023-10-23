@@ -1,7 +1,7 @@
 const { Router } = require('express');
-const { login_required } = require('../middlewares/login_required');
-const { request_checked } = require('../middlewares/middleware');
+const { login_required, request_checked } = require('../middlewares/requireMiddleware');
 const { userAuthService } = require('../services/userService');
+import { RefreshTokenModel } from '../db/schemas/refreshToken'; 
 
 const userAuthRouter = Router();
 
@@ -26,29 +26,46 @@ userAuthRouter.post("/user/register", request_checked, async function (req, res,
 });
 
 // 로그인하기
-userAuthRouter.post("/user/login", request_checked, async function (req, res, next) {
+userAuthRouter.post("/user/login", request_checked,
+ async function (req, res, next) {
   try {
     const { email, password } = req.body;
 
-    const [ token, user ] = await userAuthService.getUser({ email, password });
-    if (user.errorMessage) {
-      throw new Error(user.errorMessage);
+    const { accessToken, refreshToken, loginUser } = await userAuthService.getUser({ email, password });
+    if (loginUser.errorMessage) {
+      throw new Error(loginUser.errorMessage);
     }
 
-    res.cookie("user_cookie", token, {
+    res.cookie("user_cookie", accessToken, {
       path: "/", // 쿠키 저장 경로
-      httpOnly: true, // 클라이언트에서 쿠키 조작 x
-      sameSite: "lax", // 쿠키 전송 범위. default
-      maxAge: 60 * 60 * 1000, // 쿠키 유효기간. 1시간
+      httpOnly: true, // 클라이언트에서 쿠키 조작 불가
+      sameSite: "lax",
+      maxAge: 60 * 60 * 1000, // JWT 토큰의 유효기간 (1시간)
     });
-    // secure: true -> HTTPS에서만 사용 가능 (defult false).
-    // sameSite: 우리 사이트에서 다른 사이트로 링크 연결이 필요하다면 lax, 우리 사이트에서만 머무르면 strict
-    const { id, name, description } = user;
+    // refreshToken을 db로 저장
+    try {
+      const userId = loginUser.id; // 사용자 ID를 가져옵니다
+      // 리프래시 토큰을 생성 (이미 생성된 refreshToken 변수로 가정)
+      const refreshTokenDocument = new RefreshTokenModel({
+        userId: userId,
+        token: refreshToken,
+      });
+
+      // 데이터베이스에 리프래시 토큰 저장
+      refreshTokenDocument.save();
+    } catch (error) {
+      console.error("리프래시 토큰 저장 중 오류 발생:", error);
+      // 리프래시 토큰 저장 중 오류 발생 시 처리
+    }
+
+    const { id, name, description } = loginUser;
     res.status(200).send({ id, email, name, description });
+
   } catch (error) {
     next(error);
   }
 });
+
 
 // 전체 사용자목록 가져오기
 userAuthRouter.get("/userlist", login_required, async function (req, res, next) {
@@ -71,6 +88,7 @@ userAuthRouter.get("/user/current", login_required, async function (req, res, ne
       if (currentUserInfo.errorMessage) {
         throw new Error(currentUserInfo.errorMessage);
       }
+      
       const { id, email, name, description } = currentUserInfo;
       res.status(200).send({ id, email, name, description });
     } catch (error) {
@@ -128,4 +146,5 @@ userAuthRouter.get("/logout", async function (req, res, next) {
     message: '로그아웃 성공', 
   }).end();
 })
+
 export { userAuthRouter };

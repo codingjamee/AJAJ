@@ -1,6 +1,5 @@
 const { Router } = require('express');
-const { login_required } = require('../middlewares/login_required');
-const { userId_checked, request_checked } = require('../middlewares/middleware');
+const { login_required, userId_checked, request_checked } = require('../middlewares/requireMiddleware');
 const { NotFoundError } = require('../middlewares/errorHandlingMiddleware');
 
 const { educationAuthService } = require('../services/educationService');
@@ -37,7 +36,6 @@ educationAuthRouter.get("/user/:id/educations", login_required, async function (
     if (!educations) {
       throw new NotFoundError("학력을 가져올 수 없습니다.");
     }
-    console.log(educations);
     res.status(200).send({educations});
   } catch (error) {
     next(error);
