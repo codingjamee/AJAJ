@@ -2,27 +2,32 @@ import { Schema, model } from "mongoose";
 
 const ProjectSchema = new Schema(
   {
-    id: {
+    userId: {
+      type: String,
+      required: true,
+      ref: "User",
+    },
+    projectId: {
       type: String,
       required: true,
     },
-    project: {
+    projectName: {
       type: String,
       required: true,
     },
-    organization: {
+    projectDetail: {
       type: String,
       required: true,
     },
-    description: {
-      type: String,
-      required: true,
+    projectUrl: {
+      type: String, // URL을 저장하는 필드는 일반적으로 String으로 정의
+      required: false,
     },
-    startDate: {
+    projectStartDate: {
       type: Date,
       required: false,
     },
-    endDate: {
+    projectEndDate: {
       type: Date,
       required: false,
     },

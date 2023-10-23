@@ -1,6 +1,7 @@
 const { Router } = require('express');
 const { login_required, request_checked } = require('../middlewares/requireMiddleware');
 const { userAuthService } = require('../services/userService');
+import { RefreshTokenModel } from '../db/schemas/refreshToken'; 
 
 const userAuthRouter = Router();
 
@@ -25,7 +26,8 @@ userAuthRouter.post("/user/register", request_checked, async function (req, res,
 });
 
 // 로그인하기
-userAuthRouter.post("/user/login", request_checked, async function (req, res, next) {
+userAuthRouter.post("/user/login", request_checked,
+ async function (req, res, next) {
   try {
     const { email, password } = req.body;
 
@@ -40,20 +42,21 @@ userAuthRouter.post("/user/login", request_checked, async function (req, res, ne
       sameSite: "lax",
       maxAge: 60 * 60 * 1000, // JWT 토큰의 유효기간 (1시간)
     });
-    
-    res.cookie("refresh_token", refreshToken, {
-      path: "/user/login", // 쿠키 저장 경로
-      httpOnly: true, // 클라이언트에서 쿠키 조작 불가
-      sameSite: "lax",
-      maxAge: 7 * 60 * 60 * 1000, // 리프레시 토큰의 유효기간 설정 (7일)
-    });
+    // refreshToken을 db로 저장
+    try {
+      const userId = loginUser.id; // 사용자 ID를 가져옵니다
+      // 리프래시 토큰을 생성 (이미 생성된 refreshToken 변수로 가정)
+      const refreshTokenDocument = new RefreshTokenModel({
+        userId: userId,
+        token: refreshToken,
+      });
 
-    res.cookie("refresh_token", refreshToken, {
-      path: "/user/login", // 쿠키 저장 경로
-      httpOnly: true, // 클라이언트에서 쿠키 조작 불가
-      sameSite: "lax",
-      maxAge: 7 * 60 * 60 * 1000, // 리프레시 토큰의 유효기간 설정 (7일)
-    });
+      // 데이터베이스에 리프래시 토큰 저장
+      refreshTokenDocument.save();
+    } catch (error) {
+      console.error("리프래시 토큰 저장 중 오류 발생:", error);
+      // 리프래시 토큰 저장 중 오류 발생 시 처리
+    }
 
     const { id, name, description } = loginUser;
     res.status(200).send({ id, email, name, description });

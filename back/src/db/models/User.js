@@ -1,4 +1,5 @@
 import { UserModel } from "../schemas/user";
+import { RefreshTokenModel } from "../schemas/refreshToken"
 
 class User {
   static async create({ newUser }) {
@@ -28,6 +29,12 @@ class User {
 
     const updatedUser = await UserModel.findOneAndUpdate(filter, update, option);
     return updatedUser;
+  }
+
+  static async findRefreshToken({ token  }) {
+    // id 값을 받으면 해당 id의 token값을 가져와 줍니다
+    const refreshToken = await RefreshTokenModel.findOne({ userId : token  })
+    return refreshToken;
   }
 }
 

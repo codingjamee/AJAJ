@@ -51,12 +51,9 @@ class userAuthService {
     // 로그인 성공 -> JWT 웹 토큰 생성
     // const secretKey = process.env.JWT_SECRET_KEY || "jwt-secret-key";
     // const accessToken = jwt.sign({ user_id: user.id }, secretKey, { expiresIn: '1h' });
-    
+
     const accessToken = jwt.sign(user);
     const refreshToken = uuidv4(); // 새로운 리프래시 토큰 생성
-
-    // 리프래시 토큰을 안전한 저장소에 저장 (예: 데이터베이스)
-    // 이 때, 리프래시 토큰과 사용자 ID를 연결하여 관리
 
     const id = user.id;
     const name = user.name;
@@ -112,7 +109,6 @@ class userAuthService {
 
   static async getUserInfo({ userId }) {
     const user = await User.findById({ userId });
-
     if (!user) {
       const errorMessage =
         "해당 이메일은 가입 내역이 없습니다. 다시 한 번 확인해 주세요.";
@@ -120,6 +116,11 @@ class userAuthService {
     }
 
     return user;
+  }
+
+  static async getToken({ userId }) {
+    const token = await User.findRefreshToken({ userId });
+    return token;
   }
 }
 
