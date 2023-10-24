@@ -155,7 +155,6 @@ const Project = ({ isEditable, setAddForm, project = [], setProjects }) => {
           <FormWrapper
             onSubmitHandler={onSubmitHandler}
             isEditable={isEditable}
-            onClickHandler={setAddForm}
             formList={projectFormList}
             setAddForm={setEditMode}
           />

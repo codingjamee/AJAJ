@@ -113,7 +113,6 @@ const Certificate = ({
           <FormWrapper
             onSubmitHandler={onSubmitHandler}
             isEditable={isEditable}
-            onClickHandler={setAddForm}
             formList={certificateFormList}
             setAddForm={setEditMode}
           />

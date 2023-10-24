@@ -8,7 +8,7 @@ import { UserStateContext } from "../../../../App";
 import { awardsCommonFormProps } from "../../../utils/formListCommonProps";
 import { PortfolioOwnerDataContext } from "../Portfolio";
 
-const Award = ({ setAddForm, isEditable, award = [], setAwards }) => {
+const Award = ({ isEditable, award = [], setAwards }) => {
   // useState 훅을 통해 user 상태를 생성함.
   const [user, setUser] = useState(null);
   const [editMode, setEditMode] = useState(false);
@@ -41,8 +41,8 @@ const Award = ({ setAddForm, isEditable, award = [], setAwards }) => {
 
     //post 서버와 통신
     try {
-      const res = await Api.post(
-        `user/${userState.user.id}/award`,
+      const res = await Api.put(
+        `user/${userState.user.id}/award/${award.awardId}`,
         {
           awardName,
           awardDetail,
@@ -52,19 +52,28 @@ const Award = ({ setAddForm, isEditable, award = [], setAwards }) => {
         "Award"
       );
 
-      // console.log(res);
+      console.log(res);
       if (res.status === 200) {
+        console.log(award);
         setAwards((prev) => {
-          return [
-            ...prev,
-            { awardName, awardDetail, awardOrganization, awardDate },
-          ];
+          const updatedAwards = prev.map((prevAward) => {
+            if (prevAward.awardId === award.awardId) {
+              return {
+                ...award,
+                awardName,
+                awardDetail,
+                awardOrganization,
+                awardDate,
+              };
+            }
+          });
+          return updatedAwards;
         });
         setAwardName("");
         setAwardDetail("");
         setAwardOrganization("");
         setAwardDate("2023-01-01");
-        setAddForm(false);
+        setEditMode(false);
       } else if (res.status !== 200) {
         throw new Error("POST 요청이 실패하였습니다.");
       }
@@ -139,7 +148,6 @@ const Award = ({ setAddForm, isEditable, award = [], setAwards }) => {
             onSubmitHandler={onSubmitHandler}
             setAddForm={setEditMode}
             isEditable={isEditable}
-            onClickHandler={setAddForm}
           />
         )}
       </Card.Body>
