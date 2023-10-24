@@ -4,7 +4,7 @@ import { Nav, Navbar } from "react-bootstrap";
 import { UserStateContext, DispatchContext } from "../../../App";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "../../../UI/design.css";
-import logo from "./logo.png";
+import logo from "./logo0.png";
 import { PortfolioOwnerDataContext } from "../../pages/users/Portfolio";
 
 function Navigation() {
@@ -39,18 +39,13 @@ function Navigation() {
   };
 
   return (
-    <Navbar variant="dark" activeKey={location.pathname}>
-      <Navbar.Brand href="/">
-        <img
-          src={logo}
-          alt="ajaj portfolio logo"
-          width={"160px"}
-          height={"100%"}
-        />
-      </Navbar.Brand>
+    <Navbar variant="dark">
+      <Nav.Link onClick={() => navigate("/")}>
+        <img src={logo} alt="logo" width={"130px"} height={"100%"} />
+      </Nav.Link>
       <Navbar.Toggle aria-controls="basic-navbar-nav" />
       <Navbar.Collapse id="basic-navbar-nav" />
-      <Nav className="mr-auto">
+      <Nav className="mr-auto" activeKey={location.pathname}>
         {navItems.map(({ path, label }, index) => (
           <Nav.Link key={`navitem-${index}`} onClick={() => navigate(path)}>
             {" "}

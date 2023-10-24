@@ -106,53 +106,47 @@ const Award = ({ isEditable, award = [], setAwards }) => {
   };
 
   return (
-    <Card>
-      <Card.Body>
-        {!editMode && (
-          <>
-            <Card style={{ width: "100%" }}>
-              <Card.Body>
-                <Card.Title>{award.awardName}</Card.Title>
+    <Card style={{ width: "100%" }}>
+      {!editMode && (
+        <>
+          <Card.Title>{award.awardName}</Card.Title>
 
-                <Card.Subtitle className="mb-2 text-muted">
-                  {award.awardDetail}
-                  <br />
-                  {award.awardOrganization}
-                </Card.Subtitle>
-                <Card.Text>{award.awardDate}</Card.Text>
+          <Card.Subtitle className="mb-2 text-muted">
+            {award.awardDetail}
+            <br />
+            {award.awardOrganization}
+          </Card.Subtitle>
+          <Card.Text>{award.awardDate}</Card.Text>
 
-                {isEditable && (
-                  <Form.Group className="mt-3 text-center">
-                    <Col sm={{ span: 20 }}>
-                      <ButtonCommon
-                        variant="primary"
-                        type="submit"
-                        className="me-3"
-                        text="수정"
-                        onClickHandler={() => setEditMode((prev) => !prev)}
-                      />
+          {isEditable && (
+            <Form.Group className="mt-3 text-center">
+              <Col sm={{ span: 20 }}>
+                <ButtonCommon
+                  variant="primary"
+                  type="submit"
+                  className="me-3"
+                  text="수정"
+                  onClickHandler={() => setEditMode((prev) => !prev)}
+                />
 
-                      <ButtonCommon
-                        variant="secondary"
-                        text="삭제"
-                        onClickHandler={() => onClickDel(award.awardId)}
-                      />
-                    </Col>
-                  </Form.Group>
-                )}
-              </Card.Body>
-            </Card>
-          </>
-        )}
-        {editMode && (
-          <FormWrapper
-            formList={awardFormList}
-            onSubmitHandler={onSubmitHandler}
-            setAddForm={setEditMode}
-            isEditable={isEditable}
-          />
-        )}
-      </Card.Body>
+                <ButtonCommon
+                  variant="secondary"
+                  text="삭제"
+                  onClickHandler={() => onClickDel(award.awardId)}
+                />
+              </Col>
+            </Form.Group>
+          )}
+        </>
+      )}
+      {editMode && (
+        <FormWrapper
+          formList={awardFormList}
+          onSubmitHandler={onSubmitHandler}
+          setAddForm={setEditMode}
+          isEditable={isEditable}
+        />
+      )}
     </Card>
   );
 };
