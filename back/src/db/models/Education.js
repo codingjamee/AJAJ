@@ -11,8 +11,22 @@ class Education {
     return user;
   }
 
+  // static async findAll({ userId }) {
+  //   const Educations = await EducationModel.find({ userId });
+  //   return Educations;
+  // }
   static async findAll({ userId }) {
     const Educations = await EducationModel.find({ userId });
+    // const filteredEducations = Educations.map(({...rest}) => [rest._doc].map(({userId, _id, createdAt, updatedAt, __v, ...rest}) => rest)).flat();
+    // const result = filteredEducations.sort(((a,b) => {
+    //   if (new Date(a.admissionDate) > new Date(b.admissionDate)) return 1;
+    //   if (new Date(a.admissionDate) < new Date(b.admissionDate)) return -1;
+
+    //   if (new Date(a.graduationDate) > new Date(b.graduationDate)) return 1;
+    //   if (new Date(a.graduationDate) < new Date(b.graduationDate)) return -1;
+    // }));
+    // console.log(result);
+    // return result;
     return Educations;
   }
 

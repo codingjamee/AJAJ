@@ -10,9 +10,9 @@ const certificateAuthRouter = Router();
 certificateAuthRouter.post("/user/:id/certificate", login_required, request_checked, async function (req, res, next) {
     try {
         const userId = req.params.id;
-        const { certificateName, certificateOrganization, acquisitionDate } = req.body;
+        const { certificateName, certificateDetail, certificateOrganization, acquisitionDate } = req.body;
         const newCertificate = await certificateAuthService.addCertificate({
-            userId, certificateName, certificateOrganization, acquisitionDate });
+            userId, certificateName, certificateDetail, certificateOrganization, acquisitionDate });
 
       if (!newCertificate) {
         throw new NotFoundError("해당 자격증이 생성되지 않았습니다.");
@@ -47,8 +47,8 @@ certificateAuthRouter.put("/user/:id/certificate/:certificateId", login_required
     try {
       const certificateId = req.params.certificateId;
 
-      const { certificateName, certificateOrganization, acquisitionDate } = req.body;
-      const toUpdate = { certificateName, certificateOrganization, acquisitionDate };
+      const { certificateName, certificateDetail, certificateOrganization, acquisitionDate } = req.body;
+      const toUpdate = { certificateName, certificateDetail, certificateOrganization, acquisitionDate };
 
       const updatedCertificate = await certificateAuthService.setCertificate({ certificateId, toUpdate });
 
