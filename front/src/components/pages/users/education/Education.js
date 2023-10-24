@@ -48,8 +48,8 @@ const Education = ({
 
     //post 서버와 통신
     try {
-      const res = await Api.post(
-        `user/${userState.user.id}/education`,
+      const res = await Api.put(
+        `user/${userState.user.id}/education/${education.eduId}`,
         {
           schoolName,
           major,
@@ -60,12 +60,21 @@ const Education = ({
         "Education"
       );
       // console.log(res.data);
-      if (res.data.statusCode === 201) {
+      if (res.data.statusCode === 200) {
         setEducations((prev) => {
-          return [
-            ...prev,
-            { schoolName, major, degree, admissionDate, graduationDate },
-          ];
+          const updatedEdus = prev.map((prevEdu) => {
+            if (prevEdu.eduId === education.eduId) {
+              return {
+                ...education,
+                schoolName,
+                major,
+                degree,
+                admissionDate,
+                graduationDate,
+              };
+            }
+          });
+          return updatedEdus;
         });
         setSchoolName("");
         setMajor("");
@@ -73,7 +82,7 @@ const Education = ({
         setAdmissionDate("2023-01-01");
         setGraduationDate("2023-01-01");
         setEditMode(false);
-      } else if (res.data.statusCode !== 201) {
+      } else if (res.data.statusCode !== 200) {
         throw new Error("POST 요청을 실패하였습니다.");
       }
     } catch (err) {
@@ -150,7 +159,6 @@ const Education = ({
             onSubmitHandler={onSubmitHandler}
             setAddForm={setEditMode}
             isEditable={isEditable}
-            onClickHandler={setAddForm}
           />
         )}
       </Card.Body>
