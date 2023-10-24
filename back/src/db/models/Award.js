@@ -18,7 +18,15 @@ class Award {
 
   static async findAll({ userId }) {
     const awards = await AwardModel.find({ userId });
-    return awards;
+    const filteredAwards = awards.map(({...rest}) => [rest._doc].map(({userId, _id, createdAt, updatedAt, __v, ...rest}) => rest)).flat();
+    const result = filteredAwards.sort(((a,b) => {
+      if (new Date(a.awardDate) > new Date(b.awardDate)) return 1;
+      if (new Date(a.awardDate) < new Date(b.awardDate)) return -1;
+
+      if (new Date(a.awardName) > new Date(b.awardName)) return 1;
+      if (new Date(a.awardName) < new Date(b.awardName)) return -1;
+    }));
+    return result;
   }
 
   static async update({ awardId, fieldToUpdate, newValue }) {

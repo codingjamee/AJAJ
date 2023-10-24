@@ -18,7 +18,15 @@ class Certificate {
 
   static async findAll({ userId }) {
     const certificates = await CertificateModel.find({ userId });
-    return certificates;
+    const filteredCertificates = certificates.map(({...rest}) => [rest._doc].map(({userId, _id, createdAt, updatedAt, __v, ...rest}) => rest)).flat();
+    const result = filteredCertificates.sort(((a,b) => {
+      if (new Date(a.acquisitionDate) > new Date(b.acquisitionDate)) return 1;
+      if (new Date(a.acquisitionDate) < new Date(b.acquisitionDate)) return -1;
+
+      if (new Date(a.certificateName) > new Date(b.certificateName)) return 1;
+      if (new Date(a.certificateName) < new Date(b.certificateName)) return -1;
+    }));
+    return result;
   }
 
   static async update({ certificateId, fieldToUpdate, newValue }) {
