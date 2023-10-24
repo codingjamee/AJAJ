@@ -39,6 +39,12 @@ class certificateAuthService {
           const newValue = toUpdate.certificateName;
           Certificate = await Certificate.update({ certificateId, fieldToUpdate, newValue });
         }
+
+        if (toUpdate.certificateDetail) {
+          const fieldToUpdate = "certificateDetail";
+          const newValue = toUpdate.certificateDetail;
+          Certificate = await Certificate.update({ certificateId, fieldToUpdate, newValue });
+        }
     
         if (toUpdate.certificateOrganization) {
           const fieldToUpdate = "certificateOrganization";
@@ -51,7 +57,7 @@ class certificateAuthService {
           const newValue = toUpdate.acquisitionDate;
           Certificate = await Certificate.update({ certificateId, fieldToUpdate, newValue });
         }
-    
+  
     
         return certificate;
       }

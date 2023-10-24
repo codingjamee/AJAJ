@@ -15,6 +15,10 @@ const CertificateSchema = new Schema(
        type: String,
        required: true,
      },
+     certificateDetail: {
+      type: String,
+      required: false,
+    },
      certificateOrganization: {
        type: String,
        required: true,
