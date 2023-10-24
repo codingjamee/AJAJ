@@ -4,12 +4,12 @@ import { Form, Card, Col } from "react-bootstrap";
 import FormWrapper from "../../../common/FormWrapper";
 import ButtonCommon from "../../../common/ButtonCommon";
 import { UserStateContext } from "../../../../App";
+import { educationsCommonFormProps } from "../../../utils/formListCommonProps";
 
 const Education = ({
   setAddForm,
   isEditable,
-  optionArr,
-  education = [],
+  education = {},
   setEducations,
 }) => {
   // useState 훅을 통해 user 상태를 생성함.
@@ -27,51 +27,17 @@ const Education = ({
   const userState = useContext(UserStateContext);
 
   //form 상세설정 어레이
-  const formList = [
-    {
-      controlId: "eduSchoolName",
-      customClassName: "mb-3",
-      label: "학교이름",
-      placeholder: "학교이름",
-      value: schoolName,
-      changeHandler: (v) => setSchoolName(v),
-    },
-    {
-      controlId: "eduMajor",
-      customClassName: "mb-3",
-      label: "전공",
-      placeholder: "전공",
-      value: major,
-      changeHandler: (v) => setMajor(v),
-    },
-    {
-      controlId: "eduDegree",
-      select: "true",
-      customClassName: "mb-3",
-      label: "학위",
-      placeholder: "학위",
-      value: degree,
-      changeHandler: (v) => setDegree(v),
-      optionValue: "학위를 선택하세요",
-      optionArr: optionArr,
-    },
-    {
-      controlId: "startDate",
-      customClassName: "mb-3",
-      value: admissionDate,
-      changeHandler: (v) => setAdmissionDate(v),
-      label: "입학연월일",
-      type: "date",
-    },
-    {
-      controlId: "endDate",
-      customClassName: "mb-3",
-      value: graduationDate,
-      changeHandler: (v) => setGraduationDate(v),
-      label: "졸업연월일",
-      type: "date",
-    },
+  const eduState = [
+    { value: schoolName, changeHandler: (v) => setSchoolName(v) },
+    { value: major, changeHandler: (v) => setMajor(v) },
+    { value: degree, changeHandler: (v) => setDegree(v) },
+    { value: admissionDate, changeHandler: (v) => setAdmissionDate(v) },
+    { value: graduationDate, changeHandler: (v) => setGraduationDate(v) },
   ];
+
+  const eduFormList = educationsCommonFormProps.map((eduCommon, index) => {
+    return { ...eduCommon, ...eduState[index] };
+  });
 
   //수정해서 onSubmitHandler
   const onSubmitHandler = async (e) => {
@@ -84,55 +50,65 @@ const Education = ({
     //portfolioOwnerId는 portfolio에서 받아옴
 
     //post 서버와 통신
-    const res = await Api.post(
-      `user/${userState.user.id}/education`,
-      {
-        schoolName,
-        major,
-        degree,
-        admissionDate,
-        graduationDate,
-      },
-      "Education"
-    );
-    console.log(res.ok);
-    if (res.data.ok) {
-      setEducations((prev) => {
-        return [
-          ...prev,
-          { schoolName, major, degree, admissionDate, graduationDate },
-        ];
-      });
-      setSchoolName("");
-      setMajor("");
-      setDegree("");
-      setAdmissionDate("2023-01-01");
-      setGraduationDate("2023-01-01");
-      setAddForm(false);
-    } else if (!res.data.ok) {
-      throw new Error("POST 요청을 실패하였습니다.");
+    try {
+      const res = await Api.post(
+        `user/${userState.user.id}/education`,
+        {
+          schoolName,
+          major,
+          degree,
+          admissionDate,
+          graduationDate,
+        },
+        "Education"
+      );
+      console.log(res.data);
+      if (res.data.statusCode === 201) {
+        setEducations((prev) => {
+          return [
+            ...prev,
+            { schoolName, major, degree, admissionDate, graduationDate },
+          ];
+        });
+        setSchoolName("");
+        setMajor("");
+        setDegree("");
+        setAdmissionDate("2023-01-01");
+        setGraduationDate("2023-01-01");
+        setEditMode(false);
+      } else if (res.data.statusCode !== 201) {
+        throw new Error("POST 요청을 실패하였습니다.");
+      }
+    } catch (err) {
+      throw new Error("서버와 통신이 실패하였습니다");
     }
   };
 
   //삭제함수
 
   const onClickDel = async (eduId) => {
+    console.log(education);
     console.log("delete버튼이 선택됨");
     console.log(eduId);
 
-    const res = await Api.delete(
-      `user/${userState.user.id}/education`,
-      eduId,
-      "Education"
-    );
-    console.log(res);
-    // if (res.data.ok) {
-    setEducations((prev) =>
-      prev.filter((educations) => Number(educations.eduId) !== Number(eduId))
-    );
-    // } else if (!res.data.ok) {
-    // throw new Error("삭제를 실패하였습니다");
-    // }
+    try {
+      const res = await Api.delete(
+        `user/${userState.user.id}/education`,
+        eduId,
+        "Education"
+      );
+      console.log(res);
+      if (res.data.statusCode === 200) {
+        setEducations((prevObj) => {
+          console.log(prevObj.filter((edus) => edus.eduId !== eduId));
+          return prevObj.filter((edus) => edus.eduId !== eduId);
+        });
+      } else if (res.data.statusCode !== 200) {
+        throw new Error("삭제를 실패하였습니다");
+      }
+    } catch (err) {
+      throw new Error("서버와 통신에 실패하였습니다");
+    }
   };
 
   return (
@@ -178,7 +154,7 @@ const Education = ({
         )}
         {editMode && (
           <FormWrapper
-            formList={formList}
+            formList={eduFormList}
             onSubmitHandler={onSubmitHandler}
             setAddForm={setEditMode}
             isEditable={isEditable}
