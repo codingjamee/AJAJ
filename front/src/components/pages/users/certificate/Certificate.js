@@ -109,54 +109,44 @@ const Certificate = ({ isEditable, certificate = [], setCertificates }) => {
   };
 
   return (
-    <Card>
-      <Card.Body>
-        {!editMode && (
-          <>
-            <Card style={{ width: "100%" }}>
-              <Card.Body>
-                <Card.Title>{certificate.certificateName}</Card.Title>
+    <Card style={{ width: "100%" }}>
+      {!editMode && (
+        <>
+          <Card.Title>{certificate.certificateName}</Card.Title>
+          <Card.Subtitle className="mb-2 text-muted">
+            {certificate.certificateDetail}
+            {certificate.certificateOrganization}
+          </Card.Subtitle>
+          <Card.Text>{certificate.acquisitionDate}</Card.Text>
+          {isEditable && (
+            <Form.Group className="mt-3 text-center">
+              <Col sm={{ span: 20 }}>
+                <ButtonCommon
+                  variant="primary"
+                  type="submit"
+                  className="me-3"
+                  text="수정"
+                  onClickHandler={() => setEditMode((prev) => !prev)}
+                />
 
-                <Card.Subtitle className="mb-2 text-muted">
-                  {certificate.certificateDetail}
-                  {certificate.certificateOrganization}
-                </Card.Subtitle>
-                <Card.Text>{certificate.acquisitionDate}</Card.Text>
-
-                {isEditable && (
-                  <Form.Group className="mt-3 text-center">
-                    <Col sm={{ span: 20 }}>
-                      <ButtonCommon
-                        variant="primary"
-                        type="submit"
-                        className="me-3"
-                        text="수정"
-                        onClickHandler={() => setEditMode((prev) => !prev)}
-                      />
-
-                      <ButtonCommon
-                        variant="secondary"
-                        text="삭제"
-                        onClickHandler={() =>
-                          onClickDel(certificate.certificateId)
-                        }
-                      />
-                    </Col>
-                  </Form.Group>
-                )}
-              </Card.Body>
-            </Card>
-          </>
-        )}
-        {editMode && (
-          <FormWrapper
-            onSubmitHandler={onSubmitHandler}
-            isEditable={isEditable}
-            formList={certificateFormList}
-            setAddForm={setEditMode}
-          />
-        )}
-      </Card.Body>
+                <ButtonCommon
+                  variant="secondary"
+                  text="삭제"
+                  onClickHandler={() => onClickDel(certificate.certificateId)}
+                />
+              </Col>
+            </Form.Group>
+          )}
+        </>
+      )}
+      {editMode && (
+        <FormWrapper
+          onSubmitHandler={onSubmitHandler}
+          isEditable={isEditable}
+          formList={certificateFormList}
+          setAddForm={setEditMode}
+        />
+      )}
     </Card>
   );
 };

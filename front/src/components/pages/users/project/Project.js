@@ -54,112 +54,115 @@ const Project = ({ isEditable, setAddForm, project = [], setProjects }) => {
     //portfolioOwnerId는 portfolio에서 받아옴
 
     //post 서버와 통신
-    // const res = await Api.post(`user/${userState.user.id}/project`, {
-    // projectName,
-    // projectDetail,
-    // projectImgUrl,
-    // projectStartDate,
-    // projectEndDate,
-    // });
-
-    // console.log(res);
-    // if (res.data.statusCode === 201) {
-    //   setProjects((prev) => {
-    //     return [
-    //       ...prev,
-    //       {
-    //         projectName,
-    //         projectDetail,
-    //         projectImgUrl,
-    //         projectStartDate,
-    //         projectEndDate,
-    //       },
-    //     ];
-    //   });
-    //   setProjectName = useState("");
-    //   setProjectDetail = useState("");
-    //   setProjectImgUrl = useState("");
-    //   setProjectStartDate = useState("2023-01-01");
-    //   setProjectEndDate = useState("2023-01-01");
-    //   setAddForm(false);
-    // } else if (!res.data.ok) {
-    //   throw new Error("POST 요청이 실패하였습니다.");
-    // }
+    try {
+      const res = await Api.put(
+        `user/${userState.user.id}/project/${project.projectId}`,
+        {
+          projectName,
+          projectDetail,
+          projectImgUrl,
+          projectStartDate,
+          projectEndDate,
+        },
+        "Project"
+      );
+      //console.log(res.data);
+      if (res.status === 200) {
+        setProjects((prev) => {
+          const updatedProjects = prev.map((prevProject) => {
+            if (prevProject.projectId === project.projectId) {
+              return {
+                ...prevProject,
+                projectName,
+                projectDetail,
+                projectImgUrl,
+                projectStartDate,
+                projectEndDate,
+              };
+            }
+            return prevProject;
+          });
+          return updatedProjects;
+        });
+        setProjectName("");
+        setProjectDetail("");
+        setProjectImgUrl("");
+        setProjectStartDate("2023-01-01");
+        setProjectEndDate("2023-01-01");
+        setAddForm(false);
+      } else if (res.status !== 200) {
+        throw new Error("POST 요청이 실패하였습니다.");
+      }
+    } catch (err) {
+      throw new Error("서버와 통신이 실패하였습니다");
+    }
   };
 
   //삭제함수
 
   const onClickDel = async (projectId) => {
-    console.log(project);
-    console.log("delete버튼이 선택됨");
-    console.log(projectId);
-
-    const res = await Api.delete(
-      `user/${userState.user.id}/project`,
-      projectId,
-      "project"
-    );
-    console.log(res);
-    // if (res.data.ok) {
-    setProjects((prev) =>
-      prev.filter(
-        (projects) => Number(projects.projectId) !== Number(projectId)
-      )
-    );
-    // } else if (!res.data.ok) {
-    // throw new Error("삭제를 실패하였습니다");
-    // }
+    try {
+      const res = await Api.delete(
+        `user/${userState.user.id}/project`,
+        projectId,
+        "Project"
+      );
+      // console.log(res);
+      if (res.status === 200) {
+        setProjects((prevObj) => {
+          return prevObj.filter((projects) => projects.projectId !== projectId);
+        });
+      } else if (res.status !== 200) {
+        throw new Error("삭제를 실패하였습니다");
+      }
+    } catch (err) {
+      throw new Error("서버와 통신에 실패하였습니다");
+    }
   };
 
   return (
-    <Card>
-      <Card.Body>
-        {!editMode && (
-          <>
-            <Card style={{ width: "100%" }}>
-              <Card.Body>
-                <Card.Title>{project.projectName}</Card.Title>
+    <Card style={{ width: "100%" }}>
+      {!editMode && (
+        <>
+          <Card.Title>{project.projectName}</Card.Title>
 
-                <Card.Subtitle className="mb-2 text-muted">
-                  {project.projectDetail}
-                  <img src={project.projectImgUrl} />
-                </Card.Subtitle>
-                <Card.Text>
-                  {project.projectStartDate} ~ {project.projectEndDate}
-                </Card.Text>
+          <Card.Subtitle className="mb-2 text-muted">
+            {project.projectDetail}
+            <img src={project.projectImgUrl} />
+          </Card.Subtitle>
+          <Card.Text>
+            {project.projectStartDate} ~ {project.projectEndDate}
+          </Card.Text>
 
-                {isEditable && (
-                  <Form.Group className="mt-3 text-center">
-                    <Col sm={{ span: 20 }}>
-                      <ButtonCommon
-                        variant="primary"
-                        type="submit"
-                        className="me-3"
-                        text="수정"
-                        onClickHandler={() => setEditMode((prev) => !prev)}
-                      />
+          {isEditable && (
+            <Form.Group className="mt-3 text-center">
+              <Col sm={{ span: 20 }}>
+                <ButtonCommon
+                  variant="primary"
+                  type="submit"
+                  className="me-3"
+                  text="수정"
+                  onClickHandler={() => setEditMode((prev) => !prev)}
+                />
 
-                      <ButtonCommon
-                        variant="secondary"
-                        text="삭제"
-                        onClickHandler={() => onClickDel(project.id)}
-                      />
-                    </Col>
-                  </Form.Group>
-                )}
-              </Card.Body>
-            </Card>
-          </>
-        )}
-        {editMode && (
-          <FormWrapper
-            onSubmitHandler={onSubmitHandler}
-            isEditable={isEditable}
-            formList={projectFormList}
-            setAddForm={setEditMode}
-          />
-        )}
-      </Card.Body>
+                <ButtonCommon
+                  variant="secondary"
+                  text="삭제"
+                  onClickHandler={() => onClickDel(project.projectId)}
+                />
+              </Col>
+            </Form.Group>
+          )}
+        </>
+      )}
+      {editMode && (
+        <FormWrapper
+          onSubmitHandler={onSubmitHandler}
+          isEditable={isEditable}
+          formList={projectFormList}
+          setAddForm={setEditMode}
+        />
+      )}
     </Card>
   );
 };

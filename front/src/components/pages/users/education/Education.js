@@ -109,55 +109,47 @@ const Education = ({ isEditable, education = {}, setEducations }) => {
   };
 
   return (
-    <Card>
-      <Card.Body>
-        {!editMode && (
-          <>
-            <Card style={{ width: "100%" }}>
-              <Card.Body>
-                <Card.Title>{education.schoolName}</Card.Title>
+    <Card style={{ width: "100%" }}>
+      {!editMode && (
+        <>
+          <Card.Title>{education.schoolName}</Card.Title>
+          <Card.Subtitle className="mb-2 text-muted">
+            {education.major}
+            <br />
+            {education.degree}
+          </Card.Subtitle>
+          <Card.Text>
+            {education.admissionDate} ~ {education.graduationDate}
+          </Card.Text>
+          {isEditable && (
+            <Form.Group className="mt-3 text-center">
+              <Col sm={{ span: 20 }}>
+                <ButtonCommon
+                  variant="primary"
+                  type="submit"
+                  className="me-3"
+                  text="수정"
+                  onClickHandler={() => setEditMode((prev) => !prev)}
+                />
 
-                <Card.Subtitle className="mb-2 text-muted">
-                  {education.major}
-                  <br />
-                  {education.degree}
-                </Card.Subtitle>
-                <Card.Text>
-                  {education.admissionDate} ~ {education.graduationDate}
-                </Card.Text>
-
-                {isEditable && (
-                  <Form.Group className="mt-3 text-center">
-                    <Col sm={{ span: 20 }}>
-                      <ButtonCommon
-                        variant="primary"
-                        type="submit"
-                        className="me-3"
-                        text="수정"
-                        onClickHandler={() => setEditMode((prev) => !prev)}
-                      />
-
-                      <ButtonCommon
-                        variant="secondary"
-                        text="삭제"
-                        onClickHandler={() => onClickDel(education.eduId)}
-                      />
-                    </Col>
-                  </Form.Group>
-                )}
-              </Card.Body>
-            </Card>
-          </>
-        )}
-        {editMode && (
-          <FormWrapper
-            formList={eduFormList}
-            onSubmitHandler={onSubmitHandler}
-            setAddForm={setEditMode}
-            isEditable={isEditable}
-          />
-        )}
-      </Card.Body>
+                <ButtonCommon
+                  variant="secondary"
+                  text="삭제"
+                  onClickHandler={() => onClickDel(education.eduId)}
+                />
+              </Col>
+            </Form.Group>
+          )}
+        </>
+      )}
+      {editMode && (
+        <FormWrapper
+          formList={eduFormList}
+          onSubmitHandler={onSubmitHandler}
+          setAddForm={setEditMode}
+          isEditable={isEditable}
+        />
+      )}
     </Card>
   );
 };

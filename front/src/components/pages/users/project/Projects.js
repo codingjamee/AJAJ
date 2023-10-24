@@ -30,7 +30,7 @@ const projects = [
 ];
 const Projects = (props) => {
   const [addForm, setAddForm] = useState(false);
-  // const [projects, setProjects] = useState([]);
+  const [projects, setProjects] = useState([]);
   const [projectName, setProjectName] = useState("");
   const [projectDetail, setProjectDetail] = useState("");
   const [projectImgUrl, setProjectImgUrl] = useState("");
@@ -65,57 +65,67 @@ const Projects = (props) => {
     //portfolioOwnerId는 portfolio에서 받아옴
 
     //post 서버와 통신
-    // const res = await Api.post(`user/${userState.user.id}/project`, {
-    // projectName,
-    // projectDetail,
-    // projectImgUrl,
-    // projectStartDate,
-    // projectEndDate,
-    // });
+    try {
+      const res = await Api.post(`user/${userState.user.id}/project`, {
+        projectName,
+        projectDetail,
+        projectImgUrl,
+        projectStartDate,
+        projectEndDate,
+      });
 
-    // console.log(res);
-    // if (res.data.statusCode === 201) {
-    //   setProject((prev) => {
-    //     return [
-    //       ...prev,
-    //       { projectName, projectDetail, projectOrganization, projectDate },
-    //     ];
-    //   });
-    // setProjectName = useState("");
-    // setProjectDetail = useState("");
-    // setProjectImgUrl = useState("");
-    // setProjectStartDate = useState("2023-01-01");
-    // setProjectEndDate = useState("2023-01-01");
-    //   setAddForm(false);
-    // } else if (!res.data.ok) {
-    //   throw new Error("POST 요청이 실패하였습니다.");
-    // }
+      const postedNewId = res.data.projectId;
+
+      if (res.data.statusCode === 201) {
+        setProjects((prev) => {
+          return [
+            ...prev,
+            {
+              projectId: postedNewId,
+              projectName,
+              projectDetail,
+              projectImgUrl,
+              projectStartDate,
+              projectEndDate,
+            },
+          ];
+        });
+        setProjectName("");
+        setProjectDetail("");
+        setProjectImgUrl("");
+        setProjectStartDate("2023-01-01");
+        setProjectEndDate("2023-01-01");
+        setAddForm(false);
+      } else if (res.status !== 201) {
+        throw new Error("POST 요청이 실패하였습니다.");
+      }
+    } catch (err) {
+      throw new Error("서버와 통신이 실패하였습니다.");
+    }
   };
 
   // 모든 수상 목록 가져오기 서버와 통신
-  // useEffect(() => {
-  //   Api.get(`user/${portfolioOwnerData.id}/projects`, "", "project").then(
-  //     (res) => {
-  //       return setProject(res.data.project);
-  //     }
-  //   );
-  // }, [portfolioOwnerData.id]);
+  useEffect(() => {
+    Api.get(`user/${portfolioOwnerData.id}/projects`, "", "projects").then(
+      (res) => {
+        return setProjects(res.data.projects);
+      }
+    );
+  }, [portfolioOwnerData.id]);
 
   return (
     <>
       <Card>
         <h4>프로젝트</h4>
-        {projects.map((project, index) => {
-          return (
-            <Project
-              key={`project-${index}`}
-              isEditable={isEditable}
-              formList={projectFormList}
-              // setProject={setProject}
-              project={project}
-            />
-          );
-        })}
+        {projects.map((project, index) => (
+          <Project
+            key={`project-${index}`}
+            isEditable={isEditable}
+            formList={projectFormList}
+            setProjects={setProjects}
+            project={project}
+          />
+        ))}
         {isEditable && (
           <Card>
             {addForm && (
