@@ -58,18 +58,26 @@ const Awards = (props) => {
       "Awards"
     );
 
+    const postedNewId = res.data.awardId;
+
     if (res.status === 201) {
       setAwards((prev) => {
         return [
           ...prev,
-          { awardName, awardDetail, awardOrganization, awardDate },
+          {
+            awardId: postedNewId,
+            awardName,
+            awardDetail,
+            awardOrganization,
+            awardDate,
+          },
         ];
       });
       setAwardName("");
       setAwardDetail("");
       setAwardOrganization("");
       setAwardDate("2023-01-01");
-      // setAddForm(false);
+      setAddForm(false);
     } else if (res.status !== 201) {
       throw new Error("POST 요청이 실패하였습니다.");
     }
@@ -93,28 +101,10 @@ const Awards = (props) => {
             key={`award-${index}`}
             isEditable={isEditable}
             formList={awardFormList}
-            // setAwards={setAwards}
+            setAwards={setAwards}
             award={award}
           />
         ))}
-        {isEditable && (
-          <Card>
-            {addForm && (
-              <FormWrapper
-                {...props}
-                formList={awardFormList}
-                onSubmitHandler={handleSubmit}
-                setAddForm={setAddForm}
-              />
-            )}
-            <ButtonCommon
-              variant="outline-info"
-              size="sm"
-              onClickHandler={() => setAddForm((prev) => !prev)}
-              text="+"
-            />
-          </Card>
-        )}
         {isEditable && (
           <Card>
             {addForm && (

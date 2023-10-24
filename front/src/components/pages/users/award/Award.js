@@ -1,16 +1,12 @@
-//********************************상세 커스텀 수정필요**************************************
-import { useContext, useEffect, useState } from "react";
+import { useContext, useState } from "react";
 import * as Api from "../../../utils/api";
 import { Form, Card, Col } from "react-bootstrap";
 import FormWrapper from "../../../common/FormWrapper";
 import ButtonCommon from "../../../common/ButtonCommon";
 import { UserStateContext } from "../../../../App";
 import { awardsCommonFormProps } from "../../../utils/formListCommonProps";
-import { PortfolioOwnerDataContext } from "../Portfolio";
 
-const Award = ({ setAddForm, isEditable, award = [], setAwards }) => {
-  // useState 훅을 통해 user 상태를 생성함.
-  const [user, setUser] = useState(null);
+const Award = ({ isEditable, award = {}, setAwards }) => {
   const [editMode, setEditMode] = useState(false);
   const [awardName, setAwardName] = useState(award.awardName || "");
   const [awardDetail, setAwardDetail] = useState(award.awardDetail || "");
@@ -19,7 +15,6 @@ const Award = ({ setAddForm, isEditable, award = [], setAwards }) => {
   );
   const [awardDate, setAwardDate] = useState(award.awardDate || "2023-01-01");
   const userState = useContext(UserStateContext);
-  const portfolioOwnerData = useContext(PortfolioOwnerDataContext);
 
   //form 상세설정 어레이
   const awardState = [
@@ -41,8 +36,8 @@ const Award = ({ setAddForm, isEditable, award = [], setAwards }) => {
 
     //post 서버와 통신
     try {
-      const res = await Api.post(
-        `user/${userState.user.id}/award`,
+      const res = await Api.put(
+        `user/${userState.user.id}/award/${award.awardId}`,
         {
           awardName,
           awardDetail,
@@ -52,19 +47,25 @@ const Award = ({ setAddForm, isEditable, award = [], setAwards }) => {
         "Award"
       );
 
-      // console.log(res);
+      console.log(res);
       if (res.status === 200) {
+        console.log(award);
         setAwards((prev) => {
-          return [
-            ...prev,
-            { awardName, awardDetail, awardOrganization, awardDate },
-          ];
+          const updatedAwards = prev.map((prevAward) => {
+            if (prevAward.awardId === award.awardId) {
+              return {
+                ...prevAward,
+                awardName,
+                awardDetail,
+                awardOrganization,
+                awardDate,
+              };
+            }
+            return prevAward;
+          });
+          return updatedAwards;
         });
-        setAwardName("");
-        setAwardDetail("");
-        setAwardOrganization("");
-        setAwardDate("2023-01-01");
-        setAddForm(false);
+        setEditMode(false);
       } else if (res.status !== 200) {
         throw new Error("POST 요청이 실패하였습니다.");
       }
@@ -95,54 +96,47 @@ const Award = ({ setAddForm, isEditable, award = [], setAwards }) => {
   };
 
   return (
-    <Card>
-      <Card.Body>
-        {!editMode && (
-          <>
-            <Card style={{ width: "100%" }}>
-              <Card.Body>
-                <Card.Title>{award.awardName}</Card.Title>
+    <Card style={{ width: "100%" }}>
+      {!editMode && (
+        <>
+          <Card.Title>{award.awardName}</Card.Title>
 
-                <Card.Subtitle className="mb-2 text-muted">
-                  {award.awardDetail}
-                  <br />
-                  {award.awardOrganization}
-                </Card.Subtitle>
-                <Card.Text>{award.awardDate}</Card.Text>
+          <Card.Subtitle className="mb-2 text-muted">
+            {award.awardDetail}
+            <br />
+            {award.awardOrganization}
+          </Card.Subtitle>
+          <Card.Text>{award.awardDate}</Card.Text>
 
-                {isEditable && (
-                  <Form.Group className="mt-3 text-center">
-                    <Col sm={{ span: 20 }}>
-                      <ButtonCommon
-                        variant="primary"
-                        type="submit"
-                        className="me-3"
-                        text="수정"
-                        onClickHandler={() => setEditMode((prev) => !prev)}
-                      />
+          {isEditable && (
+            <Form.Group className="mt-3 text-center">
+              <Col sm={{ span: 20 }}>
+                <ButtonCommon
+                  variant="primary"
+                  type="submit"
+                  className="me-3"
+                  text="수정"
+                  onClickHandler={() => setEditMode((prev) => !prev)}
+                />
 
-                      <ButtonCommon
-                        variant="secondary"
-                        text="삭제"
-                        onClickHandler={() => onClickDel(award.awardId)}
-                      />
-                    </Col>
-                  </Form.Group>
-                )}
-              </Card.Body>
-            </Card>
-          </>
-        )}
-        {editMode && (
-          <FormWrapper
-            formList={awardFormList}
-            onSubmitHandler={onSubmitHandler}
-            setAddForm={setEditMode}
-            isEditable={isEditable}
-            onClickHandler={setAddForm}
-          />
-        )}
-      </Card.Body>
+                <ButtonCommon
+                  variant="secondary"
+                  text="삭제"
+                  onClickHandler={() => onClickDel(award.awardId)}
+                />
+              </Col>
+            </Form.Group>
+          )}
+        </>
+      )}
+      {editMode && (
+        <FormWrapper
+          formList={awardFormList}
+          onSubmitHandler={onSubmitHandler}
+          setAddForm={setEditMode}
+          isEditable={isEditable}
+        />
+      )}
     </Card>
   );
 };
