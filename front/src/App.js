@@ -9,6 +9,9 @@ import Login from "./components/pages/login/Login";
 import Network from "./components/pages/network/Network";
 import RegisterForm from "./components/pages/register/RegisterForm";
 import Portfolio from "./components/pages/users/Portfolio";
+import { loadingActions } from "./store/loading";
+import { useDispatch, useSelector } from "react-redux";
+import LoadingLayer from "./UI/LoadingLayer";
 
 export const UserStateContext = createContext(null);
 export const DispatchContext = createContext(null);
@@ -18,6 +21,8 @@ function App() {
     user: null,
   });
   const [isFetchCompleted, setIsFetchCompleted] = useState(false);
+  const loadingDispatch = useDispatch();
+  const loadingState = useSelector((state) => state.loading.open);
 
   const fetchCurrentUser = async () => {
     try {
@@ -38,9 +43,20 @@ function App() {
     fetchCurrentUser();
   }, []);
 
-  if (!isFetchCompleted) {
-    return "loading...";
-  }
+  useEffect(() => {
+    if (!isFetchCompleted) {
+      loadingDispatch(loadingActions.open());
+    } else {
+      loadingDispatch(loadingActions.close());
+      console.log(loadingState);
+    }
+
+    if (loadingState) {
+      return <LoadingLayer message="Loading....." />;
+    } else {
+      loadingDispatch(loadingActions.close());
+    }
+  }, [loadingState]);
 
   return (
     <DispatchContext.Provider value={dispatch}>

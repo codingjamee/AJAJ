@@ -75,7 +75,6 @@ const Projects = (props) => {
       });
 
       const postedNewId = res.data.projectId;
-      console.log(res);
 
       if (res.status === 201) {
         setProjects((prev) => {
@@ -109,7 +108,6 @@ const Projects = (props) => {
   useEffect(() => {
     Api.get(`user/${portfolioOwnerData.id}/projects`, "", "projects").then(
       (res) => {
-        console.log(res.data.projects);
         return setProjects(res.data.projects);
       }
     );

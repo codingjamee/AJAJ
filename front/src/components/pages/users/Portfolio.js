@@ -36,7 +36,6 @@ function Portfolio() {
   };
 
   useEffect(() => {
-    console.log(userState.user);
     if (!userState.user) {
       navigate("/login", { replace: false });
       return;
