@@ -10,8 +10,8 @@ const projectAuthRouter = Router(); // 라우터 이름도 변경
 projectAuthRouter.post("/user/:id/project", login_required, request_checked, async function (req, res, next) {
   try {
     const userId = req.params.id;
-    const { projectName, projectDetail, projectUrl, projectStartDate, projectEndDate } = req.body;
-    const newProject = await projectAuthService.addProject({ userId, projectName, projectDetail, projectUrl, projectStartDate, projectEndDate });
+    const { projectName, projectDetail, projectImgUrl, projectStartDate, projectEndDate } = req.body;
+    const newProject = await projectAuthService.addProject({ userId, projectName, projectDetail, projectImgUrl, projectStartDate, projectEndDate });
 
     if (!newProject) {
       throw new NotFoundError("해당 프로젝트가 생성되지 않았습니다.");
@@ -59,8 +59,8 @@ projectAuthRouter.get("/user/:id/projects", login_required, async function (req,
 projectAuthRouter.put("/user/:id/project/:projectId", login_required, userId_checked, request_checked, async function (req, res, next) {
   try {
     const projectId = req.params.projectId;
-    const { projectName, projectDetail, projectUrl, projectStartDate, projectEndDate } = req.body;
-    const toUpdate = { projectName, projectDetail, projectUrl, projectStartDate, projectEndDate };
+    const { projectName, projectDetail, projectImgUrl, projectStartDate, projectEndDate } = req.body;
+    const toUpdate = { projectName, projectDetail, projectImgUrl, projectStartDate, projectEndDate };
 
     const updatedProject = await projectAuthService.setProject({ projectId, toUpdate });
 
