@@ -22,7 +22,7 @@ async function login_required(req, res, next) {
   // 쿠키를 정렬합니다.
   const sortedCookies = cookieArray.map((cookie) => cookie.trim());
 
-  // 정렬된 쿠키에서 유저토큰과 리프레시 토큰을 찾습니다.
+  // 정렬된 쿠키에서 유저 토큰을 찾습니다.
   for (const cookie of sortedCookies) {
     const [name, value] = cookie.split('=');
     if (name === 'user_cookie') {
@@ -30,33 +30,33 @@ async function login_required(req, res, next) {
     }
   }
 
-  // 현재 접속중인 user의 DB에서 refresh 토큰 정보를 얻습니다 < - 이게 안되는 중..
-  const userId = 'edd3dc04-bbec-41cb-90fd-f9742a41b081'; // 임시
-  const refreshToken = await userAuthService.getToken({ userId });
+  // // 현재 접속중인 user의 DB에서 refresh 토큰 정보를 얻습니다 < - 이게 안되는 중..
+  // const userId = 'edd3dc04-bbec-41cb-90fd-f9742a41b081'; // 임시
+  // const refreshToken = await userAuthService.getToken({ userId });
 
-  console.log("refreshToken: " + refreshToken);
+  // console.log("refreshToken: " + refreshToken);
 
-  if (!refreshToken) {
-    // refreshToken이 데이터베이스에서 발견되지 않았으므로 유효성 검사 실패
-    throw new UnauthorizedError("권한이 없습니다.");
-  }
+  // if (!refreshToken) {
+  //   // refreshToken이 데이터베이스에서 발견되지 않았으므로 유효성 검사 실패
+  //   throw new UnauthorizedError("권한이 없습니다.");
+  // }
 
-  if (!userToken && refreshToken) {
-    try {
-      const user = await userAuthService.getUserInfo(userId);
-      const userToken = jwt.sign(user)
+  // if (!userToken && refreshToken) {
+  //   try {
+  //     const user = await userAuthService.getUserInfo(userId);
+  //     const userToken = jwt.sign(user)
 
-      // 클라이언트로 새로운 유저 토큰을 전송
-      res.cookie("user_cookie", userToken, {
-        path: "/",
-        httpOnly: true,
-        sameSite: "lax",
-        maxAge: 60 * 60 * 1000, // 예: 1시간
-      });
-    } catch (error) {
-      console.error("리프레시 토큰 검증 오류:", error);
-    }
-  }
+  //     // 클라이언트로 새로운 유저 토큰을 전송
+  //     res.cookie("user_cookie", userToken, {
+  //       path: "/",
+  //       httpOnly: true,
+  //       sameSite: "lax",
+  //       maxAge: 60 * 60 * 1000, // 예: 1시간
+  //     });
+  //   } catch (error) {
+  //     console.error("리프레시 토큰 검증 오류:", error);
+  //   }
+  // }
 
 
   try {

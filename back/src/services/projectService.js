@@ -37,16 +37,32 @@ class projectAuthService {
     if (toUpdate.projectName) {
       const fieldToUpdate = "projectName";
       const newValue = toUpdate.projectName;
-      project = await Project.findOneAndUpdate({ projectId }, { [fieldToUpdate]: newValue }, { new: true });
+      project = await Project.update({ projectId, fieldToUpdate, newValue });
     }
 
-    // 다른 필드에 대한 업데이트도 유사한 방식으로 수행
+    if (toUpdate.projectDetail) {
+      const fieldToUpdate = "projectDetail";
+      const newValue = toUpdate.projectDetail;
+      project = await Project.update({ projectId, fieldToUpdate, newValue });
+    }
+
+    if (toUpdate.projectStartDate) {
+      const fieldToUpdate = "projectStartDate";
+      const newValue = toUpdate.projectStartDate;
+      project = await Project.update({ projectId, fieldToUpdate, newValue });
+    }
+
+    if (toUpdate.major) {
+      const fieldToUpdate = "projectEndDate";
+      const newValue = toUpdate.projectEndDate;
+      project = await Project.update({ projectId, fieldToUpdate, newValue });
+    }
 
     return project;
   }
 
   static async deleteProject({ projectId }) {
-    const result = await Project.deleteOne({ projectId });
+    const result = await Project.delete({ projectId });
     return result;
   }
 }
