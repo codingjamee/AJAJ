@@ -19,6 +19,7 @@ awardAuthRouter.post("/user/:id/award", login_required, request_checked, async f
       }
 
       res.status(201).json({
+        awardId: newAward.awardId,
         statusCode: 201,
         message: '수상내역 추가 성공', 
       });
