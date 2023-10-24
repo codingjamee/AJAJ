@@ -9,8 +9,8 @@ class educationAuthService {
       return createdNewUser;
   };
 
-    static async checkUser({ eduId }) {
-      const user = await Education.checkUserId({ eduId });
+    static async checkEducation({ eduId }) {
+      const user = await Education.checkEducationId({ eduId });
       return user;
   };
 

@@ -2,7 +2,7 @@ import { ProjectModel } from "../schemas/project"; // Project 모델을 import
 
 class Project {
   static async create({ newProject }) {
-    const createdNewProject = await ProjectModel.create(newProject);
+    const createdNewProject = await ProjectModel.create( newProject );
     return createdNewProject;
   }
 

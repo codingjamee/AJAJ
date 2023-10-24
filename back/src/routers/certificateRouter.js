@@ -19,6 +19,7 @@ certificateAuthRouter.post("/user/:id/certificate", login_required, request_chec
       }
 
       res.status(201).json({
+        certificateId: newCertificate.certificateId,
         statusCode: 201,
         message: '자격증 추가 성공', 
       });
