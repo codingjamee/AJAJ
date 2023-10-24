@@ -13,7 +13,18 @@ class Project {
 
   static async findAll({ userId }) {
     const projects = await ProjectModel.find({ userId });
-    return projects;
+    const filteredProjects = projects.map(({...rest}) => [rest._doc].map(({userId, _id, createdAt, updatedAt, __v, ...rest}) => rest)).flat();
+    const result = filteredProjects.sort(((a,b) => {
+      if (new Date(a.projectStartDate) > new Date(b.projectStartDate)) return 1;
+      if (new Date(a.projectStartDate) < new Date(b.projectStartDate)) return -1;
+
+      if (new Date(a.projectEndDate) > new Date(b.projectEndDate)) return 1;
+      if (new Date(a.projectEndDate) < new Date(b.projectEndDate)) return -1;
+
+      if (new Date(a.projectName) > new Date(b.projectName)) return 1;
+      if (new Date(a.projectName) < new Date(b.projectName)) return -1;
+    }));
+    return result;
   }
 
   static async findByProjectId({ projectId }) {

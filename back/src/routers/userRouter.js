@@ -43,7 +43,15 @@ userAuthRouter.post("/user/login", request_checked,
     // refreshToken을 db로 저장
     try {
       const userId = loginUser.id; // 사용자 ID를 가져옵니다
-      // 리프래시 토큰을 생성 (이미 생성된 refreshToken 변수로 가정)
+      // 리프래시 토큰을 생성 (이미 있다면 제거하고 재발급)
+      const existingRefreshToken = await RefreshTokenModel.findOne({ userId });
+
+      if (existingRefreshToken) {
+        // 기존 리프래시 토큰이 있다면 삭제
+        await existingRefreshToken.remove();
+      }
+
+      // 새로운 리프래시 토큰 생성
       const refreshTokenDocument = new RefreshTokenModel({
         userId: userId,
         token: refreshToken,
