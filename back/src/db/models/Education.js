@@ -2,64 +2,52 @@ import { EducationModel } from "../schemas/education";
 
 class Education {
   static async create({ newEducation }) {
-    try {
-      const createdNewEducation = await EducationModel.create(newEducation);
-      return createdNewEducation;
-    } catch {
-      return null;
-    }
+    const createdNewEducation = await EducationModel.create(newEducation);
+    return createdNewEducation;
   }
 
-  static async checkUserId({ userid }) {
-    const user = await EducationModel.findOne({ userid: userid });
+  static async checkEducationId({ eduId }) {
+    const user = await EducationModel.findOne({ eduId });
     return user;
   }
 
-  // 동일한 userid 내에서의 모든 학력 가져오기
-  static async findAll({ userid }) {
-    const Educations = await EducationModel.find({ userid: userid });
+  // static async findAll({ userId }) {
+  //   const Educations = await EducationModel.find({ userId });
+  //   return Educations;
+  // }
+  static async findAll({ userId }) {
+    const Educations = await EducationModel.find({ userId });
+    // const filteredEducations = Educations.map(({...rest}) => [rest._doc].map(({userId, _id, createdAt, updatedAt, __v, ...rest}) => rest)).flat();
+    // const result = filteredEducations.sort(((a,b) => {
+    //   if (new Date(a.admissionDate) > new Date(b.admissionDate)) return 1;
+    //   if (new Date(a.admissionDate) < new Date(b.admissionDate)) return -1;
+
+    //   if (new Date(a.graduationDate) > new Date(b.graduationDate)) return 1;
+    //   if (new Date(a.graduationDate) < new Date(b.graduationDate)) return -1;
+    // }));
+    // console.log(result);
+    // return result;
     return Educations;
   }
 
   static async findByEduId({ eduId }) {
-    const Education = await EducationModel.findOne({ eduId: eduId }); //.populate({path: "id", model: "User"});
+    const Education = await EducationModel.findOne({ eduId });
     return Education;
   }
 
-  // static async findById({ eduId }) {
-  //   const Education = await EducationModel.findOne({ eduId });
-  //   console.log(Education);
-  //   return Education;
-  // }
-
-  static async update({ Education_id, fieldToUpdate, newValue }) {
-    const filter = { eduId: Education_id };
+  static async update({ eduId, fieldToUpdate, newValue }) {
+    const filter = { eduId };
     const update = { [fieldToUpdate]: newValue };
     const option = { returnOriginal: false };
-
-    const updatedEducation = await EducationModel.findOneAndUpdate(
-      filter,
-      update,
-      option
-    );
+    const updatedEducation = await EducationModel.findOneAndUpdate(filter, update, option);
     return updatedEducation;
   }
 
   static async delete({ eduId }) {
-    await EducationModel.findOneAndDelete({ eduId }, (error, deletedDoc) => {
-      if (error) {
-        console.error('삭제 오류:', error);
-      } else {
-        if (deletedDoc) {
-          console.log('삭제된 문서:', deletedDoc);
-        } else {
-          console.log('삭제할 문서를 찾을 수 없습니다.');
-        }
-      }
-    });
+    const result = await EducationModel.findOneAndDelete({ eduId });
+    return result;
   }
 }
-
 
 
 export { Education };

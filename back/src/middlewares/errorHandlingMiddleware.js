@@ -1,33 +1,26 @@
-class Error {
-    constructor(message) {
-    this.message = message;
-    this.name = "Error";
-    };
-}
-
-class ValidationError extends Error {
+class NotFoundError extends Error {
     constructor(message) {
     super(message);
-    this.name = "ValidationError";
+    this.name = "Not Found";
     this.statusCode = 404;
     }
 }
 
-class EmptyValueError extends Error {
+class UnauthorizedError extends Error {
     constructor(message) {
     super(message);
-    this.name = "EmptyValueError";
-    this.statusCode = 400;
-    }
-}
-
-class AuthorityError extends Error {
-    constructor(message) {
-    super(message);
-    this.name = "AuthorityError";
+    this.name = "Unauthorized";
     this.statusCode = 401;
     }
 }
 
-module.exports = { ValidationError,  EmptyValueError, AuthorityError }
+class BadRequestError extends Error {
+    constructor(message) {
+    super(message);
+    this.name = "Bad Request";
+    this.statusCode = 400;
+    }
+}
+
+module.exports = { NotFoundError, UnauthorizedError, BadRequestError }
 

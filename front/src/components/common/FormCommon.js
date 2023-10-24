@@ -1,19 +1,17 @@
 import { Form } from "react-bootstrap";
 
-const FormCommon = (props) => {
-  const {
-    controlId,
-    select = false,
-    label = "",
-    placeholder = "",
-    type = "text",
-    changeHandler,
-    value,
-    customClassName,
-    optionValue = "",
-    optionArr = [],
-  } = props;
-
+const FormCommon = ({
+  controlId,
+  select = false,
+  label = "",
+  placeholder = "",
+  type = "text",
+  changeHandler,
+  value,
+  customClassName,
+  optionValue = "",
+  optionArr = [],
+}) => {
   return (
     <Form.Group controlId={controlId} className={customClassName}>
       {label && <Form.Label>{label}</Form.Label>}
@@ -32,7 +30,7 @@ const FormCommon = (props) => {
           }}
         >
           <option>{optionValue}</option>
-          {optionArr.map((option) => (
+          {optionArr?.map((option) => (
             <option value={option.value} key={option.value}>
               {option.text}
             </option>

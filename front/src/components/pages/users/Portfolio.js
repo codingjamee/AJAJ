@@ -1,81 +1,106 @@
-import React, { useContext, useState, useEffect } from "react";
+import React, { useContext, useState, useEffect, createContext } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import { useNavigate, useParams } from "react-router-dom";
 import { Container, Col, Row } from "react-bootstrap";
 
 import { UserStateContext } from "../../../App";
-import * as Api from "../../hooks/api";
+import * as Api from "../../utils/api";
 import User from "./user/User";
-import Education from "./education/Education";
-import Test from "../../common/Test";
+import Educations from "./education/Educations";
+import Certifications from "./certificate/Certificates";
+import Awards from "./award/Awards";
+import Projects from "./project/Projects";
+import LoadingLayer from "../../../UI/LoadingLayer";
+import { loadingActions } from "../../../store/loading";
+
+export const PortfolioOwnerDataContext = createContext({});
 
 function Portfolio() {
   const navigate = useNavigate();
   const params = useParams();
-  // useState 훅을 통해 portfolioOwner 상태를 생성함.
-  const [portfolioOwner, setPortfolioOwner] = useState(null);
-  // fetchPorfolioOwner 함수가 완료된 이후에만 (isFetchCompleted가 true여야) 컴포넌트가 구현되도록 함.
-  // 아래 코드를 보면, isFetchCompleted가 false이면 "loading..."만 반환되어서, 화면에 이 로딩 문구만 뜨게 됨.
-  const [isFetchCompleted, setIsFetchCompleted] = useState(false);
-  const [edu, setEdu] = useState("");
+  const [portfolioOwnerData, setPortfolioOwnerData] = useState({});
+  const [isFetchCompleted, setIsFetchCompleted] = useState(null);
   const userState = useContext(UserStateContext);
+  const dispatch = useDispatch();
+  const loadingState = useSelector((state) => state.loading.open);
 
   const fetchPortfolioOwner = async (ownerId) => {
-    // 유저 id를 가지고 "/users/유저id" 엔드포인트로 요청해 사용자 정보를 불러옴.
-    const res = await Api.get("users", ownerId);
-    // 사용자 정보는 response의 data임.
+    // console.log("포트폴리오 오너 아이디" + ownerId);
+    setIsFetchCompleted(false);
+
+    const res = await Api.get("users", ownerId, "portfolio");
     const ownerData = res.data;
-    // portfolioOwner을 해당 사용자 정보로 세팅함.
-    setPortfolioOwner(ownerData);
-    // fetchPortfolioOwner 과정이 끝났으므로, isFetchCompleted를 true로 바꿈.
+    // console.log("ownerData", ownerData);
+    setPortfolioOwnerData(ownerData);
     setIsFetchCompleted(true);
   };
 
   useEffect(() => {
-    // 전역 상태의 user가 null이라면 로그인이 안 된 상태이므로, 로그인 페이지로 돌림.
+    console.log(userState.user);
     if (!userState.user) {
-      navigate("/login", { replace: true });
+      navigate("/login", { replace: false });
       return;
     }
 
+    // 현재 URL "/users/:userId"
     if (params.userId) {
-      // 만약 현재 URL이 "/users/:userId" 라면, 이 userId를 유저 id로 설정함.
       const ownerId = params.userId;
-      // 해당 유저 id로 fetchPortfolioOwner 함수를 실행함.
       fetchPortfolioOwner(ownerId);
     } else {
-      // 이외의 경우, 즉 URL이 "/" 라면, 전역 상태의 user.id를 유저 id로 설정함.
+      // URL "/"
       const ownerId = userState.user.id;
-      // 해당 유저 id로 fetchPortfolioOwner 함수를 실행함.
       fetchPortfolioOwner(ownerId);
     }
   }, [params, userState, navigate]);
 
-  if (!isFetchCompleted) {
-    return "loading...";
-  }
+  //리덕스 사용 고민해보기
+  useEffect(() => {
+    if (!isFetchCompleted) {
+      dispatch(loadingActions.open());
+    } else {
+      dispatch(loadingActions.close());
+      console.log(loadingState);
+    }
+
+    if (loadingState) {
+      return <LoadingLayer message="Loading....." />;
+    } else {
+      dispatch(loadingActions.close());
+    }
+  }, [loadingState]);
 
   return (
-    <Container fluid>
-      <Row>
-        <Col>
-          <User
-            portfolioOwnerId={portfolioOwner.id}
-            isEditable={portfolioOwner.id === userState.user?.id}
-          />
-        </Col>
-        <Col style={{ display: "flex", justifyContent: "center" }}>
-          <div style={{ textAlign: "center" }}>
-            <Education
-              portfolioOwnerId={portfolioOwner.id}
-              isEditable={portfolioOwner.id === userState.user?.id}
-              setEdu={setEdu}
-              edu={edu}
-            />
-            {/* <Test isEditable="true" /> */}
-          </div>
-        </Col>
-      </Row>
-    </Container>
+    <PortfolioOwnerDataContext.Provider value={portfolioOwnerData}>
+      <Container fluid style={{ overflow: "auto", marginTop: "50px" }}>
+        <Row>
+          <Col lg={2} style={{ textAlign: "center" }}>
+            <User isEditable={portfolioOwnerData?.id === userState.user?.id} />
+          </Col>
+          <Col lg={10}>
+            <div
+              style={{
+                textAlign: "center",
+                marginRight: "50px",
+                marginLeft: "30px",
+              }}
+            >
+              <Educations
+                isEditable={portfolioOwnerData?.id === userState.user?.id}
+              />
+              <Certifications
+                isEditable={portfolioOwnerData?.id === userState.user?.id}
+              />
+              <Awards
+                isEditable={portfolioOwnerData?.id === userState.user?.id}
+              />
+              <Projects
+                isEditable={portfolioOwnerData?.id === userState.user?.id}
+              />
+            </div>
+          </Col>
+        </Row>
+      </Container>
+    </PortfolioOwnerDataContext.Provider>
   );
 }
 

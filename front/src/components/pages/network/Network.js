@@ -2,7 +2,7 @@ import React, { useEffect, useContext, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Container, Row } from "react-bootstrap";
 
-import * as Api from "../../hooks/api";
+import * as Api from "../../utils/api";
 import UserCard from "../users/user/UserCard";
 import { UserStateContext } from "../../../App";
 
@@ -19,12 +19,16 @@ function Network() {
       return;
     }
     // "userlist" 엔드포인트로 GET 요청을 하고, users를 response의 data로 세팅함.
-    Api.get("userlist").then((res) => setUsers(res.data));
+    Api.get("userlist", "", "Network").then((res) => setUsers(res.data));
   }, [userState, navigate]);
 
   return (
-    <Container fluid>
-      <Row xs="auto" className="jusify-content-center">
+    <Container fluid style={{ textAlign: "center" }}>
+      <Row
+        lg={4}
+        className="jusify-content-center"
+        style={{ justifyContent: "center" }}
+      >
         {users.map((user) => (
           <UserCard key={user.id} user={user} isNetwork />
         ))}
