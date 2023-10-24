@@ -46,7 +46,7 @@ const Projects = (props) => {
     { value: projectDetail, changeHandler: (v) => setProjectDetail(v) },
     {
       value: projectImgUrl,
-      projectImgUrl: (v) => setProjectImgUrl(v),
+      changeHandler: (v) => setProjectImgUrl(v),
     },
     { value: projectStartDate, changeHandler: (v) => setProjectStartDate(v) },
     { value: projectEndDate, changeHandler: (v) => setProjectEndDate(v) },
@@ -75,8 +75,9 @@ const Projects = (props) => {
       });
 
       const postedNewId = res.data.projectId;
+      console.log(res);
 
-      if (res.data.statusCode === 201) {
+      if (res.status === 201) {
         setProjects((prev) => {
           return [
             ...prev,
