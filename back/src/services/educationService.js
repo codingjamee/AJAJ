@@ -24,7 +24,6 @@ class educationAuthService {
         return education;
     };
 
-
     static async setEducation({ eduId, toUpdate }) {
         let education = await Education.findByEduId({ eduId });
     
