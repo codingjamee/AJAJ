@@ -45,7 +45,7 @@ function Portfolio() {
       fetchPortfolioOwner(ownerId);
     } else {
       // URL "/"
-      // console.log("fetchPortfolioOwner전 userState확인", userState.user.id);
+      console.log("/경로의 userState확인", userState.user.id);
       const ownerId = userState.user.id;
       fetchPortfolioOwner(ownerId);
     }

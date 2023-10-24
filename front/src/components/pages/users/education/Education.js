@@ -6,14 +6,9 @@ import ButtonCommon from "../../../common/ButtonCommon";
 import { UserStateContext } from "../../../../App";
 import { educationsCommonFormProps } from "../../../utils/formListCommonProps";
 
-const Education = ({
-  setAddForm,
-  isEditable,
-  education = {},
-  setEducations,
-}) => {
+const Education = ({ isEditable, education = {}, setEducations }) => {
   // useState 훅을 통해 user 상태를 생성함.
-  const [user, setUser] = useState(null);
+  // const [user, setUser] = useState(null);
   const [editMode, setEditMode] = useState(false);
   const [schoolName, setSchoolName] = useState(education.schoolName || "");
   const [major, setMajor] = useState(education.major || "");
@@ -60,12 +55,12 @@ const Education = ({
         "Education"
       );
       // console.log(res.data);
-      if (res.data.statusCode === 200) {
+      if (res.status === 200) {
         setEducations((prev) => {
           const updatedEdus = prev.map((prevEdu) => {
             if (prevEdu.eduId === education.eduId) {
               return {
-                ...education,
+                ...prevEdu,
                 schoolName,
                 major,
                 degree,
@@ -73,6 +68,7 @@ const Education = ({
                 graduationDate,
               };
             }
+            return prevEdu;
           });
           return updatedEdus;
         });
@@ -82,7 +78,7 @@ const Education = ({
         setAdmissionDate("2023-01-01");
         setGraduationDate("2023-01-01");
         setEditMode(false);
-      } else if (res.data.statusCode !== 200) {
+      } else if (res.status !== 200) {
         throw new Error("POST 요청을 실패하였습니다.");
       }
     } catch (err) {
@@ -100,11 +96,11 @@ const Education = ({
         "Education"
       );
       // console.log(res);
-      if (res.data.statusCode === 200) {
+      if (res.status === 200) {
         setEducations((prevObj) => {
           return prevObj.filter((edus) => edus.eduId !== eduId);
         });
-      } else if (res.data.statusCode !== 200) {
+      } else if (res.status !== 200) {
         throw new Error("삭제를 실패하였습니다");
       }
     } catch (err) {

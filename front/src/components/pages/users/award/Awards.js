@@ -58,13 +58,19 @@ const Awards = (props) => {
       "Awards"
     );
 
-    const postedNewId = res.data.eduId;
+    const postedNewId = res.data.awardId;
 
     if (res.status === 201) {
       setAwards((prev) => {
         return [
           ...prev,
-          { postedNewId, awardName, awardDetail, awardOrganization, awardDate },
+          {
+            awardId: postedNewId,
+            awardName,
+            awardDetail,
+            awardOrganization,
+            awardDate,
+          },
         ];
       });
       setAwardName("");

@@ -50,12 +50,20 @@ const Educations = (props) => {
         graduationDate,
       });
 
-      // console.log(res);
-      if (res.data.statusCode === 201) {
+      const postedNewId = res.data.eduId;
+
+      if (res.status === 201) {
         setEducations((prev) => {
           return [
             ...prev,
-            { schoolName, major, degree, admissionDate, graduationDate },
+            {
+              eduId: postedNewId,
+              schoolName,
+              major,
+              degree,
+              admissionDate,
+              graduationDate,
+            },
           ];
         });
         setSchoolName("");
@@ -64,7 +72,7 @@ const Educations = (props) => {
         setAdmissionDate("2023-01-01");
         setGraduationDate("2023-01-01");
         setAddForm(false);
-      } else if (res.data.statusCode !== 201) {
+      } else if (res.status !== 201) {
         throw new Error("POST 요청이 실패하였습니다.");
       }
     } catch (err) {
