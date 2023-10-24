@@ -15,12 +15,12 @@ function Navigation() {
   const dispatch = useContext(DispatchContext);
   const portfolioOwnerData = useContext(PortfolioOwnerDataContext);
 
-  console.log(portfolioOwnerData);
+  console.log(userState);
 
   //@@@@@@@@@@@@@@@@수정필요@@@@@@@@@@@@@@@@@@@@@성혜님@@@@@@@@@@@@@@@@/
   const navItems = [
     { path: "/", label: "홈페이지" },
-    { path: `/users/${portfolioOwnerData.id}`, label: "마이페이지" },
+    { path: `/users/${userState?.user?.id}`, label: "마이페이지" },
     { path: "/network", label: "네트워크" },
   ];
 

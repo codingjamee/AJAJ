@@ -52,10 +52,18 @@ function Portfolio() {
   }, [params, userState, navigate]);
 
   //리덕스 사용 고민해보기
-  if (!isFetchCompleted) {
-    dispatch(loadingActions.open());
-    console.log(loadingState);
-  }
+  useEffect(() => {
+    if (!isFetchCompleted) {
+      dispatch(loadingActions.open());
+      console.log(loadingState);
+    } else {
+      dispatch(loadingActions.close());
+      console.log(loadingState);
+    }
+    // return () => {
+    //   dispatch(loadingActions.close());
+    // };
+  }, []);
 
   if (loadingState) {
     return <LoadingLayer message="Loading....." />;

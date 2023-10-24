@@ -43,15 +43,19 @@ const Award = ({ setAddForm, isEditable, award = [], setAwards }) => {
 
     //post 서버와 통신
     try {
-      const res = await Api.post(`user/${userState.user.id}/award`, {
-        awardName,
-        awardDetail,
-        awardOrganization,
-        awardDate,
-      });
+      const res = await Api.post(
+        `user/${userState.user.id}/award`,
+        {
+          awardName,
+          awardDetail,
+          awardOrganization,
+          awardDate,
+        },
+        "Award"
+      );
 
       console.log(res);
-      if (res.data.statusCode === 201) {
+      if (res.status === 200) {
         setAwards((prev) => {
           return [
             ...prev,
@@ -63,10 +67,11 @@ const Award = ({ setAddForm, isEditable, award = [], setAwards }) => {
         setAwardOrganization("");
         setAwardDate("2023-01-01");
         setAddForm(false);
-      } else if (!res.data.ok) {
+      } else if (res.status !== 200) {
         throw new Error("POST 요청이 실패하였습니다.");
       }
     } catch (err) {
+      console.log(err);
       throw new Error("서버와 통신을 실패하였습니다.");
     }
   };
@@ -78,19 +83,21 @@ const Award = ({ setAddForm, isEditable, award = [], setAwards }) => {
     console.log("delete버튼이 선택됨");
     console.log(awardId);
 
-    const res = await Api.delete(
-      `user/${userState.user.id}/award`,
-      awardId,
-      "award"
-    );
-    console.log(res);
-    // if (res.data.statusCode === 200) {
-    setAwards((prev) =>
-      prev.filter((awards) => Number(awards.awardId) !== Number(awardId))
-    );
-    // } else if (res.data.statusCode !== 200) {
-    // throw new Error("삭제를 실패하였습니다");
-    // }
+    try {
+      const res = await Api.delete(
+        `user/${userState.user.id}/award`,
+        awardId,
+        "Award"
+      );
+      console.log(res);
+      if (res.status === 200) {
+        setAwards((prev) => prev.filter((award) => award.awardId !== awardId));
+      } else if (res.status !== 200) {
+        throw new Error("삭제를 실패하였습니다");
+      }
+    } catch (err) {
+      throw new Error("서버와 통신에 실패했습니다.");
+    }
   };
 
   return (
