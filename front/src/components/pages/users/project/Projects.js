@@ -105,15 +105,17 @@ const Projects = (props) => {
     <>
       <Card>
         <h4>프로젝트</h4>
-        {projects.map((project, index) => (
-          <Project
-            key={`project-${index}`}
-            isEditable={isEditable}
-            formList={projectFormList}
-            // setProject={setProject}
-            project={project}
-          />
-        ))}
+        {projects.map((project, index) => {
+          return (
+            <Project
+              key={`project-${index}`}
+              isEditable={isEditable}
+              formList={projectFormList}
+              // setProject={setProject}
+              project={project}
+            />
+          );
+        })}
         {isEditable && (
           <Card>
             {addForm && (

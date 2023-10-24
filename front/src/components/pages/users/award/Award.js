@@ -20,7 +20,6 @@ const Award = ({ isEditable, award = [], setAwards }) => {
   const [awardDate, setAwardDate] = useState(award.awardDate || "2023-01-01");
   const userState = useContext(UserStateContext);
   const portfolioOwnerData = useContext(PortfolioOwnerDataContext);
-  console.log("award 보여줘1", award);
 
   //form 상세설정 어레이
   const awardState = [

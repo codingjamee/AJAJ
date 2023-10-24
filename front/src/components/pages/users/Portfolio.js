@@ -19,13 +19,15 @@ function Portfolio() {
   const navigate = useNavigate();
   const params = useParams();
   const [portfolioOwnerData, setPortfolioOwnerData] = useState({});
-  const [isFetchCompleted, setIsFetchCompleted] = useState(false);
+  const [isFetchCompleted, setIsFetchCompleted] = useState(null);
   const userState = useContext(UserStateContext);
   const dispatch = useDispatch();
   const loadingState = useSelector((state) => state.loading.open);
 
   const fetchPortfolioOwner = async (ownerId) => {
     // console.log("포트폴리오 오너 아이디" + ownerId);
+    setIsFetchCompleted(false);
+
     const res = await Api.get("users", ownerId, "portfolio");
     const ownerData = res.data;
     // console.log("ownerData", ownerData);
@@ -45,7 +47,6 @@ function Portfolio() {
       fetchPortfolioOwner(ownerId);
     } else {
       // URL "/"
-      console.log("/경로의 userState확인", userState.user.id);
       const ownerId = userState.user.id;
       fetchPortfolioOwner(ownerId);
     }
@@ -55,7 +56,6 @@ function Portfolio() {
   useEffect(() => {
     if (!isFetchCompleted) {
       dispatch(loadingActions.open());
-      console.log(loadingState);
     } else {
       dispatch(loadingActions.close());
       console.log(loadingState);
@@ -63,13 +63,12 @@ function Portfolio() {
     // return () => {
     //   dispatch(loadingActions.close());
     // };
+    if (loadingState) {
+      return <LoadingLayer message="Loading....." />;
+    } else {
+      // dispatch(loadingActions.close());
+    }
   }, []);
-
-  if (loadingState) {
-    return <LoadingLayer message="Loading....." />;
-  } else {
-    // dispatch(loadingActions.close());
-  }
 
   return (
     <PortfolioOwnerDataContext.Provider value={portfolioOwnerData}>

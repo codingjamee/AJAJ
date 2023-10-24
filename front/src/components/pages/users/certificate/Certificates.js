@@ -107,7 +107,6 @@ const Certificates = (props) => {
       "",
       "Certificates"
     ).then((res) => {
-      console.log(res.data);
       return setCertificates(res.data.certificates);
     });
   }, [portfolioOwnerData.id]);
