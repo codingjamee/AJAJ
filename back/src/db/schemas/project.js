@@ -24,11 +24,11 @@ const ProjectSchema = new Schema(
       required: false,
     },
     projectStartDate: {
-      type: Date,
+      type: String,
       required: false,
     },
     projectEndDate: {
-      type: Date,
+      type: String,
       required: false,
     },
   },
