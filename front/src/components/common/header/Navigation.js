@@ -3,14 +3,9 @@ import { useNavigate, useLocation } from "react-router-dom";
 import { Nav, Navbar } from "react-bootstrap";
 import { UserStateContext, DispatchContext } from "../../../App";
 import "bootstrap/dist/css/bootstrap.min.css";
-import "./Nav.css";
-
-//@@@@@@@@@@@@@@@@수정필요@@@@@@@@@@@@@@@@@@@@@성혜님@@@@@@@@@@@@@@@@/
-const navItems = [
-  { path: "/", label: "홈페이지" },
-  { path: "/users/:userId", label: "마이페이지" },
-  { path: "/network", label: "네트워크" },
-];
+import "../../../UI/design.css";
+import logo from "./logo.png";
+import { PortfolioOwnerDataContext } from "../../pages/users/Portfolio";
 
 function Navigation() {
   const navigate = useNavigate();
@@ -18,6 +13,16 @@ function Navigation() {
 
   const userState = useContext(UserStateContext);
   const dispatch = useContext(DispatchContext);
+  const portfolioOwnerData = useContext(PortfolioOwnerDataContext);
+
+  // console.log(userState);
+
+  //@@@@@@@@@@@@@@@@수정필요@@@@@@@@@@@@@@@@@@@@@성혜님@@@@@@@@@@@@@@@@/
+  const navItems = [
+    { path: "/", label: "홈페이지" },
+    { path: `/users/${userState?.user?.id}`, label: "마이페이지" },
+    { path: "/network", label: "네트워크" },
+  ];
 
   // 전역상태에서 user가 null이 아니라면 로그인 성공 상태임.
   const isLogin = !!userState.user;
@@ -28,15 +33,20 @@ function Navigation() {
     //   // sessionStorage 에 저장했던 JWT 토큰을 삭제함.
     //   sessionStorage.removeItem("userToken");
     //   // dispatch 함수를 이용해 로그아웃함.
-    //   dispatch({ type: "LOGOUT" });
+    dispatch({ type: "LOGOUT" });
     //   // 기본 페이지로 돌아감.
-    //   navigate("/");
+    navigate("/");
   };
 
   return (
-    <Navbar bg="dark" variant="dark" activeKey={location.pathname}>
-      <Navbar.Brand onClick={() => navigate("/")}>
-        안녕하세요, 포트폴리오 공유 서비스입니다.
+    <Navbar variant="dark" activeKey={location.pathname}>
+      <Navbar.Brand href="/">
+        <img
+          src={logo}
+          alt="ajaj portfolio logo"
+          width={"160px"}
+          height={"100%"}
+        />
       </Navbar.Brand>
       <Navbar.Toggle aria-controls="basic-navbar-nav" />
       <Navbar.Collapse id="basic-navbar-nav" />

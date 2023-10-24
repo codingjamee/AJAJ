@@ -1,14 +1,14 @@
 import React from "react";
 import { Button } from "react-bootstrap";
 
-const ButtonCommon = (props) => {
+const ButtonCommon = React.forwardRef((props, ref) => {
   const {
     variant,
     type = "",
     className,
     onClickHandler,
     size = "",
-    text,
+    text = "",
   } = props;
   return (
     <Button
@@ -17,10 +17,11 @@ const ButtonCommon = (props) => {
       className={className}
       onClick={onClickHandler}
       size={size}
+      ref={ref}
     >
       {text}
     </Button>
   );
-};
+});
 
 export default ButtonCommon;

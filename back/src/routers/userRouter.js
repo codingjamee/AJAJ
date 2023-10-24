@@ -38,12 +38,20 @@ userAuthRouter.post("/user/login", request_checked,
       path: "/", // 쿠키 저장 경로
       httpOnly: true, // 클라이언트에서 쿠키 조작 불가
       sameSite: "lax",
-      maxAge: 60 * 60 * 1000, // JWT 토큰의 유효기간 (1시간)
+      maxAge: 9 * 1000, // JWT 토큰의 유효기간 (1시간)
     });
     // refreshToken을 db로 저장
     try {
       const userId = loginUser.id; // 사용자 ID를 가져옵니다
-      // 리프래시 토큰을 생성 (이미 생성된 refreshToken 변수로 가정)
+      // 리프래시 토큰을 생성 (이미 있다면 제거하고 재발급)
+      const existingRefreshToken = await RefreshTokenModel.findOne({ userId });
+
+      if (existingRefreshToken) {
+        // 기존 리프래시 토큰이 있다면 삭제
+        await existingRefreshToken.remove();
+      }
+
+      // 새로운 리프래시 토큰 생성
       const refreshTokenDocument = new RefreshTokenModel({
         userId: userId,
         token: refreshToken,
