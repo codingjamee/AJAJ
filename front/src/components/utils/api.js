@@ -5,10 +5,10 @@ const serverUrl =
   "http://" + window.location.hostname + ":" + backendPortNumber + "/";
 
 async function get(endpoint, params = "", component) {
-  console.log(
-    `%cGET 요청 ${serverUrl + endpoint + "/" + params} - ${component}에서`,
-    "color: #a25cd1;"
-  );
+  // console.log(
+  //   `%cGET 요청 ${serverUrl + endpoint + "/" + params} - ${component}에서`,
+  //   "color: #a25cd1;"
+  // );
 
   return axios.get(serverUrl + endpoint + "/" + params, {
     // JWT 토큰을 헤더에 담아 백엔드 서버에 보냄.
@@ -24,11 +24,11 @@ async function post(endpoint, data, component) {
   // JSON.stringify 함수: Javascript 객체를 JSON 형태로 변환함.
   // 예시: {name: "Kim"} => {"name": "Kim"}
   const bodyData = JSON.stringify(data);
-  console.log(
-    `%cPOST 요청: ${serverUrl + endpoint} - ${component}에서`,
-    "color: #296aba;"
-  );
-  console.log(`%cPOST 요청 데이터: ${bodyData}`, "color: #296aba;");
+  // console.log(
+  //   `%cPOST 요청: ${serverUrl + endpoint} - ${component}에서`,
+  //   "color: #296aba;"
+  // );
+  // console.log(`%cPOST 요청 데이터: ${bodyData}`, "color: #296aba;");
 
   return axios.post(serverUrl + endpoint, bodyData, {
     headers: {
