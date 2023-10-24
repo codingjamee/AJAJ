@@ -17,10 +17,7 @@ userAuthRouter.post("/user/register", request_checked, async function (req, res,
       throw new NotFoundError(newUser.errorMessage);
     }
 
-    res.status(200).json({
-      statusCode: 200,
-      message: '회원가입 성공', 
-    });
+    res.status(200).send();
   } catch (error) {
     next(error);
   }
@@ -115,10 +112,7 @@ userAuthRouter.patch("/users/:id", login_required, request_checked, async functi
         throw new NotFoundError(updatedUser.errorMessage);
       }
 
-      res.status(200).json({
-        statusCode: 200,
-        message: '회원정보 수정 성공', 
-      });
+      res.status(200).send();
     } catch (error) {
       next(error);
     }
@@ -145,10 +139,7 @@ userAuthRouter.get("/users/:id", login_required, async function (req, res, next)
 
 // 로그아웃
 userAuthRouter.get("/logout", async function (req, res, next) {
-  res.clearCookie('user_cookie').json({
-    statusCode: 200,
-    message: '로그아웃 성공', 
-  }).end();
+  res.clearCookie('user_cookie').end();
 })
 
 export { userAuthRouter };
