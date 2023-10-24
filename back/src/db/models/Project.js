@@ -20,10 +20,8 @@ class Project {
 
       if (new Date(a.projectEndDate) > new Date(b.projectEndDate)) return 1;
       if (new Date(a.projectEndDate) < new Date(b.projectEndDate)) return -1;
-
-      if (new Date(a.projectName) > new Date(b.projectName)) return 1;
-      if (new Date(a.projectName) < new Date(b.projectName)) return -1;
     }));
+    
     return result;
   }
 

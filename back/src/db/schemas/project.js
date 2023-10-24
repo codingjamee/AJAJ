@@ -19,16 +19,16 @@ const ProjectSchema = new Schema(
       type: String,
       required: true,
     },
-    projectUrl: {
+    projectImgUrl: {
       type: String, // URL을 저장하는 필드는 일반적으로 String으로 정의
       required: false,
     },
     projectStartDate: {
-      type: Date,
+      type: String,
       required: false,
     },
     projectEndDate: {
-      type: Date,
+      type: String,
       required: false,
     },
   },

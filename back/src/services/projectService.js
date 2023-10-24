@@ -7,22 +7,22 @@ class projectAuthService {
     const newProject = { projectId, ...projectInfo };
     const createdNewProject = await Project.create({ newProject });
     return createdNewProject;
-  }
+  };
 
   static async checkProject({ projectId }) {
     const user = await Project.checkProjectId({ projectId });
     return user;
-  }
+  };
 
   static async getProjects({ userId }) {
     const projects = await Project.findAll({ userId });
     return projects;
-  }
+  };
 
   static async getProject({ projectId }) {
     const project = await Project.findByProjectId({ projectId });
     return project;
-  }
+  };
 
   static async setProject({ projectId, toUpdate }) {
     let project = await Project.findByProjectId({ projectId });
@@ -46,13 +46,19 @@ class projectAuthService {
       project = await Project.update({ projectId, fieldToUpdate, newValue });
     }
 
+    if (toUpdate.projectUrl) {
+      const fieldToUpdate = "projectUrl";
+      const newValue = toUpdate.projectUrl;
+      project = await Project.update({ projectId, fieldToUpdate, newValue });
+    }
+
     if (toUpdate.projectStartDate) {
       const fieldToUpdate = "projectStartDate";
       const newValue = toUpdate.projectStartDate;
       project = await Project.update({ projectId, fieldToUpdate, newValue });
     }
 
-    if (toUpdate.major) {
+    if (toUpdate.projectEndDate) {
       const fieldToUpdate = "projectEndDate";
       const newValue = toUpdate.projectEndDate;
       project = await Project.update({ projectId, fieldToUpdate, newValue });

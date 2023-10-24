@@ -11,10 +11,6 @@ class Education {
     return user;
   }
 
-  // static async findAll({ userId }) {
-  //   const Educations = await EducationModel.find({ userId });
-  //   return Educations;
-  // }
   static async findAll({ userId }) {
     const educations = await EducationModel.find({ userId });
     const filteredEducations = educations.map(({...rest}) => [rest._doc].map(({userId, _id, createdAt, updatedAt, __v, ...rest}) => rest)).flat();
