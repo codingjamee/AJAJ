@@ -1,6 +1,7 @@
 const { Router } = require('express');
 const { login_required, request_checked } = require('../middlewares/requireMiddleware');
 const { userAuthService } = require('../services/userService');
+const { NotFoundError } = require('../middlewares/errorHandlingMiddleware');
 import { RefreshTokenModel } from '../db/schemas/refreshToken'; 
 
 const userAuthRouter = Router();
@@ -13,13 +14,10 @@ userAuthRouter.post("/user/register", request_checked, async function (req, res,
     const newUser = await userAuthService.addUser({ name, email, password });
 
     if (newUser.errorMessage) {
-      throw new Error(newUser.errorMessage);
+      throw new NotFoundError(newUser.errorMessage);
     }
 
-    res.status(200).json({
-      statusCode: 200,
-      message: '회원가입 성공', 
-    });
+    res.status(200).send();
   } catch (error) {
     next(error);
   }
@@ -33,7 +31,7 @@ userAuthRouter.post("/user/login", request_checked,
 
     const { accessToken, refreshToken, loginUser } = await userAuthService.getUser({ email, password });
     if (loginUser.errorMessage) {
-      throw new Error(loginUser.errorMessage);
+      throw new NotFoundError(loginUser.errorMessage);
     }
 
     res.cookie("user_cookie", accessToken, {
@@ -71,6 +69,9 @@ userAuthRouter.post("/user/login", request_checked,
 userAuthRouter.get("/userlist", login_required, async function (req, res, next) {
     try {
       const users = await userAuthService.getUsers();
+      if (!users) {
+        throw new NotFoundError("사용자 목록을 가져올 수 없습니다.");
+      }
 
       res.status(200).send(users);
     } catch (error) {
@@ -86,7 +87,7 @@ userAuthRouter.get("/user/current", login_required, async function (req, res, ne
       const currentUserInfo = await userAuthService.getUserInfo({ userId });
 
       if (currentUserInfo.errorMessage) {
-        throw new Error(currentUserInfo.errorMessage);
+        throw new NotFoundError(currentUserInfo.errorMessage);
       }
       
       const { id, email, name, description } = currentUserInfo;
@@ -108,13 +109,10 @@ userAuthRouter.patch("/users/:id", login_required, request_checked, async functi
       const updatedUser = await userAuthService.setUser({ userId, toUpdate });
 
       if (updatedUser.errorMessage) {
-        throw new Error(updatedUser.errorMessage);
+        throw new NotFoundError(updatedUser.errorMessage);
       }
 
-      res.status(200).json({
-        statusCode: 200,
-        message: '회원정보 수정 성공', 
-      });
+      res.status(200).send();
     } catch (error) {
       next(error);
     }
@@ -128,7 +126,7 @@ userAuthRouter.get("/users/:id", login_required, async function (req, res, next)
       const currentUserInfo = await userAuthService.getUserInfo({ userId });
 
       if (currentUserInfo.errorMessage) {
-        throw new Error(currentUserInfo.errorMessage);
+        throw new NotFoundError(currentUserInfo.errorMessage);
       }
 
       const { id, email, name, description } = currentUserInfo;
@@ -141,10 +139,7 @@ userAuthRouter.get("/users/:id", login_required, async function (req, res, next)
 
 // 로그아웃
 userAuthRouter.get("/logout", async function (req, res, next) {
-  res.clearCookie('user_cookie').json({
-    statusCode: 200,
-    message: '로그아웃 성공', 
-  }).end();
+  res.clearCookie('user_cookie').end();
 })
 
 export { userAuthRouter };

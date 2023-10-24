@@ -17,10 +17,8 @@ projectAuthRouter.post("/user/:id/project", login_required, request_checked, asy
       throw new NotFoundError("해당 프로젝트가 생성되지 않았습니다.");
     }
 
-    res.status(201).json({
+    res.status(201).send({
       projectId: newProject.projectId,
-      statusCode: 201,
-      message: '프로젝트 추가 성공',
     });
   } catch (error) {
     next(error);
@@ -43,19 +41,19 @@ projectAuthRouter.get("/user/:id/projects", login_required, async function (req,
 });
 
 // 특정 프로젝트 가져오기_login_required
-projectAuthRouter.get("/user/:id/project/:projectId", login_required, async function (req, res, next) {
-  try {
-    const projectId = req.params.projectId;
-    const project = await projectAuthService.getProject({ projectId });
+// projectAuthRouter.get("/user/:id/project/:projectId", login_required, async function (req, res, next) {
+//   try {
+//     const projectId = req.params.projectId;
+//     const project = await projectAuthService.getProject({ projectId });
 
-    if (!project) {
-      throw new NotFoundError("특정 프로젝트를 가져올 수 없습니다.");
-    }
-    res.status(200).send(project);
-  } catch (error) {
-    next(error);
-  }
-});
+//     if (!project) {
+//       throw new NotFoundError("특정 프로젝트를 가져올 수 없습니다.");
+//     }
+//     res.status(200).send(project);
+//   } catch (error) {
+//     next(error);
+//   }
+// });
 
 // 프로젝트 수정하기_login_required
 projectAuthRouter.put("/user/:id/project/:projectId", login_required, userId_checked, request_checked, async function (req, res, next) {
@@ -70,10 +68,7 @@ projectAuthRouter.put("/user/:id/project/:projectId", login_required, userId_che
       throw new NotFoundError("해당 프로젝트가 수정되지 않았습니다.");
     }
 
-    res.status(200).json({
-      statusCode: 200,
-      message: '프로젝트 수정 성공',
-    });
+    res.status(200).send();
   } catch (error) {
     next(error);
   }
@@ -89,11 +84,7 @@ projectAuthRouter.delete("/user/:id/project/:projectId", login_required, userId_
       throw new NotFoundError("해당 프로젝트가 삭제되지 않았습니다.");
     }
 
-    res.status(200).json({
-      statusCode: 200,
-      message: '프로젝트 삭제 성공',
-    });
-
+    res.status(200).send();
   } catch (error) {
     next(error);
   }

@@ -4,7 +4,7 @@ const { userAuthService } = require('../services/userService');
 const { awardAuthService }= require('../services/awardService');
 const { certificateAuthService }= require('../services/certificateService');
 const { projectAuthService }= require('../services/projectService');
-// const { UnauthorizedError } = require('../middlewares/errorHandlingMiddleware');
+const { NotFoundError, UnauthorizedError, BadRequestError } = require('../middlewares/errorHandlingMiddleware');
 import { User } from "../db";
 
 
@@ -65,41 +65,26 @@ async function login_required(req, res, next) {
   //     console.error("리프레시 토큰 검증 오류:", error);
   //   }
   // }
-
-  // 두 토큰이 "null" 이면 login이 필요한 서비스 사용을 제한함.
-  if (!userToken && !refreshToken) {
-    res.status(401).json({
-      statusCode: 401,
-      message: "로그인한 유저만 사용할 수 있는 서비스입니다."
-    });
-    return;
-  }
-
-  // 해당 token 이 정상적인 token인지 확인 -> 토큰에 담긴 user_id 정보 추출
-  try {
+  
+ 
+  try{
+    // 해당 token 이 정상적인 token인지 확인 -> 토큰에 담긴 user_id 정보 추출
+    if (!userToken) {
+      throw new UnauthorizedError("정상적인 토큰이 아닙니다.");
+    }
     const jwtDecoded = jwt.verify(userToken);
     const user_id = jwtDecoded.user_id;
     req.currentUserId = user_id;
+
+     // 두 토큰이 "null" 이면 login이 필요한 서비스 사용을 제한함.
+    if (!userToken && !refreshToken) {
+      throw new UnauthorizedError("로그인한 유저만 사용할 수 있는 서비스입니다.");
+    }
+
     next();
   } catch (error) {
-    res.status(401).json({
-      statusCode: 401,
-      message: "정상적인 토큰이 아닙니다. 다시 한 번 확인해 주세요."
-    });
-    return;
+    next(error);
   }
-}
-
-// 요청 값 있는지 확인
-function request_checked(req, res, next) {
-  if (is.emptyObject(req.body)) {
-    res.status(400).json({
-      statusCode: 400,
-      message: "요청 값이 없습니다."
-    });
-    return;
-  }
-  next();
 }
 
 // 수정 및 삭제 시 권한 있는지 확인
@@ -117,72 +102,52 @@ async function userId_checked(req, res, next) {
       if ( eduId ) {
         const user = await educationAuthService.checkEducation({ eduId });
         if (!user) {
-          res.status(404).json({
-            statusCode: 404,
-            message: "Not Found"
-          });
-          return;
+          throw new NotFoundError("Not Found");
         }
         if (user.userId !== userId) {
-          res.status(401).json({
-            statusCode: 401,
-            message: "접근 권한이 없습니다."
-          });
-          return;
+          throw new UnauthorizedError("접근 권한이 없습니다.");
         }
       }
       if ( projectId ) {
         const user = await projectAuthService.checkProject({ projectId });
         if (!user) {
-          res.status(404).json({
-            statusCode: 404,
-            message: "Not Found"
-          });
-          return;
+          throw new NotFoundError("Not Found");
         }
         if (user.userId !== userId) {
-          res.status(401).json({
-            statusCode: 401,
-            message: "접근 권한이 없습니다."
-          });
-          return;
+          throw new UnauthorizedError("접근 권한이 없습니다.");
         }
       }
       if ( awardId ) {
         const user = await awardAuthService.checkAward({ awardId });
         if (!user) {
-          res.status(404).json({
-            statusCode: 404,
-            message: "Not Found"
-          });
-          return;
+          throw new NotFoundError("Not Found");
         }
         if (user.userId !== userId) {
-          res.status(401).json({
-            statusCode: 401,
-            message: "접근 권한이 없습니다."
-          });
-          return;
+          throw new UnauthorizedError("접근 권한이 없습니다.");
         }
       }
       if ( certificateId ) {
         const user = await certificateAuthService.checkCertificate({ certificateId });
         if (!user) {
-          res.status(404).json({
-            statusCode: 404,
-            message: "Not Found"
-          });
-          return;
+          throw new NotFoundError("Not Found");
         }
         if (user.userId !== userId) {
-          //throw new UnauthorizedError("접근 권한이 없습니다.");
-          res.status(401).json({
-            statusCode: 401,
-            message: "접근 권한이 없습니다."
-          });
-          return;
+          throw new UnauthorizedError("접근 권한이 없습니다.");
         }
       }
+    }
+    next();
+  } catch (error) {
+    next(error);
+  }
+}
+
+// 요청 값 있는지 확인
+// try 없어도 되는지 확인필요
+function request_checked(req, res, next) {
+  try {
+    if (is.emptyObject(req.body)) {
+      throw new BadRequestError("요청 값이 없습니다.")
     }
     next();
   } catch (error) {
