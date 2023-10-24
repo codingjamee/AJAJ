@@ -104,10 +104,11 @@ const Projects = (props) => {
     }
   };
 
-  // 모든 수상 목록 가져오기 서버와 통신
+  // 모든 프로젝트 목록 가져오기 서버와 통신
   useEffect(() => {
     Api.get(`user/${portfolioOwnerData.id}/projects`, "", "projects").then(
       (res) => {
+        console.log(res.data.projects);
         return setProjects(res.data.projects);
       }
     );

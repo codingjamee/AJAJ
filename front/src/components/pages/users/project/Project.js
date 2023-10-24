@@ -66,7 +66,7 @@ const Project = ({ isEditable, setAddForm, project = {}, setProjects }) => {
         },
         "Project"
       );
-      //console.log(res.data);
+      console.log(res.data);
       if (res.status === 200) {
         setProjects((prev) => {
           const updatedProjects = prev.map((prevProject) => {
