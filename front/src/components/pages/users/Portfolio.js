@@ -25,10 +25,10 @@ function Portfolio() {
   const loadingState = useSelector((state) => state.loading.open);
 
   const fetchPortfolioOwner = async (ownerId) => {
-    console.log("포트폴리오 오너 아이디" + ownerId);
+    // console.log("포트폴리오 오너 아이디" + ownerId);
     const res = await Api.get("users", ownerId, "portfolio");
     const ownerData = res.data;
-    console.log("ownerData", ownerData);
+    // console.log("ownerData", ownerData);
     setPortfolioOwnerData(ownerData);
     setIsFetchCompleted(true);
   };
@@ -45,7 +45,7 @@ function Portfolio() {
       fetchPortfolioOwner(ownerId);
     } else {
       // URL "/"
-      console.log("fetchPortfolioOwner전 userState확인", userState.user.id);
+      // console.log("fetchPortfolioOwner전 userState확인", userState.user.id);
       const ownerId = userState.user.id;
       fetchPortfolioOwner(ownerId);
     }

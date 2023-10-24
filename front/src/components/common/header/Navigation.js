@@ -15,7 +15,7 @@ function Navigation() {
   const dispatch = useContext(DispatchContext);
   const portfolioOwnerData = useContext(PortfolioOwnerDataContext);
 
-  console.log(userState);
+  // console.log(userState);
 
   //@@@@@@@@@@@@@@@@수정필요@@@@@@@@@@@@@@@@@@@@@성혜님@@@@@@@@@@@@@@@@/
   const navItems = [

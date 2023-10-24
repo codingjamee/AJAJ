@@ -37,8 +37,6 @@ const Educations = (props) => {
   //제출버튼 클릭시
   const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log("handler clicked");
-    console.log({ schoolName, major, degree, admissionDate, graduationDate });
 
     //portfolioOwnerId는 portfolio에서 받아옴
 
@@ -52,7 +50,7 @@ const Educations = (props) => {
         graduationDate,
       });
 
-      console.log(res);
+      // console.log(res);
       if (res.data.statusCode === 201) {
         setEducations((prev) => {
           return [

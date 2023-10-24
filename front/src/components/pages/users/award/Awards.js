@@ -40,13 +40,9 @@ const Awards = (props) => {
   const awardFormList = awardsCommonFormProps.map((awardCommon, index) => {
     return { ...awardCommon, ...awardState[index] };
   });
-  console.log(awardFormList);
-
   //제출버튼 클릭시
   const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log("handler clicked");
-    console.log({ awardName, awardDetail, awardOrganization, awardDate });
 
     //portfolioOwnerId는 portfolio에서 받아옴
 
@@ -62,7 +58,6 @@ const Awards = (props) => {
       "Awards"
     );
 
-    console.log(res);
     if (res.status === 201) {
       setAwards((prev) => {
         return [
@@ -84,8 +79,6 @@ const Awards = (props) => {
   useEffect(() => {
     Api.get(`user/${portfolioOwnerData.id}/awards`, "", "Awards").then(
       (res) => {
-        console.log(res);
-        console.log(res.status);
         return setAwards(res.data.awards);
       }
     );

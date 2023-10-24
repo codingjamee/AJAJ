@@ -9,7 +9,7 @@ function User({ portfolioOwnerId, isEditable }) {
   const portfolioOwnerData = useContext(PortfolioOwnerDataContext);
   const [user, setUser] = useState(portfolioOwnerData);
 
-  console.log("User", portfolioOwnerData);
+  // console.log("User", portfolioOwnerData);
 
   return (
     <>

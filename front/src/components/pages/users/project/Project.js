@@ -29,7 +29,6 @@ const Project = ({ isEditable, setAddForm, project = [], setProjects }) => {
   const userState = useContext(UserStateContext);
   const portfolioOwnerData = useContext(PortfolioOwnerDataContext);
 
-  console.log("project array", project);
   //form 상세설정 어레이
   const projectState = [
     { value: projectName, changeHandler: (v) => setProjectName(v) },
@@ -48,18 +47,9 @@ const Project = ({ isEditable, setAddForm, project = [], setProjects }) => {
     }
   );
 
-  console.log(projectFormList);
   //수정해서 onSubmitHandler
   const onSubmitHandler = async (e) => {
     e.preventDefault();
-    console.log("handler clicked");
-    console.log({
-      projectName,
-      projectDetail,
-      projectImgUrl,
-      projectStartDate,
-      projectEndDate,
-    });
 
     //portfolioOwnerId는 portfolio에서 받아옴
 
