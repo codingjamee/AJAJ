@@ -36,8 +36,6 @@ const Award = ({ setAddForm, isEditable, award = [], setAwards }) => {
   //수정해서 onSubmitHandler
   const onSubmitHandler = async (e) => {
     e.preventDefault();
-    console.log("handler clicked");
-    console.log({ awardName, awardDetail, awardOrganization, awardDate });
 
     //portfolioOwnerId는 portfolio에서 받아옴
 
@@ -54,7 +52,7 @@ const Award = ({ setAddForm, isEditable, award = [], setAwards }) => {
         "Award"
       );
 
-      console.log(res);
+      // console.log(res);
       if (res.status === 200) {
         setAwards((prev) => {
           return [
@@ -79,17 +77,13 @@ const Award = ({ setAddForm, isEditable, award = [], setAwards }) => {
   //삭제함수
 
   const onClickDel = async (awardId) => {
-    console.log(award);
-    console.log("delete버튼이 선택됨");
-    console.log(awardId);
-
     try {
       const res = await Api.delete(
         `user/${userState.user.id}/award`,
         awardId,
         "Award"
       );
-      console.log(res);
+      // console.log(res);
       if (res.status === 200) {
         setAwards((prev) => prev.filter((award) => award.awardId !== awardId));
       } else if (res.status !== 200) {

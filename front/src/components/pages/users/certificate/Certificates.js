@@ -58,13 +58,6 @@ const Certificates = (props) => {
   //제출버튼 클릭시
   const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log("handler clicked");
-    console.log({
-      certificateName,
-      certificateDetail,
-      certificateOrganization,
-      certificateDate,
-    });
 
     // portfolioOwnerId는 portfolio에서 받아옴
 

@@ -18,6 +18,7 @@ projectAuthRouter.post("/user/:id/project", login_required, request_checked, asy
     }
 
     res.status(201).json({
+      projectId: newProject.projectId,
       statusCode: 201,
       message: '프로젝트 추가 성공',
     });

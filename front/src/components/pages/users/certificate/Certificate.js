@@ -50,26 +50,16 @@ const Certificate = ({
   //수정해서 onSubmitHandler
   const onSubmitHandler = (e) => {
     e.preventDefault();
-    console.log({
-      certificateName,
-      certificateDetail,
-      certificateOrganization,
-      certificateDate,
-    });
   };
 
   //삭제함수
   const onClickDel = async (certificateId) => {
-    console.log(certificate);
-    console.log("delete버튼이 선택됨");
-    console.log(certificateId);
-
     const res = await Api.delete(
       `user/${userState.user.id}/certificate`,
       certificateId,
       "certificate"
     );
-    console.log(res);
+    // console.log(res);
     // if (res.data.ok) {
     setCertificates((prev) =>
       prev.filter(

@@ -43,9 +43,6 @@ const Education = ({
   const onSubmitHandler = async (e) => {
     //제출버튼 클릭시
     e.preventDefault();
-    console.log("handler clicked");
-
-    console.log({ schoolName, major, degree, admissionDate, graduationDate });
 
     //portfolioOwnerId는 portfolio에서 받아옴
 
@@ -62,7 +59,7 @@ const Education = ({
         },
         "Education"
       );
-      console.log(res.data);
+      // console.log(res.data);
       if (res.data.statusCode === 201) {
         setEducations((prev) => {
           return [
@@ -87,20 +84,15 @@ const Education = ({
   //삭제함수
 
   const onClickDel = async (eduId) => {
-    console.log(education);
-    console.log("delete버튼이 선택됨");
-    console.log(eduId);
-
     try {
       const res = await Api.delete(
         `user/${userState.user.id}/education`,
         eduId,
         "Education"
       );
-      console.log(res);
+      // console.log(res);
       if (res.data.statusCode === 200) {
         setEducations((prevObj) => {
-          console.log(prevObj.filter((edus) => edus.eduId !== eduId));
           return prevObj.filter((edus) => edus.eduId !== eduId);
         });
       } else if (res.data.statusCode !== 200) {
