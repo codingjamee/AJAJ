@@ -72,11 +72,6 @@ const Education = ({ isEditable, education = {}, setEducations }) => {
           });
           return updatedEdus;
         });
-        setSchoolName("");
-        setMajor("");
-        setDegree("");
-        setAdmissionDate("2023-01-01");
-        setGraduationDate("2023-01-01");
         setEditMode(false);
       } else if (res.status !== 200) {
         throw new Error("POST 요청을 실패하였습니다.");

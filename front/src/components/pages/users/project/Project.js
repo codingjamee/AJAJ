@@ -10,7 +10,7 @@ import { projectsCommonFormProps } from "../../../utils/formListCommonProps";
 //********************************서버와 통신전**************************************
 //*******************프로젝트 이미지 첨부***************/
 
-const Project = ({ isEditable, setAddForm, project = [], setProjects }) => {
+const Project = ({ isEditable, setAddForm, project = {}, setProjects }) => {
   // const [projects, setProjects] = useState([]);
   const [editMode, setEditMode] = useState(false);
   const [projectName, setProjectName] = useState(project.projectName || "");
@@ -84,11 +84,6 @@ const Project = ({ isEditable, setAddForm, project = [], setProjects }) => {
           });
           return updatedProjects;
         });
-        setProjectName("");
-        setProjectDetail("");
-        setProjectImgUrl("");
-        setProjectStartDate("2023-01-01");
-        setProjectEndDate("2023-01-01");
         setAddForm(false);
       } else if (res.status !== 200) {
         throw new Error("POST 요청이 실패하였습니다.");

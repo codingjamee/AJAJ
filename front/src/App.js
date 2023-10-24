@@ -22,15 +22,11 @@ function App() {
   const fetchCurrentUser = async () => {
     try {
       const res = await Api.get("user/current", "", "App");
-      const currentUser = res.data.currentUserInfo.id;
-      console.log("currentUser", currentUser);
+      const currentUser = res.data;
       dispatch({
         type: "LOGIN_SUCCESS",
         payload: currentUser,
       });
-
-      console.log(currentUser);
-
       console.log("%c 로그인 인증된 쿠키 있음.", "color: #d93d1a;");
     } catch {
       console.log("%c 로그인 인증된 쿠키 없음.", "color: #d93d1a;");

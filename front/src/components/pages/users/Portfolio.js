@@ -36,8 +36,9 @@ function Portfolio() {
   };
 
   useEffect(() => {
+    console.log(userState.user);
     if (!userState.user) {
-      navigate("/login", { replace: true });
+      navigate("/login", { replace: false });
       return;
     }
 
@@ -60,15 +61,13 @@ function Portfolio() {
       dispatch(loadingActions.close());
       console.log(loadingState);
     }
-    // return () => {
-    //   dispatch(loadingActions.close());
-    // };
+
     if (loadingState) {
       return <LoadingLayer message="Loading....." />;
     } else {
-      // dispatch(loadingActions.close());
+      dispatch(loadingActions.close());
     }
-  }, []);
+  }, [loadingState]);
 
   return (
     <PortfolioOwnerDataContext.Provider value={portfolioOwnerData}>

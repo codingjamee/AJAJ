@@ -7,7 +7,7 @@ import { certificatesCommonFormProps } from "../../../utils/formListCommonProps"
 import { PortfolioOwnerDataContext } from "../Portfolio";
 import { UserStateContext } from "../../../../App";
 
-const Certificate = ({ isEditable, certificate = [], setCertificates }) => {
+const Certificate = ({ isEditable, certificate = {}, setCertificates }) => {
   // const [user, setUser] = useState(null);
   const [editMode, setEditMode] = useState(false);
   const [certificateName, setCertificateName] = useState(
@@ -76,10 +76,6 @@ const Certificate = ({ isEditable, certificate = [], setCertificates }) => {
           });
           return updatedCert;
         });
-        setCertificateName("");
-        setCertificateDetail("");
-        setCertificateOrganization("");
-        setAcquisitionDate("2023-01-01");
         setEditMode(false);
       } else if (res.status !== 200) {
         throw new Error("POST 요청을 실패하였습니다.");

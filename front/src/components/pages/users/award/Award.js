@@ -1,16 +1,12 @@
-//********************************상세 커스텀 수정필요**************************************
-import { useContext, useEffect, useState } from "react";
+import { useContext, useState } from "react";
 import * as Api from "../../../utils/api";
 import { Form, Card, Col } from "react-bootstrap";
 import FormWrapper from "../../../common/FormWrapper";
 import ButtonCommon from "../../../common/ButtonCommon";
 import { UserStateContext } from "../../../../App";
 import { awardsCommonFormProps } from "../../../utils/formListCommonProps";
-import { PortfolioOwnerDataContext } from "../Portfolio";
 
-const Award = ({ isEditable, award = [], setAwards }) => {
-  // useState 훅을 통해 user 상태를 생성함.
-  const [user, setUser] = useState(null);
+const Award = ({ isEditable, award = {}, setAwards }) => {
   const [editMode, setEditMode] = useState(false);
   const [awardName, setAwardName] = useState(award.awardName || "");
   const [awardDetail, setAwardDetail] = useState(award.awardDetail || "");
@@ -19,7 +15,6 @@ const Award = ({ isEditable, award = [], setAwards }) => {
   );
   const [awardDate, setAwardDate] = useState(award.awardDate || "2023-01-01");
   const userState = useContext(UserStateContext);
-  const portfolioOwnerData = useContext(PortfolioOwnerDataContext);
 
   //form 상세설정 어레이
   const awardState = [
@@ -70,10 +65,6 @@ const Award = ({ isEditable, award = [], setAwards }) => {
           });
           return updatedAwards;
         });
-        setAwardName("");
-        setAwardDetail("");
-        setAwardOrganization("");
-        setAwardDate("2023-01-01");
         setEditMode(false);
       } else if (res.status !== 200) {
         throw new Error("POST 요청이 실패하였습니다.");

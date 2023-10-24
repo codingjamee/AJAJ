@@ -1,7 +1,7 @@
 import { Form, Row, Col } from "react-bootstrap";
 import ButtonCommon from "./ButtonCommon";
 import FormCommon from "./FormCommon";
-import { useState } from "react";
+import { useMemo, useState } from "react";
 
 //form button 상세설정 어레이
 
@@ -16,24 +16,27 @@ const FormWrapper = ({
   //   setFormView((prev) => !prev);
   // };
 
-  const btnSet = [
-    {
-      variant: "primary",
-      type: "submit",
-      className: "me-3",
-      text: "추가",
-      onClickHandler: onSubmitHandler,
-    },
-    {
-      variant: "secondary",
-      type: "button",
-      className: "me-3",
-      text: "취소",
-      onClickHandler: () => {
-        setAddForm((prev) => !prev);
+  const btnSet = useMemo(
+    () => [
+      {
+        variant: "primary",
+        type: "submit",
+        className: "me-3",
+        text: "추가",
+        onClickHandler: onSubmitHandler,
       },
-    },
-  ];
+      {
+        variant: "secondary",
+        type: "button",
+        className: "me-3",
+        text: "취소",
+        onClickHandler: () => {
+          setAddForm((prev) => !prev);
+        },
+      },
+    ],
+    [onSubmitHandler, setAddForm]
+  );
 
   return (
     <Form onSubmit={onSubmitHandler}>
