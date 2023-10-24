@@ -29,6 +29,11 @@ class Certificate {
     const updatedCertificate = await CertificateModel.findOneAndUpdate(filter, update, option);
     return updatedCertificate;
   }
+
+  static async delete({ certificateId }) {
+    const result = await CertificateModel.findOneAndDelete({ certificateId });
+    return result;
+  }
 }
 
 export { Certificate };
