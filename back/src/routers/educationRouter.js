@@ -20,8 +20,6 @@ educationAuthRouter.post("/user/:id/education", login_required, request_checked,
 
       res.status(201).send({
         eduId: newEducation.eduId,
-        statusCode: 201,
-        message: '학력 추가 성공', 
       });
     } catch (error) {
       next(error);
@@ -83,10 +81,7 @@ educationAuthRouter.put("/user/:id/education/:eduId", login_required, userId_che
         throw new NotFoundError("해당 학력이 수정되지 않았습니다.");
       }
   
-      res.status(200).json({
-        statusCode: 200,
-        message: '학력 수정 성공', 
-      });
+      res.status(200).send();
     } catch (error) {
       next(error);
     }
@@ -102,11 +97,7 @@ educationAuthRouter.delete("/user/:id/education/:eduId", login_required, userId_
       throw new NotFoundError("해당 학력이 삭제되지 않았습니다.");
     }
 
-    res.status(200).json({
-      statusCode: 200,
-      message: '학력 삭제 성공', 
-    });
-
+    res.status(200).send();
   } catch (error) {
     next(error);
   }
