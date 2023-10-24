@@ -37,30 +37,30 @@ class certificateAuthService {
         if (toUpdate.certificateName) {
           const fieldToUpdate = "certificateName";
           const newValue = toUpdate.certificateName;
-          Certificate = await Certificate.update({ certificateId, fieldToUpdate, newValue });
+          certificate = await Certificate.update({ certificateId, fieldToUpdate, newValue });
         }
 
         if (toUpdate.certificateDetail) {
           const fieldToUpdate = "certificateDetail";
           const newValue = toUpdate.certificateDetail;
-          Certificate = await Certificate.update({ certificateId, fieldToUpdate, newValue });
+          certificate = await Certificate.update({ certificateId, fieldToUpdate, newValue });
         }
     
         if (toUpdate.certificateOrganization) {
           const fieldToUpdate = "certificateOrganization";
           const newValue = toUpdate.certificateOrganization;
-          Certificate = await Certificate.update({ certificateId, fieldToUpdate, newValue });
+          certificate = await Certificate.update({ certificateId, fieldToUpdate, newValue });
         }
     
         if (toUpdate.acquisitionDate) {
           const fieldToUpdate = "acquisitionDate";
           const newValue = toUpdate.acquisitionDate;
-          Certificate = await Certificate.update({ certificateId, fieldToUpdate, newValue });
+          certificate = await Certificate.update({ certificateId, fieldToUpdate, newValue });
         }
   
-    
         return certificate;
       }
+
     static async deleteCertificate({ certificateId }) {
         const result = await Certificate.delete({ certificateId });
         return result;
