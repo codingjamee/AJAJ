@@ -11,7 +11,7 @@ const app = express();
 
 // CORS 에러 방지
 const corsOption = {
-  origin: ["http://kdt-ai-9-team03.elicecoding.com", "http://localhost:3000"],
+  origin: ["http://kdt-ai-9-team03.elicecoding.com/login","http://kdt-ai-9-team03.elicecoding.com", "http://localhost:3000"],
   optionsSuccessStatus: 200,
 
   credentials: true, // false하면 login창에서 다음으로 넘어가지 않음.
