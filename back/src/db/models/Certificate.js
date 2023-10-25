@@ -23,8 +23,8 @@ class Certificate {
       if (new Date(a.acquisitionDate) > new Date(b.acquisitionDate)) return 1;
       if (new Date(a.acquisitionDate) < new Date(b.acquisitionDate)) return -1;
 
-      if (new Date(a.certificateName) > new Date(b.certificateName)) return 1;
-      if (new Date(a.certificateName) < new Date(b.certificateName)) return -1;
+      if (a.certificateName > b.certificateName) return 1;
+      if (a.certificateName < b.certificateName) return -1;
     }));
     return result;
   }

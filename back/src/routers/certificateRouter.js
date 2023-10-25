@@ -6,7 +6,7 @@ const { certificateAuthService } = require('../services/certificateService');
 
 const certificateAuthRouter = Router();
 
-// 자격증 추가하기_login_required
+// 자격증 추가하기
 certificateAuthRouter.post("/user/:id/certificate", login_required, request_checked, async function (req, res, next) {
     try {
         const userId = req.params.id;
@@ -26,7 +26,7 @@ certificateAuthRouter.post("/user/:id/certificate", login_required, request_chec
     }
   });
 
-// 자격증 전체 가져오기_login_required
+// 자격증 전체 가져오기
 certificateAuthRouter.get("/user/:id/certificates", login_required, async function (req, res, next) {
   try {
     const userId = req.params.id;
@@ -42,7 +42,7 @@ certificateAuthRouter.get("/user/:id/certificates", login_required, async functi
 });
 
 
-// 자격증 수정하기_login_required
+// 자격증 수정하기
 certificateAuthRouter.put("/user/:id/certificate/:certificateId", login_required, userId_checked, request_checked, async function (req, res, next) {
     try {
       const certificateId = req.params.certificateId;
@@ -62,7 +62,7 @@ certificateAuthRouter.put("/user/:id/certificate/:certificateId", login_required
     }
   });
 
-// 자격증 삭제하기_login_required
+// 자격증 삭제하기
 certificateAuthRouter.delete("/user/:id/certificate/:certificateId", login_required, userId_checked, async function (req, res, next) {
   const certificateId = req.params.certificateId;
   try {
@@ -73,11 +73,9 @@ certificateAuthRouter.delete("/user/:id/certificate/:certificateId", login_requi
     }
 
     res.status(200).send();
-
   } catch (error) {
     next(error);
   }
-  
 })
 
 export { certificateAuthRouter };

@@ -6,8 +6,6 @@ import { educationAuthRouter } from "./routers/educationRouter";
 import { projectAuthRouter } from "./routers/projectRouter";
 import { awardAuthRouter } from "./routers/awardRouter";
 import { certificateAuthRouter } from "./routers/certificateRouter";
-const cookieParser = require('cookie-parser');
-
 
 const app = express();
 
@@ -34,7 +32,6 @@ app.use(cors(corsOption));
 // express.urlencoded: 주로 Form submit 에 의해 만들어지는 URL-Encoded 형태의 데이터를 인식하고 핸들링할 수 있게 함.
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
-// app.use(cookieParser()); // 우선은 없어도 동작
 
 // 기본 페이지
 app.get("/", (req, res) => {

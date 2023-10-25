@@ -16,21 +16,5 @@ module.exports = {
     verify: (token) => { // access token 검증
         const jwtDecoded = jwt.verify(token, secret);
         return jwtDecoded;
-    },
-
-    // refresh: (user) => { // refresh token 발급
-    //   const payload = { // access token에 들어갈 payload
-    //     user_id: user.id,
-    //   };
-    //   return jwt.sign({payload}, secret, {
-    //     algorithm: 'HS512',
-    //     expiresIn: '7d',
-    //   });
-    // },
-    
-    // refreshVerify: async (token, userId) => { // refresh token 검증
-    //   const jwtDecoded = jwt.verify(token, secret);
-    //   return jwtDecoded;
-    // }
-
+    }
 }

@@ -19,7 +19,17 @@ class User {
 
   static async findAll() {
     const users = await UserModel.find({});
-    return users;
+    const filteredUsers = users.map(({...rest}) => [rest._doc].map(({_id, password, createdAt, updatedAt, __v, deletedAt, ...rest}) => rest)).flat();
+    const result = filteredUsers.sort(((a,b) => {
+      // 이름순으로 정렬
+      if (a.name > b.name) return 1;
+      if (a.name < b.name) return -1;
+
+      // 동명이인이라면 이메일 순으로 정렬
+      if (a.email > b.email) return 1;
+      if (a.email < b.email) return -1;
+    }));
+    return result;
   }
 
   static async update({ userId, fieldToUpdate, newValue }) {

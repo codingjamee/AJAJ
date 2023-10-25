@@ -6,7 +6,7 @@ const { educationAuthService } = require('../services/educationService');
 
 const educationAuthRouter = Router();
 
-// 학력 추가하기_login_required
+// 학력 추가하기
 educationAuthRouter.post("/user/:id/education", login_required, request_checked, async function (req, res, next) {
     try {
         const userId = req.params.id;
@@ -26,7 +26,7 @@ educationAuthRouter.post("/user/:id/education", login_required, request_checked,
     }
   });
 
-// 학력 전체 가져오기_login_required
+// 학력 전체 가져오기
 educationAuthRouter.get("/user/:id/educations", login_required, async function (req, res, next) {
   try {
     const userId = req.params.id;
@@ -42,7 +42,7 @@ educationAuthRouter.get("/user/:id/educations", login_required, async function (
 });
 
 
-// 특정 학력 가져오기_login_required
+// 특정 학력 가져오기
 // educationAuthRouter.get("/user/:id/education/:eduId", login_required, async function (req, res, next) {
 //   try {
 //     const eduId = req.params.eduId;
@@ -67,7 +67,7 @@ educationAuthRouter.get("/user/:id/educations", login_required, async function (
 // });
 
 
-// 학력 수정하기_login_required
+// 학력 수정하기
 educationAuthRouter.put("/user/:id/education/:eduId", login_required, userId_checked, request_checked, async function (req, res, next) {
     try {
       const eduId = req.params.eduId;
@@ -87,7 +87,7 @@ educationAuthRouter.put("/user/:id/education/:eduId", login_required, userId_che
     }
   });
 
-// 학력 삭제하기_login_required
+// 학력 삭제하기
 educationAuthRouter.delete("/user/:id/education/:eduId", login_required, userId_checked, async function (req, res, next) {
   const eduId = req.params.eduId;
   try {
@@ -101,7 +101,6 @@ educationAuthRouter.delete("/user/:id/education/:eduId", login_required, userId_
   } catch (error) {
     next(error);
   }
-  
 })
 
 export { educationAuthRouter };

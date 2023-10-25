@@ -23,8 +23,8 @@ class Award {
       if (new Date(a.awardDate) > new Date(b.awardDate)) return 1;
       if (new Date(a.awardDate) < new Date(b.awardDate)) return -1;
 
-      if (new Date(a.awardName) > new Date(b.awardName)) return 1;
-      if (new Date(a.awardName) < new Date(b.awardName)) return -1;
+      if (a.awardName > b.awardName) return 1;
+      if (a.awardName < b.awardName) return -1;
     }));
     return result;
   }

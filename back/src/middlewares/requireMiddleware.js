@@ -42,59 +42,64 @@ async function login_required(req, res, next) {
   }
 
   // 현재 접속중인 user의 DB에서 refresh 토큰 정보를 얻습니다 < - 이게 안되는 중..
-  const userId = 'edd3dc04-bbec-41cb-90fd-f9742a41b081'; // 임시
+  const current_userId = req.currentUserId;
+  const userlist_userId = req.body.id;
+  const params_userId = req.params.id;
+
+  let userId = '';
+  if (current_userId) {
+    userId = current_userId;
+  } else if (userlist_userId) {
+    userId = userlist_userId;
+  } else {
+    userId = params_userId;
+  }
+
   const refreshToken = await userAuthService.getToken({ userId });
 
-  console.log("refreshToken: " + refreshToken);
+  try {
 
-  if (!refreshToken) {
-    // refreshToken이 데이터베이스에서 발견되지 않았으므로 유효성 검사 실패
-    throw new UnauthorizedError("권한이 없습니다.");
-  }
-
-  if (!userToken && refreshToken) {
-    try {
-      const user = await userAuthService.getUserInfo({ userId });
-      console.log("user : " + user)
-      userToken = jwt.sign(user)
-
-      // 클라이언트로 새로운 유저 토큰을 전송
-      res.cookie("user_cookie", userToken, {
-        path: "/",
-        httpOnly: true,
-        sameSite: "lax",
-        maxAge: 60 * 60 * 1000, // 예: 1시간
-      });
-      console.log("userToken : " + userToken)
-    } catch (error) {
-      throw new UnauthorizedError("정상적인 토큰이 아닙니다.");
+    if (!refreshToken) {
+      // refreshToken이 데이터베이스에서 발견되지 않았으므로 유효성 검사 실패
+      throw new UnauthorizedError("권한이 없습니다.");
     }
-  }
-
-  if ( userToken ) {
-    try {
-      // 해당 token 이 정상적인 token인지 확인 -> 토큰에 담긴 user_id 정보 추출
-      const jwtDecoded = jwt.verify(userToken);
-      console.log("jwtDecoded : " + jwtDecoded.user_id)
-      const user_id = jwtDecoded.user_id;
-      console.log("user_id" + user_id)
-      req.currentUserId = user_id;
   
-      // 두 토큰이 "null" 이면 login이 필요한 서비스 사용을 제한함.
-      if (!userToken && !refreshToken) {
-        throw new UnauthorizedError("로그인한 유저만 사용할 수 있는 서비스입니다.");
+    if (!userToken && refreshToken) {
+        const user = await userAuthService.getUserInfo({ userId });
+        console.log("user : " + user)
+        userToken = jwt.sign(user)
+        if (!userToken) {
+          throw new UnauthorizedError("정상적인 토큰이 아닙니다.");
+        }
+  
+        // 클라이언트로 새로운 유저 토큰을 전송
+        res.cookie("user_cookie", userToken, {
+          path: "/",
+          httpOnly: true,
+          sameSite: "lax",
+          maxAge: 60 * 60 * 1000, // 예: 1시간
+        });
       }
-  
-      next();
-    } catch (error) {
-      next(error);
-    }
+
+    if ( userToken ) {
+        // 해당 token 이 정상적인 token인지 확인 -> 토큰에 담긴 user_id 정보 추출
+        const jwtDecoded = jwt.verify(userToken);
+        const user_id = jwtDecoded.user_id;
+        req.currentUserId = user_id;
+    
+        // 두 토큰이 "null" 이면 login이 필요한 서비스 사용을 제한함.
+        if (!userToken && !refreshToken) {
+          throw new UnauthorizedError("로그인한 유저만 사용할 수 있는 서비스입니다.");
+        }
+        next();
+      }
+  } catch (error) {
+    next(error);
   }
 }
 
 // 수정 및 삭제 시 권한 있는지 확인
-// 접근 중인 userId(User)와 eduId(Education)의 userId와 같은지 확인
-// -> 모델에 따라 다르게
+// 접근 중인 userId(User)와 mvp id의 userId와 같은지 확인 -> mvp 모델에 따라 다르게
 async function userId_checked(req, res, next) {
   const userId = req.params.id;
   const eduId = req.params.eduId;
@@ -148,7 +153,6 @@ async function userId_checked(req, res, next) {
 }
 
 // 요청 값 있는지 확인
-// try 없어도 되는지 확인필요
 function request_checked(req, res, next) {
   try {
     if (is.emptyObject(req.body)) {

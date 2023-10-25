@@ -6,7 +6,7 @@ const { awardAuthService } = require('../services/awardService');
 
 const awardAuthRouter = Router();
 
-// 수상내역 추가하기_login_required
+// 수상내역 추가하기
 awardAuthRouter.post("/user/:id/award", login_required, request_checked, async function (req, res, next) {
     try {
         const userId = req.params.id;
@@ -26,7 +26,8 @@ awardAuthRouter.post("/user/:id/award", login_required, request_checked, async f
     }
   });
 
-// 수상내역 전체 가져오기_login_required
+
+// 수상내역 전체 가져오기
 awardAuthRouter.get("/user/:id/awards", login_required, async function (req, res, next) {
   try {
     const userId = req.params.id;
@@ -42,7 +43,7 @@ awardAuthRouter.get("/user/:id/awards", login_required, async function (req, res
 });
 
 
-// 수상내역 수정하기_login_required
+// 수상내역 수정하기
 awardAuthRouter.put("/user/:id/award/:awardId", login_required, userId_checked, request_checked, async function (req, res, next) {
     try {
       const awardId = req.params.awardId;
@@ -62,7 +63,8 @@ awardAuthRouter.put("/user/:id/award/:awardId", login_required, userId_checked, 
     }
   });
 
-// 수상내역 삭제하기_login_required
+
+// 수상내역 삭제하기
 awardAuthRouter.delete("/user/:id/award/:awardId", login_required, userId_checked, async function (req, res, next) {
   const awardId = req.params.awardId;
   try {
