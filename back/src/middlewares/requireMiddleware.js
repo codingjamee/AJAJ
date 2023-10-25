@@ -58,41 +58,43 @@ async function login_required(req, res, next) {
   const refreshToken = await userAuthService.getToken({ userId });
 
   try {
+    if (userToken) {
+      // 해당 token 이 정상적인 token인지 확인 -> 토큰에 담긴 user_id 정보 추출
+      const jwtDecoded = jwt.verify(userToken);
+      const user_id = jwtDecoded.user_id;
+      req.currentUserId = user_id;
 
-    if (!refreshToken) {
+      // 두 토큰이 "null" 이면 login이 필요한 서비스 사용을 제한함.
+      if (!userToken && !refreshToken) {
+        throw new UnauthorizedError("로그인한 유저만 사용할 수 있는 서비스입니다.");
+      }
+      next();
+    } else if (!userToken && refreshToken) {
+      const user = await userAuthService.getUserInfo({ userId });
+      userToken = jwt.sign(user)
+      if (!userToken) {
+        throw new UnauthorizedError("정상적인 토큰이 아닙니다.");
+      }
+
+      // 클라이언트로 새로운 유저 토큰을 전송
+      res.cookie("user_cookie", userToken, {
+        path: "/",
+        httpOnly: true,
+        sameSite: "lax",
+        maxAge: 60 * 60 * 1000, // 예: 1시간
+      });
+
+      // 다시 발급된 userToken을 검사
+      const jwtDecodedNew = jwt.verify(userToken);
+      const user_idNew = jwtDecodedNew.user_id;
+      req.currentUserId = user_idNew;
+
+      next();
+
+    } else if (!refreshToken) {
       // refreshToken이 데이터베이스에서 발견되지 않았으므로 유효성 검사 실패
       throw new UnauthorizedError("권한이 없습니다.");
     }
-  
-    if (!userToken && refreshToken) {
-        const user = await userAuthService.getUserInfo({ userId });
-        console.log("user : " + user)
-        userToken = jwt.sign(user)
-        if (!userToken) {
-          throw new UnauthorizedError("정상적인 토큰이 아닙니다.");
-        }
-  
-        // 클라이언트로 새로운 유저 토큰을 전송
-        res.cookie("user_cookie", userToken, {
-          path: "/",
-          httpOnly: true,
-          sameSite: "lax",
-          maxAge: 60 * 60 * 1000, // 예: 1시간
-        });
-      }
-
-    if ( userToken ) {
-        // 해당 token 이 정상적인 token인지 확인 -> 토큰에 담긴 user_id 정보 추출
-        const jwtDecoded = jwt.verify(userToken);
-        const user_id = jwtDecoded.user_id;
-        req.currentUserId = user_id;
-    
-        // 두 토큰이 "null" 이면 login이 필요한 서비스 사용을 제한함.
-        if (!userToken && !refreshToken) {
-          throw new UnauthorizedError("로그인한 유저만 사용할 수 있는 서비스입니다.");
-        }
-        next();
-      }
   } catch (error) {
     next(error);
   }
