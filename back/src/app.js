@@ -21,6 +21,7 @@ const corsOption = {
 }
 app.use(cors(corsOption));
 // corsOption 제거하면 login창에서 다음으로 넘어가지 않음.
+app.use(cors())
 
 // express.json(): POST 등의 요청과 함께 오는 json형태의 데이터를 인식하고 핸들링할 수 있게 함.
 // express.urlencoded: 주로 Form submit 에 의해 만들어지는 URL-Encoded 형태의 데이터를 인식하고 핸들링할 수 있게 함.
