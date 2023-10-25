@@ -49,12 +49,8 @@ class userAuthService {
       return { errorMessage };
     }
 
-    // 로그인 성공 -> JWT 웹 토큰 생성
-    // const secretKey = process.env.JWT_SECRET_KEY || "jwt-secret-key";
-    // const accessToken = jwt.sign({ user_id: user.id }, secretKey, { expiresIn: '1h' });
-
     const accessToken = jwt.sign(user);
-    const refreshToken = uuidv4(); // 새로운 리프래시 토큰 생성
+    const refreshToken = jwt.refresh();
 
     const id = user.id;
     const name = user.name;
@@ -114,14 +110,11 @@ class userAuthService {
         "해당 이메일은 가입 내역이 없습니다. 다시 한 번 확인해 주세요.";
       return { errorMessage };
     }
-
     return user;
   }
 
   static async getToken({ userId }) {
     const token = await User.findRefreshToken({ userId });
-    // const id = await User.findById({ userId })
-    // const tokenInfo = { id, token};
     return token;
   }
 

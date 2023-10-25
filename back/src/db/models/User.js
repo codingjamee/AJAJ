@@ -44,7 +44,6 @@ class User {
   static async findRefreshToken({ userId }) {
     // id 값을 받으면 해당 id의 token값을 가져와 줍니다
     const refreshToken = await RefreshTokenModel.findOne({ userId })
-    console.log("User.js안의 내용 > " + refreshToken)
     return refreshToken.token;
   }
 }
