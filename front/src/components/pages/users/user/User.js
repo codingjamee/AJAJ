@@ -9,19 +9,22 @@ function User({ portfolioOwnerId, isEditable }) {
   const portfolioOwnerData = useContext(PortfolioOwnerDataContext);
   const [user, setUser] = useState(portfolioOwnerData);
 
-  // console.log("User", portfolioOwnerData);
+  console.log(user);
+  useEffect(() => {
+    setUser(portfolioOwnerData);
+  }, [portfolioOwnerData]);
 
   return (
     <>
       {isEditing ? (
         <UserEditForm
-          user={portfolioOwnerData}
+          user={user}
           setIsEditing={setIsEditing}
           setUser={setUser}
         />
       ) : (
         <UserCard
-          user={portfolioOwnerData}
+          user={user}
           setIsEditing={setIsEditing}
           isEditable={isEditable}
         />
