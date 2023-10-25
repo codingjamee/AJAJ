@@ -37,7 +37,7 @@ userAuthRouter.post("/user/login", deleted_checked, request_checked, async funct
       path: "/", // 쿠키 저장 경로
       httpOnly: true, // 클라이언트에서 쿠키 조작 불가
       sameSite: "lax",
-      maxAge: 9 * 1000, // JWT 토큰의 유효기간 (1시간)
+      maxAge: 60 * 60 * 1000, // JWT 토큰의 유효기간 (1시간)
     });
     // refreshToken을 db로 저장
     try {

@@ -6,14 +6,9 @@ import ButtonCommon from "../../../common/ButtonCommon";
 import { UserStateContext } from "../../../../App";
 import { educationsCommonFormProps } from "../../../utils/formListCommonProps";
 
-const Education = ({
-  setAddForm,
-  isEditable,
-  education = {},
-  setEducations,
-}) => {
+const Education = ({ isEditable, education = {}, setEducations }) => {
   // useState 훅을 통해 user 상태를 생성함.
-  const [user, setUser] = useState(null);
+  // const [user, setUser] = useState(null);
   const [editMode, setEditMode] = useState(false);
   const [schoolName, setSchoolName] = useState(education.schoolName || "");
   const [major, setMajor] = useState(education.major || "");
@@ -48,8 +43,8 @@ const Education = ({
 
     //post 서버와 통신
     try {
-      const res = await Api.post(
-        `user/${userState.user.id}/education`,
+      const res = await Api.put(
+        `user/${userState.user.id}/education/${education.eduId}`,
         {
           schoolName,
           major,
@@ -60,20 +55,25 @@ const Education = ({
         "Education"
       );
       // console.log(res.data);
-      if (res.data.statusCode === 201) {
+      if (res.status === 200) {
         setEducations((prev) => {
-          return [
-            ...prev,
-            { schoolName, major, degree, admissionDate, graduationDate },
-          ];
+          const updatedEdus = prev.map((prevEdu) => {
+            if (prevEdu.eduId === education.eduId) {
+              return {
+                ...prevEdu,
+                schoolName,
+                major,
+                degree,
+                admissionDate,
+                graduationDate,
+              };
+            }
+            return prevEdu;
+          });
+          return updatedEdus;
         });
-        setSchoolName("");
-        setMajor("");
-        setDegree("");
-        setAdmissionDate("2023-01-01");
-        setGraduationDate("2023-01-01");
         setEditMode(false);
-      } else if (res.data.statusCode !== 201) {
+      } else if (res.status !== 200) {
         throw new Error("POST 요청을 실패하였습니다.");
       }
     } catch (err) {
@@ -91,11 +91,11 @@ const Education = ({
         "Education"
       );
       // console.log(res);
-      if (res.data.statusCode === 200) {
+      if (res.status === 200) {
         setEducations((prevObj) => {
           return prevObj.filter((edus) => edus.eduId !== eduId);
         });
-      } else if (res.data.statusCode !== 200) {
+      } else if (res.status !== 200) {
         throw new Error("삭제를 실패하였습니다");
       }
     } catch (err) {
@@ -104,56 +104,47 @@ const Education = ({
   };
 
   return (
-    <Card>
-      <Card.Body>
-        {!editMode && (
-          <>
-            <Card style={{ width: "100%" }}>
-              <Card.Body>
-                <Card.Title>{education.schoolName}</Card.Title>
+    <Card style={{ width: "100%" }}>
+      {!editMode && (
+        <>
+          <Card.Title>{education.schoolName}</Card.Title>
+          <Card.Subtitle className="mb-2 text-muted">
+            {education.major}
+            <br />
+            {education.degree}
+          </Card.Subtitle>
+          <Card.Text>
+            {education.admissionDate} ~ {education.graduationDate}
+          </Card.Text>
+          {isEditable && (
+            <Form.Group className="mt-3 text-center">
+              <Col sm={{ span: 20 }}>
+                <ButtonCommon
+                  variant="primary"
+                  type="submit"
+                  className="me-3"
+                  text="수정"
+                  onClickHandler={() => setEditMode((prev) => !prev)}
+                />
 
-                <Card.Subtitle className="mb-2 text-muted">
-                  {education.major}
-                  <br />
-                  {education.degree}
-                </Card.Subtitle>
-                <Card.Text>
-                  {education.admissionDate} ~ {education.graduationDate}
-                </Card.Text>
-
-                {isEditable && (
-                  <Form.Group className="mt-3 text-center">
-                    <Col sm={{ span: 20 }}>
-                      <ButtonCommon
-                        variant="primary"
-                        type="submit"
-                        className="me-3"
-                        text="수정"
-                        onClickHandler={() => setEditMode((prev) => !prev)}
-                      />
-
-                      <ButtonCommon
-                        variant="secondary"
-                        text="삭제"
-                        onClickHandler={() => onClickDel(education.eduId)}
-                      />
-                    </Col>
-                  </Form.Group>
-                )}
-              </Card.Body>
-            </Card>
-          </>
-        )}
-        {editMode && (
-          <FormWrapper
-            formList={eduFormList}
-            onSubmitHandler={onSubmitHandler}
-            setAddForm={setEditMode}
-            isEditable={isEditable}
-            onClickHandler={setAddForm}
-          />
-        )}
-      </Card.Body>
+                <ButtonCommon
+                  variant="secondary"
+                  text="삭제"
+                  onClickHandler={() => onClickDel(education.eduId)}
+                />
+              </Col>
+            </Form.Group>
+          )}
+        </>
+      )}
+      {editMode && (
+        <FormWrapper
+          formList={eduFormList}
+          onSubmitHandler={onSubmitHandler}
+          setAddForm={setEditMode}
+          isEditable={isEditable}
+        />
+      )}
     </Card>
   );
 };

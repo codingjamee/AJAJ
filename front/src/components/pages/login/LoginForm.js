@@ -1,47 +1,50 @@
-import React, { useState, useContext, useMemo } from "react";
+import React, {
+  useState,
+  useContext,
+  useMemo,
+  useReducer,
+  useEffect,
+} from "react";
 import { useNavigate } from "react-router-dom";
 import { Container, Col, Row, Form, Button } from "react-bootstrap";
 
 import * as Api from "../../utils/api";
 import { DispatchContext } from "../../../App";
+import {
+  emailValidateReducer,
+  paswordValidateReducer,
+} from "../../hooks/validatorReducer";
 
 function LoginForm() {
   const navigate = useNavigate();
   const dispatch = useContext(DispatchContext);
+  const [emailState, dispatchEmail] = useReducer(emailValidateReducer, {
+    value: "",
+    isEmailValid: null,
+  });
+  const [passwordState, dispatchPassword] = useReducer(paswordValidateReducer, {
+    value: "",
+    isPasswordValid: null,
+  });
+  const [isFormValid, setIsFormValid] = useState(false);
 
-  //useState로 email 상태를 생성함.
-  const [email, setEmail] = useState("");
-  //useState로 password 상태를 생성함.
-  const [password, setPassword] = useState("");
+  // // 이메일과 비밀번호 조건이 동시에 만족되는지 확인함.
+  const { isEmailValid, value: emailValue } = emailState;
+  const { isPasswordValid, value: passwordValue } = passwordState;
 
-  //이메일이 abc@example.com 형태인지 regex를 이용해 확인함.
-  const validateEmail = (email) => {
-    return email
-      .toLowerCase()
-      .match(
-        /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
-      );
-  };
+  useEffect(() => {
+    setIsFormValid(isEmailValid && isPasswordValid);
+  }, [isEmailValid, isPasswordValid]);
 
-  //위 validateEmail 함수를 통해 이메일 형태 적합 여부를 확인함.
-  const isEmailValid = useMemo(() => validateEmail(email), [email]);
-  // 비밀번호가 4글자 이상인지 여부를 확인함.
-  const isPasswordValid = useMemo(() => password.length >= 4, [password]);
-  //
-  // 이메일과 비밀번호 조건이 동시에 만족되는지 확인함.
-  const isFormValid = useMemo(
-    () => isEmailValid && isPasswordValid,
-    [isEmailValid, isPasswordValid]
-  );
-
+  console.log(emailState?.value, passwordState?.value);
   const handleSubmit = async (e) => {
     e.preventDefault();
 
     try {
       // "user/login" 엔드포인트로 post요청함.
       const res = await Api.post("user/login", {
-        email,
-        password,
+        email: emailValue,
+        password: passwordValue,
       });
       console.log("로그인성공", res);
       // 유저 정보는 response의 data임.
@@ -70,8 +73,14 @@ function LoginForm() {
               <Form.Control
                 type="email"
                 autoComplete="on"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
+                value={emailState.value}
+                onChange={(e) =>
+                  dispatchEmail({
+                    type: "EMAIL_VALIDATOR",
+                    value: e.target.value || "",
+                  })
+                }
+                onBlur={() => dispatchEmail({ type: "INPUT_BLUR" })}
               />
               {!isEmailValid && (
                 <Form.Text className="text-success">
@@ -85,8 +94,14 @@ function LoginForm() {
               <Form.Control
                 type="password"
                 autoComplete="on"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
+                value={passwordState.value}
+                onChange={(e) =>
+                  dispatchPassword({
+                    type: "PASSWORD_VALIDATOR",
+                    value: e.target.value || "",
+                  })
+                }
+                onBlur={() => dispatchPassword({ type: "INPUT_BLUR" })}
               />
               {!isPasswordValid && (
                 <Form.Text className="text-success">
