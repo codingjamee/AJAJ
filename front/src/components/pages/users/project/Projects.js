@@ -8,26 +8,6 @@ import { PortfolioOwnerDataContext } from "../Portfolio";
 import { projectsCommonFormProps } from "../../../utils/formListCommonProps";
 import Project from "./Project";
 
-//********************************서버와 통신전 **************************************
-
-const projects = [
-  {
-    id: "1",
-    projectName: "프로젝트 제목",
-    projectDetail: "프로젝트 설명입니다 하하하",
-    projectImgUrl: "https://picsum.photos/200/200",
-    projectStartDate: "2111-06-01",
-    projectEndDate: "2023-01-01",
-  },
-  {
-    id: "2",
-    projectName: "프로젝트 제목22",
-    projectDetail: "프로젝트 설명222입니다 하하하",
-    projectImgUrl: "https://picsum.photos/200/200",
-    projectStartDate: "2023-01-01",
-    projectEndDate: "2023-01-01",
-  },
-];
 const Projects = (props) => {
   const [addForm, setAddForm] = useState(false);
   const [projects, setProjects] = useState([]);

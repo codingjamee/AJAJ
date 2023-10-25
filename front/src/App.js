@@ -1,5 +1,11 @@
-import React, { useState, useEffect, useReducer, createContext } from "react";
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import React, {
+  useEffect,
+  useReducer,
+  createContext,
+  useState,
+  useMemo,
+} from "react";
+import { Routes, Route, useNavigate } from "react-router-dom";
 
 import * as Api from "./components/utils/api";
 import { loginReducer } from "./components/hooks/loginReducer";
@@ -20,58 +26,51 @@ function App() {
   const [userState, dispatch] = useReducer(loginReducer, {
     user: null,
   });
-  const [isFetchCompleted, setIsFetchCompleted] = useState(false);
   const loadingDispatch = useDispatch();
   const loadingState = useSelector((state) => state.loading.open);
+  const navigate = useNavigate();
 
-  const fetchCurrentUser = async () => {
-    try {
-      const res = await Api.get("user/current", "", "App");
-      const currentUser = res.data;
-      dispatch({
-        type: "LOGIN_SUCCESS",
-        payload: currentUser,
-      });
-      console.log("%c 로그인 인증된 쿠키 있음.", "color: #d93d1a;");
-    } catch {
-      console.log("%c 로그인 인증된 쿠키 없음.", "color: #d93d1a;");
-    }
-    setIsFetchCompleted(true);
-  };
+  const memoizedFetchCurrentUser = useMemo(() => {
+    const fetchCurrentUser = async () => {
+      try {
+        loadingDispatch(loadingActions.open());
+        const res = await Api.get("user/current", "", "App");
+        const currentUser = res.data;
+        dispatch({
+          type: "LOGIN_SUCCESS",
+          payload: currentUser,
+        });
+        navigate("/", { replace: true });
+        console.log("%c 로그인 인증된 쿠키 있음.", "color: #d93d1a;");
+      } catch {
+        console.log("%c 로그인 인증된 쿠키 없음.", "color: #d93d1a;");
+      } finally {
+        loadingDispatch(loadingActions.close());
+      }
+    };
+    return fetchCurrentUser;
+  }, [loadingDispatch, navigate, dispatch]);
 
   useEffect(() => {
-    fetchCurrentUser();
+    memoizedFetchCurrentUser();
   }, []);
 
-  useEffect(() => {
-    if (!isFetchCompleted) {
-      loadingDispatch(loadingActions.open());
-    } else {
-      loadingDispatch(loadingActions.close());
-      console.log(loadingState);
-    }
-
-    if (loadingState) {
-      return <LoadingLayer message="Loading....." />;
-    } else {
-      loadingDispatch(loadingActions.close());
-    }
-  }, [loadingState]);
+  if (loadingState) {
+    return <LoadingLayer message="Loading....." />;
+  }
 
   return (
     <DispatchContext.Provider value={dispatch}>
       <UserStateContext.Provider value={userState}>
-        <Router>
-          <Navigation />
-          <Routes>
-            <Route path="/" exact element={<Portfolio />} />
-            <Route path="/login" element={<Login />} />
-            <Route path="/register" element={<RegisterForm />} />
-            <Route path="/users/:userId" element={<Portfolio />} />
-            <Route path="/network" element={<Network />} />
-            <Route path="*" element={<Portfolio />} />
-          </Routes>
-        </Router>
+        <Navigation />
+        <Routes>
+          <Route path="/" exact element={<Portfolio />} />
+          <Route path="/login" element={<Login />} />
+          <Route path="/register" element={<RegisterForm />} />
+          <Route path="/users/:userId" element={<Portfolio />} />
+          <Route path="/network" element={<Network />} />
+          <Route path="*" element={<Portfolio />} />
+        </Routes>
       </UserStateContext.Provider>
     </DispatchContext.Provider>
   );
