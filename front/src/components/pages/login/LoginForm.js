@@ -36,7 +36,6 @@ function LoginForm() {
     setIsFormValid(isEmailValid && isPasswordValid);
   }, [isEmailValid, isPasswordValid]);
 
-  console.log(emailState?.value, passwordState?.value);
   const handleSubmit = async (e) => {
     e.preventDefault();
 

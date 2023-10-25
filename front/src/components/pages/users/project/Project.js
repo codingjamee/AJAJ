@@ -10,7 +10,7 @@ import { projectsCommonFormProps } from "../../../utils/formListCommonProps";
 //********************************서버와 통신전**************************************
 //*******************프로젝트 이미지 첨부***************/
 
-const Project = ({ isEditable, setAddForm, project = {}, setProjects }) => {
+const Project = ({ isEditable, project = {}, setProjects }) => {
   // const [projects, setProjects] = useState([]);
   const [editMode, setEditMode] = useState(false);
   const [projectName, setProjectName] = useState(project.projectName || "");
@@ -35,7 +35,7 @@ const Project = ({ isEditable, setAddForm, project = {}, setProjects }) => {
     { value: projectDetail, changeHandler: (v) => setProjectDetail(v) },
     {
       value: projectImgUrl,
-      projectImgUrl: (v) => setProjectImgUrl(v),
+      changeHandler: (v) => setProjectImgUrl(v),
     },
     { value: projectStartDate, changeHandler: (v) => setProjectStartDate(v) },
     { value: projectEndDate, changeHandler: (v) => setProjectEndDate(v) },
@@ -66,7 +66,6 @@ const Project = ({ isEditable, setAddForm, project = {}, setProjects }) => {
         },
         "Project"
       );
-      console.log(res.data);
       if (res.status === 200) {
         setProjects((prev) => {
           const updatedProjects = prev.map((prevProject) => {
@@ -84,9 +83,9 @@ const Project = ({ isEditable, setAddForm, project = {}, setProjects }) => {
           });
           return updatedProjects;
         });
-        setAddForm(false);
+        setEditMode(false);
       } else if (res.status !== 200) {
-        throw new Error("POST 요청이 실패하였습니다.");
+        throw new Error("PUT 요청이 실패하였습니다.");
       }
     } catch (err) {
       throw new Error("서버와 통신이 실패하였습니다");
@@ -102,7 +101,6 @@ const Project = ({ isEditable, setAddForm, project = {}, setProjects }) => {
         projectId,
         "Project"
       );
-      // console.log(res);
       if (res.status === 200) {
         setProjects((prevObj) => {
           return prevObj.filter((projects) => projects.projectId !== projectId);

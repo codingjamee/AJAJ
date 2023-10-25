@@ -46,7 +46,7 @@ const Projects = (props) => {
     { value: projectDetail, changeHandler: (v) => setProjectDetail(v) },
     {
       value: projectImgUrl,
-      projectImgUrl: (v) => setProjectImgUrl(v),
+      changeHandler: (v) => setProjectImgUrl(v),
     },
     { value: projectStartDate, changeHandler: (v) => setProjectStartDate(v) },
     { value: projectEndDate, changeHandler: (v) => setProjectEndDate(v) },
@@ -76,7 +76,7 @@ const Projects = (props) => {
 
       const postedNewId = res.data.projectId;
 
-      if (res.data.statusCode === 201) {
+      if (res.status === 201) {
         setProjects((prev) => {
           return [
             ...prev,
@@ -108,7 +108,6 @@ const Projects = (props) => {
   useEffect(() => {
     Api.get(`user/${portfolioOwnerData.id}/projects`, "", "projects").then(
       (res) => {
-        console.log(res.data.projects);
         return setProjects(res.data.projects);
       }
     );
