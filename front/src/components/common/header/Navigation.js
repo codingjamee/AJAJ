@@ -4,8 +4,8 @@ import { Nav, Navbar } from "react-bootstrap";
 import { UserStateContext, DispatchContext } from "../../../App";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "../../../UI/design.css";
+import * as Api from "../../utils/api";
 import logo from "./logo0.png";
-import { PortfolioOwnerDataContext } from "../../pages/users/Portfolio";
 
 function Navigation() {
   const navigate = useNavigate();
@@ -13,11 +13,9 @@ function Navigation() {
 
   const userState = useContext(UserStateContext);
   const dispatch = useContext(DispatchContext);
-  const portfolioOwnerData = useContext(PortfolioOwnerDataContext);
 
   // console.log(userState);
 
-  //@@@@@@@@@@@@@@@@수정필요@@@@@@@@@@@@@@@@@@@@@성혜님@@@@@@@@@@@@@@@@/
   const navItems = [
     { path: "/", label: "홈페이지" },
     { path: `/users/${userState?.user?.id}`, label: "마이페이지" },
@@ -29,10 +27,8 @@ function Navigation() {
 
   // 로그아웃 클릭 시 실행되는 함수
   //api 작성되면 추후에 구현
-  const logout = () => {
-    //   // sessionStorage 에 저장했던 JWT 토큰을 삭제함.
-    //   sessionStorage.removeItem("userToken");
-    //   // dispatch 함수를 이용해 로그아웃함.
+  const logout = async () => {
+    await Api.get("logout", "", "Navigation");
     dispatch({ type: "LOGOUT" });
     //   // 기본 페이지로 돌아감.
     navigate("/");

@@ -10,24 +10,44 @@ function UserEditForm({ user, setIsEditing, setUser }) {
   const portfolioOwnerData = useContext(PortfolioOwnerDataContext);
 
   //제출버튼 클릭시 patch메서드 실행
-  const handleSubmit = async (e) => {
+  const onSubmitHandler = async (e) => {
     e.preventDefault();
 
-    const res = await Api.patch(`users/${portfolioOwnerData.id}`, {
-      name,
-      email,
-      description,
-    });
+    try {
+      const res = await Api.patch(`users/${portfolioOwnerData.id}`, {
+        name,
+        email,
+        description,
+      });
 
-    const updatedUser = res.data;
-    setUser(updatedUser);
-    setIsEditing(false);
+      if (res.status === 200) {
+        setUser((prev) => {
+          return {
+            ...prev,
+            name,
+            email,
+            description,
+          };
+        });
+        setName("");
+        setEmail("");
+        setDescription("");
+        setIsEditing(false);
+      } else if (res.status !== 200) {
+        throw new Error("PATCH 요청이 실패하였습니다.");
+      }
+    } catch (err) {
+      throw new Error("서버와 통신이 실패하였습니다.");
+    }
   };
+
+  // setUser(updatedUser);
+  // setIsEditing(false);
 
   return (
     <Card className="mb-2">
       <Card.Body>
-        <Form onSubmit={handleSubmit}>
+        <Form onSubmit={onSubmitHandler}>
           <Form.Group controlId="useEditName" className="mb-3">
             <Form.Control
               type="text"

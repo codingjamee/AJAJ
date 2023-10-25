@@ -1,5 +1,4 @@
 import React, { useContext, useState, useEffect, createContext } from "react";
-import { useDispatch, useSelector } from "react-redux";
 import { useNavigate, useParams } from "react-router-dom";
 import { Container, Col, Row } from "react-bootstrap";
 
@@ -10,8 +9,6 @@ import Educations from "./education/Educations";
 import Certifications from "./certificate/Certificates";
 import Awards from "./award/Awards";
 import Projects from "./project/Projects";
-import LoadingLayer from "../../../UI/LoadingLayer";
-import { loadingActions } from "../../../store/loading";
 
 export const PortfolioOwnerDataContext = createContext({});
 
@@ -19,20 +16,17 @@ function Portfolio() {
   const navigate = useNavigate();
   const params = useParams();
   const [portfolioOwnerData, setPortfolioOwnerData] = useState({});
-  const [isFetchCompleted, setIsFetchCompleted] = useState(null);
   const userState = useContext(UserStateContext);
-  const dispatch = useDispatch();
-  const loadingState = useSelector((state) => state.loading.open);
 
   const fetchPortfolioOwner = async (ownerId) => {
     // console.log("포트폴리오 오너 아이디" + ownerId);
-    setIsFetchCompleted(false);
-
-    const res = await Api.get("users", ownerId, "portfolio");
-    const ownerData = res.data;
-    // console.log("ownerData", ownerData);
-    setPortfolioOwnerData(ownerData);
-    setIsFetchCompleted(true);
+    try {
+      const res = await Api.get("users", ownerId, "portfolio");
+      const ownerData = res.data;
+      setPortfolioOwnerData(ownerData);
+    } catch (err) {
+      throw new Error("서버와 통신에 실패하였습니다");
+    }
   };
 
   useEffect(() => {
@@ -51,22 +45,6 @@ function Portfolio() {
       fetchPortfolioOwner(ownerId);
     }
   }, [params, userState, navigate]);
-
-  //리덕스 사용 고민해보기
-  useEffect(() => {
-    if (!isFetchCompleted) {
-      dispatch(loadingActions.open());
-    } else {
-      dispatch(loadingActions.close());
-      console.log(loadingState);
-    }
-
-    if (loadingState) {
-      return <LoadingLayer message="Loading....." />;
-    } else {
-      dispatch(loadingActions.close());
-    }
-  }, [loadingState]);
 
   return (
     <PortfolioOwnerDataContext.Provider value={portfolioOwnerData}>
