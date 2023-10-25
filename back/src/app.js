@@ -17,7 +17,7 @@ app.use(express.urlencoded({extended:true}))
 
 // CORS 에러 방지
 const corsOption = {
-  origin: "http://localhost:3000",
+  origin: ["http://kdt-ai-9-team03.elicecoding.com:3000", "http://localhost:3000"],
   optionsSuccessStatus: 200,
 
   credentials: true, // false하면 login창에서 다음으로 넘어가지 않음.
