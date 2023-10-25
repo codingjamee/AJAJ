@@ -9,15 +9,9 @@ import { certificateAuthRouter } from "./routers/certificateRouter";
 
 const app = express();
 
-// CRUD 예시 merge할때 삭제 예정
-app.use(express.static(__dirname + '/public')) // css파일 등록부분
-app.set('view engine', 'ejs') // ejs 설정
-app.use(express.json())
-app.use(express.urlencoded({extended:true}))
-
 // CORS 에러 방지
 const corsOption = {
-  origin: "http://localhost:3000",
+  origin: ["http://kdt-ai-9-team03.elicecoding.com:3000", "http://localhost:3000"],
   optionsSuccessStatus: 200,
 
   credentials: true, // false하면 login창에서 다음으로 넘어가지 않음.
