@@ -7,6 +7,20 @@ const { projectAuthService } = require('../services/projectService');
 const { NotFoundError, UnauthorizedError, BadRequestError } = require('../middlewares/errorHandlingMiddleware');
 const jwt = require('./jwtMiddleware');
 
+// 탈퇴한 회원인지 확인
+async function deleted_checked(req, res, next) {
+  try {
+    const { email } = req.body;
+    const user = await userAuthService.getUserDeletedAt({ email });
+    if (user.deletedAt) {
+      throw new UnauthorizedError("탈퇴한 회원입니다.");
+    }
+    next();
+  } catch (error) {
+    next(error);
+  }
+}
+
 // 로그인 되어있는지 확인
 async function login_required(req, res, next) {
   // 쿠키 헤더 값을 가져옵니다.
@@ -53,7 +67,7 @@ async function login_required(req, res, next) {
       });
       console.log("userToken : " + userToken)
     } catch (error) {
-      console.error("리프레시 토큰 검증 오류:", error);
+      throw new UnauthorizedError("정상적인 토큰이 아닙니다.");
     }
   }
 
@@ -146,4 +160,4 @@ function request_checked(req, res, next) {
   }
 }
 
-export { login_required, userId_checked, request_checked };
+export { deleted_checked, login_required, userId_checked, request_checked };

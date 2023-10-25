@@ -1,5 +1,5 @@
 const { Router } = require('express');
-const { login_required, request_checked } = require('../middlewares/requireMiddleware');
+const { deleted_checked, login_required, request_checked } = require('../middlewares/requireMiddleware');
 const { userAuthService } = require('../services/userService');
 const { NotFoundError } = require('../middlewares/errorHandlingMiddleware');
 import { RefreshTokenModel } from '../db/schemas/refreshToken'; 
@@ -24,8 +24,7 @@ userAuthRouter.post("/user/register", request_checked, async function (req, res,
 });
 
 // 로그인하기
-userAuthRouter.post("/user/login", request_checked,
- async function (req, res, next) {
+userAuthRouter.post("/user/login", deleted_checked, request_checked, async function (req, res, next) {
   try {
     const { email, password } = req.body;
 
@@ -148,6 +147,22 @@ userAuthRouter.get("/users/:id", login_required, async function (req, res, next)
 // 로그아웃
 userAuthRouter.get("/logout", async function (req, res, next) {
   res.clearCookie('user_cookie').end();
+})
+
+
+// 회원 탈퇴
+userAuthRouter.delete("/users/:id", login_required, async function (req, res, next) {
+  try {
+    const userId = req.params.id;
+    const deletedUser = await userAuthService.deleteUser({ userId });
+    if (!deletedUser) {
+      throw new NotFoundError("탈퇴할 수 없습니다.");
+    }
+    res.clearCookie('user_cookie').end();
+    res.status(200).send();
+  } catch (error) {
+    next(error);
+  }
 })
 
 export { userAuthRouter };

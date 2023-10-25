@@ -24,7 +24,6 @@ class certificateAuthService {
         return certificate;
     };
 
-
     static async setCertificate({ certificateId, toUpdate }) {
         let certificate = await Certificate.findByCertificateId({ certificateId });
     
