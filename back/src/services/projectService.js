@@ -46,9 +46,9 @@ class projectAuthService {
       project = await Project.update({ projectId, fieldToUpdate, newValue });
     }
 
-    if (toUpdate.projectUrl) {
-      const fieldToUpdate = "projectUrl";
-      const newValue = toUpdate.projectUrl;
+    if (toUpdate.projectImgUrl) {
+      const fieldToUpdate = "projectImgUrl";
+      const newValue = toUpdate.projectImgUrl;
       project = await Project.update({ projectId, fieldToUpdate, newValue });
     }
 

@@ -116,11 +116,6 @@ class userAuthService {
     return user;
   }
 
-  static async getUserId({ userId }) {
-    const token = await User.findRefreshToken({ userId });
-    return token;
-  }
-
   static async getToken({ userId }) {
     const token = await User.findRefreshToken({ userId });
     // const id = await User.findById({ userId })
