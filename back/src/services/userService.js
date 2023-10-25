@@ -4,8 +4,12 @@ import { v4 as uuidv4 } from "uuid";
 const jwt = require('../middlewares/jwtMiddleware');
 
 class userAuthService {
+  static async getUserDeletedAt({ email }) {
+    const user = await User.findByEmail({ email });
+    return user;
+  }
+
   static async addUser({ name, email, password }) {
-    // 이메일 중복 확인
     const user = await User.findByEmail({ email });
     if (user) {
       const errorMessage = "이 이메일은 현재 사용중입니다. 다른 이메일을 입력해 주세요.";
@@ -15,7 +19,6 @@ class userAuthService {
     // 비밀번호 해쉬화
     const hashedPassword = await bcrypt.hash(password, 10);
 
-    // id 는 유니크 값 부여
     const id = uuidv4();
     const newUser = { id, name, email, password: hashedPassword };
 
@@ -67,7 +70,6 @@ class userAuthService {
   }
 
   static async setUser({ userId, toUpdate }) {
-    // 우선 해당 id 의 유저가 db에 존재하는지 여부 확인
     let user = await User.findById({ userId });
 
     // db에서 찾지 못한 경우, 에러 메시지 반환
@@ -127,6 +129,14 @@ class userAuthService {
     // const tokenInfo = { id, token};
     return token;
   }
+
+  static async deleteUser({ userId }) {
+    const fieldToUpdate = "deletedAt";
+    const newValue = new Date();
+    const deleteduser = await User.update({ userId, fieldToUpdate, newValue });
+    return deleteduser;
+  }
+
 }
 
 export { userAuthService };

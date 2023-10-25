@@ -10,6 +10,20 @@ import { User } from "../db";
 
 const jwt = require('./jwtMiddleware');
 
+// 탈퇴한 회원인지 확인
+async function deleted_checked(req, res, next) {
+  try {
+    const { email } = req.body;
+    const user = await userAuthService.getUserDeletedAt({ email });
+    if (user.deletedAt) {
+      throw new UnauthorizedError("탈퇴한 회원입니다.");
+    }
+    next();
+  } catch (error) {
+    next(error);
+  }
+}
+
 // 로그인 되어있는지 확인
 async function login_required(req, res, next) {
   // 쿠키 헤더 값을 가져옵니다.
@@ -31,7 +45,7 @@ async function login_required(req, res, next) {
   }
 
   // 현재 접속중인 user의 DB에서 refresh 토큰 정보를 얻습니다 < - 이게 안되는 중..
-  const userId = 'edd3dc04-bbec-41cb-90fd-f9742a41b081'; // 임시
+  const userId = req.params.id; // 임시
   const refreshToken = await userAuthService.getToken({ userId });
 
   console.log("refreshToken: " + refreshToken);
@@ -57,7 +71,6 @@ async function login_required(req, res, next) {
       console.error("리프레시 토큰 검증 오류:", error);
     }
   }
-
 
   try {
     // 해당 token 이 정상적인 token인지 확인 -> 토큰에 담긴 user_id 정보 추출
@@ -147,4 +160,4 @@ function request_checked(req, res, next) {
   }
 }
 
-export { login_required, userId_checked, request_checked };
+export { deleted_checked, login_required, userId_checked, request_checked };
