@@ -3,8 +3,8 @@ import { useDispatch } from "react-redux";
 import { loadingActions } from "../store/loading";
 import ButtonCommon from "../components/common/ButtonCommon";
 import LoadingIndicator from "./LoadingIndicator";
-import { useEffect, useRef } from "react";
-const LoadingLayer = (props) => {
+import React, { useEffect, useRef } from "react";
+const LoadingLayer = React.memo((props) => {
   const ButtonRef = useRef();
   const dispatch = useDispatch();
 
@@ -32,6 +32,6 @@ const LoadingLayer = (props) => {
       </div>
     </>
   );
-};
+});
 
 export default LoadingLayer;

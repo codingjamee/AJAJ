@@ -1,15 +1,9 @@
-import React, {
-  useState,
-  useContext,
-  useMemo,
-  useReducer,
-  useEffect,
-} from "react";
+import React, { useState, useContext, useReducer, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Container, Col, Row, Form, Button } from "react-bootstrap";
 
 import * as Api from "../../utils/api";
-import { DispatchContext } from "../../../App";
+import { DispatchContext, UserStateContext } from "../../../App";
 import {
   emailValidateReducer,
   paswordValidateReducer,
@@ -27,6 +21,7 @@ function LoginForm() {
     isPasswordValid: null,
   });
   const [isFormValid, setIsFormValid] = useState(false);
+  const userState = useContext(UserStateContext);
 
   // // 이메일과 비밀번호 조건이 동시에 만족되는지 확인함.
   const { isEmailValid, value: emailValue } = emailState;
@@ -35,6 +30,15 @@ function LoginForm() {
   useEffect(() => {
     setIsFormValid(isEmailValid && isPasswordValid);
   }, [isEmailValid, isPasswordValid]);
+
+  useEffect(() => {
+    if (!userState.user) {
+      navigate("/login", { replace: false });
+      return;
+    } else if (userState.user) {
+      navigate("/", { replace: true });
+    }
+  }, []);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -104,7 +108,7 @@ function LoginForm() {
               />
               {!isPasswordValid && (
                 <Form.Text className="text-success">
-                  비밀번호는 4글자 이상입니다.
+                  비밀번호는 5글자 이상입니다.
                 </Form.Text>
               )}
             </Form.Group>
