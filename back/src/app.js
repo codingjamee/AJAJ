@@ -11,7 +11,7 @@ const app = express();
 
 // CORS 에러 방지
 const corsOption = {
-  origin: ["http://kdt-ai-9-team03.elicecoding.com/login","http://kdt-ai-9-team03.elicecoding.com", "http://localhost:3000"],
+  origin: ["http://kdt-ai-9-team03.elicecoding.com"],
   optionsSuccessStatus: 200,
 
   credentials: true, // false하면 login창에서 다음으로 넘어가지 않음.
@@ -39,7 +39,7 @@ app.get("/", (req, res) => {
   res.send("안녕하세요, Elice 레이서 1차 프로젝트 3팀 API 입니다.");
 });
 
-// router, service 구현 (userAuthRouter는 맨 위에 있어야 함.)
+// router, service 구현 (userAuthRouter는 맨 s위에 있어야 함.)
 app.use(userAuthRouter);
 app.use(educationAuthRouter);
 app.use(projectAuthRouter);
