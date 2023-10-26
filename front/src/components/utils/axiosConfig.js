@@ -27,19 +27,18 @@ api.interceptors.request.use(
       req.headers["Content-Type"] = "application/json";
       req.data = JSON.stringify(req.data);
     }
+    if (req.status >= 400 && req.status < 400) {
+      console.log(`잘못된 요청입니다. ${req.status}`);
+      // throw new Error("Error");
+    }
+    if (req.status <= 500) {
+      console.log(`에러가 발생하였습니다 ${req.status}`);
+    }
     return req;
   },
   (err) => {
     // 400(Bad Requeset), 404(NotFound)
     console.log(err);
-    if (err.status >= 400 && err.status < 400) {
-      alert(`에러가 발생하였습니다 ${err.status}`);
-      // throw new Error("Error");
-    }
-    if (err.status <= 500) {
-      alert(`에러가 발생하였습니다 ${err.status}`);
-    }
-    return Promise.reject(err);
   }
 );
 
@@ -48,9 +47,10 @@ api.interceptors.request.use(
 api.interceptors.response.use(
   (res) => {
     // console.log("응답이 도착했음", res);
-    if (res.status >= 400 && res.status < 500) {
+    alert("요청에 성공했습니다!");
+    if (res.statusCode >= 400 && res.status < 500) {
       alert(`요청이 실패하였습니다: error code ${res.status} `);
-    } else if (res.status >= 500) {
+    } else if (res.statusCode >= 500) {
       alert(`요청이 실패하였습니다 error code ${res.status}`);
     }
     return res;
