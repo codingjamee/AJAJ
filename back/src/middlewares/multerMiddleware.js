@@ -14,7 +14,8 @@ const upload = multer({
             done(null, 'uploads/'); // uploads라는 폴더 안에 저장
         },
         filename(req, file, done) { // 파일명을 어떤 이름으로 올릴지
-            const ext = "jpg"; // path.extname(file.originalname); // 파일의 확장자
+            console.log(path);
+            const ext = path.extname(file.originalname); // 파일의 확장자
             done(null, file.originalname + Date.now() + ext); // 파일이름 + 날짜 + 확장자 이름으로 저장
         }
     }),
@@ -23,5 +24,8 @@ const upload = multer({
 // => 이렇게 설정한 upload라는 객체를 뒤에 라우터에 장착하면 된다.
 
 // const upload = multer({ storage: storage });
+
+
+
 
 export { upload };

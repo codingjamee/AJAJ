@@ -6,7 +6,7 @@ import { educationAuthRouter } from "./routers/educationRouter";
 import { projectAuthRouter } from "./routers/projectRouter";
 import { awardAuthRouter } from "./routers/awardRouter";
 import { certificateAuthRouter } from "./routers/certificateRouter";
-import { upload } from "./middlewares/multerMiddleware";
+// import { upload } from "./middlewares/multerMiddleware";
 const app = express();
 
 // CRUD 예시 merge할때 삭제 예정
@@ -38,8 +38,8 @@ app.get("/", (req, res) => {
   res.send("안녕하세요, Elice 레이서 1차 프로젝트 3팀 API 입니다.");
 });
 
-const uploadMiddleware = upload.single('image');
-app.use(uploadMiddleware);
+// const uploadMiddleware = upload.single('image');
+// app.use(uploadMiddleware);
 
 // router, service 구현 (userAuthRouter는 맨 위에 있어야 함.)
 app.use(userAuthRouter);
