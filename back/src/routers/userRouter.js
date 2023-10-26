@@ -2,6 +2,8 @@ const { Router } = require('express');
 const { deleted_checked, login_required, request_checked } = require('../middlewares/requireMiddleware');
 const { userAuthService } = require('../services/userService');
 const { NotFoundError } = require('../middlewares/errorHandlingMiddleware');
+// const { upload } = require("../middlewares/multerMiddleware");
+// const { imageUploader } = require("../middlewares/awssdkMiddleware");
 import { RefreshTokenModel } from '../db/schemas/refreshToken'; 
 
 const userAuthRouter = Router();
@@ -163,5 +165,11 @@ userAuthRouter.delete("/users/:id", login_required, async function (req, res, ne
     next(error);
   }
 })
+
+// // 파일 업로드 Test
+// userAuthRouter.get("/file", imageUploader.single('image'), async function (req, res, next) {
+//   console.log(req.file.location);
+//   res.send('ok');
+// })
 
 export { userAuthRouter };
