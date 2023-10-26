@@ -6,6 +6,7 @@ import ButtonCommon from "../../../common/ButtonCommon";
 import { certificatesCommonFormProps } from "../../../utils/formListCommonProps";
 import { PortfolioOwnerDataContext } from "../Portfolio";
 import { UserStateContext } from "../../../../App";
+import api from "../../../utils/axiosConfig";
 
 const Certificate = ({ isEditable, certificate = {}, setCertificates }) => {
   // const [user, setUser] = useState(null);
@@ -49,15 +50,14 @@ const Certificate = ({ isEditable, certificate = {}, setCertificates }) => {
 
     //post 서버와 통신
     try {
-      const res = await Api.put(
+      const res = await api.put(
         `user/${userState.user.id}/certificate/${certificate.certificateId}`,
         {
           certificateName,
           // certificateDetail,
           certificateOrganization,
           acquisitionDate,
-        },
-        "Certificate"
+        }
       );
       console.log(res.data);
       if (res.status === 200) {
@@ -78,19 +78,17 @@ const Certificate = ({ isEditable, certificate = {}, setCertificates }) => {
         });
         setEditMode(false);
       } else if (res.status !== 200) {
-        throw new Error("POST 요청을 실패하였습니다.");
+        // throw new Error("POST 요청을 실패하였습니다.");
       }
     } catch (err) {
-      throw new Error("서버와 통신이 실패하였습니다");
+      // throw new Error("서버와 통신이 실패하였습니다");
     }
   };
 
   //삭제함수
   const onClickDel = async (certificateId) => {
-    const res = await Api.delete(
-      `user/${userState.user.id}/certificate`,
-      certificateId,
-      "certificate"
+    const res = await api.delete(
+      `user/${userState.user.id}/certificate/${certificateId}`
     );
     // console.log(res);
     if (res.status === 200) {
@@ -100,7 +98,7 @@ const Certificate = ({ isEditable, certificate = {}, setCertificates }) => {
         )
       );
     } else if (res.status !== 200) {
-      throw new Error("삭제를 실패하였습니다");
+      // throw new Error("삭제를 실패하였습니다");
     }
   };
 

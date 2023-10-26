@@ -7,6 +7,7 @@ import FormWrapper from "../../../common/FormWrapper";
 import Certificate from "./Certificate";
 import { certificatesCommonFormProps } from "../../../utils/formListCommonProps";
 import { PortfolioOwnerDataContext } from "../Portfolio";
+import api from "../../../utils/axiosConfig";
 
 //********************************서버와 통신전**************************************
 
@@ -65,7 +66,7 @@ const Certificates = (props) => {
 
     // post 서버와 통신
     try {
-      const res = await Api.post(`user/${userState.user.id}/certificate`, {
+      const res = await api.post(`user/${userState.user.id}/certificate`, {
         certificateName,
         certificateDetail,
         certificateOrganization,
@@ -93,20 +94,17 @@ const Certificates = (props) => {
         setAcquisitionDate("2023-01-01");
         setAddForm(false);
       } else if (res.status !== 201) {
-        throw new Error("POST 요청이 실패하였습니다.");
+        // throw new Error("POST 요청이 실패하였습니다.");
       }
     } catch (err) {
-      throw new Error("서버와 통신이 실패하였습니다.");
+      console.error(err);
+      // throw new Error("서버와 통신이 실패하였습니다.");
     }
   };
 
   // 모든 학위 목록 가져오기 서버와 통신
   useEffect(() => {
-    Api.get(
-      `user/${portfolioOwnerData.id}/certificates`,
-      "",
-      "Certificates"
-    ).then((res) => {
+    api.get(`user/${portfolioOwnerData.id}/certificates`).then((res) => {
       return setCertificates(res.data.certificates);
     });
   }, [portfolioOwnerData.id]);
