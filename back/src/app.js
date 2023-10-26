@@ -11,7 +11,7 @@ const app = express();
 
 // CORS 에러 방지
 const corsOption = {
-  origin: ["http://kdt-ai-9-team03.elicecoding.com"],
+  origin: ["http://kdt-ai-9-team03.elicecoding.com", "http://localhost:3000"],
   optionsSuccessStatus: 200,
 
   credentials: true, // false하면 login창에서 다음으로 넘어가지 않음.
@@ -20,14 +20,8 @@ const corsOption = {
   exposedHeaders: ['set-cookie'],
 }
 app.use(cors(corsOption));
+
 // corsOption 제거하면 login창에서 다음으로 넘어가지 않음.
-app.use(cors())
-app.use((req, res, next) => {
-  res.header('Access-Control-Allow-Origin', 'http://kdt-ai-9-team03.elicecoding.com');
-  res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE');
-  res.header('Access-Control-Allow-Headers', 'Content-Type');
-  next();
-});
 
 // express.json(): POST 등의 요청과 함께 오는 json형태의 데이터를 인식하고 핸들링할 수 있게 함.
 // express.urlencoded: 주로 Form submit 에 의해 만들어지는 URL-Encoded 형태의 데이터를 인식하고 핸들링할 수 있게 함.
