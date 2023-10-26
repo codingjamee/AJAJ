@@ -82,12 +82,13 @@ const Awards = (props) => {
 
   // 모든 수상 목록 가져오기 서버와 통신
   useEffect(() => {
+    //portfolioOwnerData.id를 가져오고 나서 실행
     if (portfolioOwnerData.id) {
-      Api.get(`user/${portfolioOwnerData.id}/awards`, "", "Awards").then(
-        (res) => {
+      api
+        .get(`user/${portfolioOwnerData.id}/awards`, "", "Awards")
+        .then((res) => {
           return setAwards(res.data.awards);
-        }
-      );
+        });
     }
   }, [portfolioOwnerData.id]);
 

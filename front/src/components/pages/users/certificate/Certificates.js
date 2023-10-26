@@ -104,6 +104,7 @@ const Certificates = (props) => {
 
   // 모든 학위 목록 가져오기 서버와 통신
   useEffect(() => {
+    //portfolioOwnerData.id를 가져오고 나서 실행
     if (portfolioOwnerData.id) {
       api.get(`user/${portfolioOwnerData.id}/certificates`).then((res) => {
         return setCertificates(res.data.certificates);

@@ -88,6 +88,7 @@ const Projects = (props) => {
 
   // 모든 프로젝트 목록 가져오기 서버와 통신
   useEffect(() => {
+    //portfolioOwnerData.id를 가져오고 나서 실행
     if (portfolioOwnerData.id) {
       api.get(`user/${portfolioOwnerData.id}/projects`).then((res) => {
         return setProjects(res.data.projects);
