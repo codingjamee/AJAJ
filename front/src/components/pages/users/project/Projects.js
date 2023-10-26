@@ -47,38 +47,38 @@ const Projects = (props) => {
 
     //post 서버와 통신
     try {
-      const res = await api.post(`user/${userState.user.id}/project`, {
-        projectName,
-        projectDetail,
-        projectImgUrl,
-        projectStartDate,
-        projectEndDate,
-      });
-
-      const postedNewId = res.data.projectId;
-
-      if (res.status === 201) {
-        setProjects((prev) => {
-          return [
-            ...prev,
-            {
-              projectId: postedNewId,
-              projectName,
-              projectDetail,
-              projectImgUrl,
-              projectStartDate,
-              projectEndDate,
-            },
-          ];
+      if (userState.user.id) {
+        const res = await api.post(`user/${userState.user.id}/project`, {
+          projectName,
+          projectDetail,
+          projectImgUrl,
+          projectStartDate,
+          projectEndDate,
         });
-        setProjectName("");
-        setProjectDetail("");
-        setProjectImgUrl("");
-        setProjectStartDate("2023-01-01");
-        setProjectEndDate("2023-01-01");
-        setAddForm(false);
-      } else if (res.status !== 201) {
-        // throw new Error("POST 요청이 실패하였습니다.");
+        const postedNewId = res.data.projectId;
+        if (res.status === 201) {
+          setProjects((prev) => {
+            return [
+              ...prev,
+              {
+                projectId: postedNewId,
+                projectName,
+                projectDetail,
+                projectImgUrl,
+                projectStartDate,
+                projectEndDate,
+              },
+            ];
+          });
+          setProjectName("");
+          setProjectDetail("");
+          setProjectImgUrl("");
+          setProjectStartDate("2023-01-01");
+          setProjectEndDate("2023-01-01");
+          setAddForm(false);
+        } else if (res.status !== 201) {
+          // throw new Error("POST 요청이 실패하였습니다.");
+        }
       }
     } catch (err) {
       console.error(err);
@@ -88,7 +88,7 @@ const Projects = (props) => {
 
   // 모든 프로젝트 목록 가져오기 서버와 통신
   useEffect(() => {
-    if (userState.user) {
+    if (portfolioOwnerData.id) {
       api.get(`user/${portfolioOwnerData.id}/projects`).then((res) => {
         return setProjects(res.data.projects);
       });

@@ -82,7 +82,7 @@ const Awards = (props) => {
 
   // 모든 수상 목록 가져오기 서버와 통신
   useEffect(() => {
-    if (userState.user) {
+    if (portfolioOwnerData.id) {
       Api.get(`user/${portfolioOwnerData.id}/awards`, "", "Awards").then(
         (res) => {
           return setAwards(res.data.awards);

@@ -85,7 +85,7 @@ const Educations = (props) => {
   // 모든 학위 목록 가져오기 서버와 통신
   useEffect(() => {
     //userState가 있는 경우에만
-    if (userState.user) {
+    if (portfolioOwnerData.id) {
       api.get(`user/${portfolioOwnerData.id}/educations`).then((res) => {
         return setEducations(res.data.educations);
       });
