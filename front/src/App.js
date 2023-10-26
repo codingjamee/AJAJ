@@ -5,7 +5,7 @@ import React, {
   useState,
   useCallback,
 } from "react";
-import { Routes, Route, useNavigate } from "react-router-dom";
+import { Routes, Route, useNavigate, useLocation } from "react-router-dom";
 
 import * as Api from "./components/utils/api";
 import { loginReducer } from "./components/hooks/loginReducer";
@@ -19,6 +19,7 @@ import { loadingActions } from "./store/loading";
 import { useDispatch, useSelector } from "react-redux";
 import LoadingLayer from "./UI/LoadingLayer";
 import api from "./components/utils/axiosConfig";
+import Home from "./components/pages/home/Home";
 
 export const UserStateContext = createContext(null);
 export const DispatchContext = createContext(null);
@@ -31,31 +32,37 @@ function App() {
   const loadingState = useSelector((state) => state.loading.open);
   const navigate = useNavigate();
 
-  const fetchCurrentUser = useCallback(
-    () => async () => {
-      try {
-        loadingDispatch(loadingActions.open());
-        const res = await api.get("user/current");
-        console.log(res);
-        const currentUser = res.data;
+  const fetchCurrentUser = useCallback(async () => {
+    try {
+      loadingDispatch(loadingActions.open());
+      const res = await api.get("user/current");
+      console.log(res);
+      const currentUser = res.data;
+      if (currentUser) {
+        //쿠키에 유저가 있는 경우만
         dispatch({
           type: "LOGIN_SUCCESS",
           payload: currentUser,
         });
-        navigate("/", { replace: true });
-        console.log("%c 로그인 인증된 쿠키 있음.", "color: #d93d1a;");
-      } catch {
-        console.log("%c 로그인 인증된 쿠키 없음.", "color: #d93d1a;");
-      } finally {
-        loadingDispatch(loadingActions.close());
       }
-    },
-    []
-  );
+      console.log("%c 로그인 인증된 쿠키 있음.", "color: #d93d1a;");
+    } catch {
+      console.log("%c 로그인 인증된 쿠키 없음.", "color: #d93d1a;");
+    } finally {
+      loadingDispatch(loadingActions.close());
+    }
+  }, []);
 
   useEffect(() => {
     fetchCurrentUser();
   }, []);
+
+  useEffect(() => {
+    if (!userState.user) {
+      navigate("/login", { replace: true });
+      return;
+    }
+  }, [userState.user]);
 
   if (loadingState) {
     return <LoadingLayer message="Loading....." />;
@@ -66,7 +73,7 @@ function App() {
       <UserStateContext.Provider value={userState}>
         <Navigation />
         <Routes>
-          <Route path="/" exact element={<Portfolio />} />
+          <Route path="/" exact element={<Home />} />
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<RegisterForm />} />
           <Route path="/users/:userId" element={<Portfolio />} />

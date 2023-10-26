@@ -1,8 +1,6 @@
 //추후 설정할것!
 import axios from "axios";
 
-const backendPortNumber = "5001";
-
 // import axios from "axios";
 
 //request사용
@@ -33,14 +31,15 @@ api.interceptors.request.use(
   },
   (err) => {
     // 400(Bad Requeset), 404(NotFound)
-    console.log(err.response);
-    if (err.response.status >= 400 && err.response.status < 400) {
+    console.log(err);
+    if (err.status >= 400 && err.status < 400) {
       alert(`에러가 발생하였습니다 ${err.status}`);
       // throw new Error("Error");
     }
-    if (err.response.status <= 500) {
+    if (err.status <= 500) {
       alert(`에러가 발생하였습니다 ${err.status}`);
     }
+    return Promise.reject(err);
   }
 );
 
@@ -48,20 +47,24 @@ api.interceptors.request.use(
 
 api.interceptors.response.use(
   (res) => {
-    console.log("응답이 도착했음", res);
-
-    return res;
-  },
-  (err) => {
-    if (err.status >= 400 && err.status < 500) {
-      alert(`요청이 실패하였습니다: error code ${err.status} `);
-    } else if (err.status >= 500) {
-      alert(`요청이 실패하였습니다 error code ${err.status}`);
-    } else {
-      console.log("응답이 도착했음");
+    // console.log("응답이 도착했음", res);
+    if (res.status >= 400 && res.status < 500) {
+      alert(`요청이 실패하였습니다: error code ${res.status} `);
+    } else if (res.status >= 500) {
+      alert(`요청이 실패하였습니다 error code ${res.status}`);
     }
-    return Promise.reject(err);
+    return res;
   }
+  // (err) => {
+  //   if (err.status >= 400 && err.status < 500) {
+  //     alert(`요청이 실패하였습니다: error code ${err.status} `);
+  //   } else if (err.status >= 500) {
+  //     alert(`요청이 실패하였습니다 error code ${err.status}`);
+  //   } else {
+  //     // console.log("응답이 도착했음");
+  //   }
+  //   return Promise.reject(err);
+  // }
 );
 
 export default api;
