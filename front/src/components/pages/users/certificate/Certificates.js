@@ -143,6 +143,7 @@ const Certificates = (props) => {
           </Card>
         )}
       </Card>
+      <br />
     </>
   );
 };

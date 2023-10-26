@@ -42,9 +42,6 @@ function UserEditForm({ user, setIsEditing, setUser }) {
     }
   };
 
-  // setUser(updatedUser);
-  // setIsEditing(false);
-
   return (
     <Card className="mb-2">
       <Card.Body>
