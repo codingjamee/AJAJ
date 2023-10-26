@@ -6,6 +6,7 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import "../../../UI/design.css";
 import * as Api from "../../utils/api";
 import logo from "./logo0.png";
+import api from "../../utils/axiosConfig";
 
 function Navigation() {
   const navigate = useNavigate();
@@ -28,7 +29,7 @@ function Navigation() {
   // 로그아웃 클릭 시 실행되는 함수
   //api 작성되면 추후에 구현
   const logout = async () => {
-    await Api.get("logout", "", "Navigation");
+    await api.get("logout", "", "Navigation");
     dispatch({ type: "LOGOUT" });
     //   // 기본 페이지로 돌아감.
     navigate("/");

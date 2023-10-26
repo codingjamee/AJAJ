@@ -80,7 +80,7 @@ async function login_required(req, res, next) {
           path: "/",
           httpOnly: true,
           sameSite: "lax",
-          maxAge: 3* 60 * 60 * 1000,
+          maxAge: 3 * 60 * 60 * 1000,
         });
 
         // 다시 발급된 userToken을 검사

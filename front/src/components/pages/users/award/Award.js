@@ -5,6 +5,7 @@ import FormWrapper from "../../../common/FormWrapper";
 import ButtonCommon from "../../../common/ButtonCommon";
 import { UserStateContext } from "../../../../App";
 import { awardsCommonFormProps } from "../../../utils/formListCommonProps";
+import api from "../../../utils/axiosConfig";
 
 const Award = ({ isEditable, award = {}, setAwards }) => {
   const [editMode, setEditMode] = useState(false);
@@ -36,15 +37,14 @@ const Award = ({ isEditable, award = {}, setAwards }) => {
 
     //post 서버와 통신
     try {
-      const res = await Api.put(
+      const res = await api.put(
         `user/${userState.user.id}/award/${award.awardId}`,
         {
           awardName,
           awardDetail,
           awardOrganization,
           awardDate,
-        },
-        "Award"
+        }
       );
 
       console.log(res);
@@ -67,11 +67,11 @@ const Award = ({ isEditable, award = {}, setAwards }) => {
         });
         setEditMode(false);
       } else if (res.status !== 200) {
-        throw new Error("POST 요청이 실패하였습니다.");
+        // throw new Error("POST 요청이 실패하였습니다.");
       }
     } catch (err) {
       console.log(err);
-      throw new Error("서버와 통신을 실패하였습니다.");
+      console.error(err);
     }
   };
 
@@ -79,7 +79,7 @@ const Award = ({ isEditable, award = {}, setAwards }) => {
 
   const onClickDel = async (awardId) => {
     try {
-      const res = await Api.delete(
+      const res = await api.delete(
         `user/${userState.user.id}/award`,
         awardId,
         "Award"
@@ -88,10 +88,10 @@ const Award = ({ isEditable, award = {}, setAwards }) => {
       if (res.status === 200) {
         setAwards((prev) => prev.filter((award) => award.awardId !== awardId));
       } else if (res.status !== 200) {
-        throw new Error("삭제를 실패하였습니다");
+        // throw new Error("삭제를 실패하였습니다");
       }
     } catch (err) {
-      throw new Error("서버와 통신에 실패했습니다.");
+      console.error(err);
     }
   };
 
