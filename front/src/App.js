@@ -3,7 +3,7 @@ import React, {
   useReducer,
   createContext,
   useState,
-  useMemo,
+  useCallback,
 } from "react";
 import { Routes, Route, useNavigate } from "react-router-dom";
 
@@ -18,6 +18,7 @@ import Portfolio from "./components/pages/users/Portfolio";
 import { loadingActions } from "./store/loading";
 import { useDispatch, useSelector } from "react-redux";
 import LoadingLayer from "./UI/LoadingLayer";
+import api from "./components/utils/axiosConfig";
 
 export const UserStateContext = createContext(null);
 export const DispatchContext = createContext(null);
@@ -30,11 +31,12 @@ function App() {
   const loadingState = useSelector((state) => state.loading.open);
   const navigate = useNavigate();
 
-  const memoizedFetchCurrentUser = useMemo(() => {
-    const fetchCurrentUser = async () => {
+  const fetchCurrentUser = useCallback(
+    () => async () => {
       try {
         loadingDispatch(loadingActions.open());
-        const res = await Api.get("user/current", "", "App");
+        const res = await api.get("user/current");
+        console.log(res);
         const currentUser = res.data;
         dispatch({
           type: "LOGIN_SUCCESS",
@@ -47,12 +49,12 @@ function App() {
       } finally {
         loadingDispatch(loadingActions.close());
       }
-    };
-    return fetchCurrentUser;
-  }, [loadingDispatch, navigate, dispatch]);
+    },
+    []
+  );
 
   useEffect(() => {
-    memoizedFetchCurrentUser();
+    fetchCurrentUser();
   }, []);
 
   if (loadingState) {

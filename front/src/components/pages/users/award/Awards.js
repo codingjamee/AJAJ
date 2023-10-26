@@ -7,6 +7,7 @@ import FormWrapper from "../../../common/FormWrapper";
 import { PortfolioOwnerDataContext } from "../Portfolio";
 import { awardsCommonFormProps } from "../../../utils/formListCommonProps";
 import Award from "./Award";
+import api from "../../../utils/axiosConfig";
 
 //********************************서버와 통신전**************************************
 
@@ -47,16 +48,12 @@ const Awards = (props) => {
     //portfolioOwnerId는 portfolio에서 받아옴
 
     //post 서버와 통신
-    const res = await Api.post(
-      `user/${userState.user.id}/award`,
-      {
-        awardName,
-        awardDetail,
-        awardOrganization,
-        awardDate,
-      },
-      "Awards"
-    );
+    const res = await api.post(`user/${userState.user.id}/award`, {
+      awardName,
+      awardDetail,
+      awardOrganization,
+      awardDate,
+    });
 
     const postedNewId = res.data.awardId;
 
@@ -79,7 +76,7 @@ const Awards = (props) => {
       setAwardDate("2023-01-01");
       setAddForm(false);
     } else if (res.status !== 201) {
-      throw new Error("POST 요청이 실패하였습니다.");
+      // throw new Error("POST 요청이 실패하였습니다.");
     }
   };
 

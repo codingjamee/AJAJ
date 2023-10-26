@@ -6,6 +6,7 @@ import ButtonCommon from "../../../common/ButtonCommon";
 import FormWrapper from "../../../common/FormWrapper";
 import { PortfolioOwnerDataContext } from "../Portfolio";
 import { projectsCommonFormProps } from "../../../utils/formListCommonProps";
+import api from "../../../utils/axiosConfig";
 
 //********************************서버와 통신전**************************************
 //*******************프로젝트 이미지 첨부***************/
@@ -55,7 +56,7 @@ const Project = ({ isEditable, project = {}, setProjects }) => {
 
     //post 서버와 통신
     try {
-      const res = await Api.put(
+      const res = await api.put(
         `user/${userState.user.id}/project/${project.projectId}`,
         {
           projectName,
@@ -63,8 +64,7 @@ const Project = ({ isEditable, project = {}, setProjects }) => {
           projectImgUrl,
           projectStartDate,
           projectEndDate,
-        },
-        "Project"
+        }
       );
       if (res.status === 200) {
         setProjects((prev) => {
@@ -85,10 +85,11 @@ const Project = ({ isEditable, project = {}, setProjects }) => {
         });
         setEditMode(false);
       } else if (res.status !== 200) {
-        throw new Error("PUT 요청이 실패하였습니다.");
+        // throw new Error("PUT 요청이 실패하였습니다.");
       }
     } catch (err) {
-      throw new Error("서버와 통신이 실패하였습니다");
+      console.error(err);
+      // throw new Error("서버와 통신이 실패하였습니다");
     }
   };
 
@@ -96,20 +97,19 @@ const Project = ({ isEditable, project = {}, setProjects }) => {
 
   const onClickDel = async (projectId) => {
     try {
-      const res = await Api.delete(
-        `user/${userState.user.id}/project`,
-        projectId,
-        "Project"
+      const res = await api.delete(
+        `user/${userState.user.id}/project/${projectId}`
       );
       if (res.status === 200) {
         setProjects((prevObj) => {
           return prevObj.filter((projects) => projects.projectId !== projectId);
         });
       } else if (res.status !== 200) {
-        throw new Error("삭제를 실패하였습니다");
+        // throw new Error("삭제를 실패하였습니다");
       }
     } catch (err) {
-      throw new Error("서버와 통신에 실패하였습니다");
+      console.error(err);
+      // throw new Error("서버와 통신에 실패하였습니다");
     }
   };
 

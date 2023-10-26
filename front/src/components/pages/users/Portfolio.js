@@ -9,6 +9,7 @@ import Educations from "./education/Educations";
 import Certifications from "./certificate/Certificates";
 import Awards from "./award/Awards";
 import Projects from "./project/Projects";
+import api from "../../utils/axiosConfig";
 
 export const PortfolioOwnerDataContext = createContext({});
 
@@ -21,17 +22,17 @@ function Portfolio() {
   const fetchPortfolioOwner = async (ownerId) => {
     // console.log("포트폴리오 오너 아이디" + ownerId);
     try {
-      const res = await Api.get("users", ownerId, "portfolio");
+      const res = await api.get(`users/${ownerId}`);
       const ownerData = res.data;
       setPortfolioOwnerData(ownerData);
     } catch (err) {
-      throw new Error("서버와 통신에 실패하였습니다");
+      console.error(err);
     }
   };
 
   useEffect(() => {
     if (!userState.user) {
-      navigate("/login", { replace: false });
+      navigate("/login", { replace: true });
       return;
     }
 
