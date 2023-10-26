@@ -17,8 +17,8 @@ const corsOption = {
   credentials: true, // false하면 login창에서 다음으로 넘어가지 않음.
   // header에 Access-Control-Allow-Credentials 포함 여부
 
-  exposedHeaders: ['set-cookie'],
-}
+  exposedHeaders: ["set-cookie"],
+};
 app.use(cors(corsOption));
 
 // corsOption 제거하면 login창에서 다음으로 넘어가지 않음.
