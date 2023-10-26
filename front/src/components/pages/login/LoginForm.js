@@ -34,7 +34,7 @@ function LoginForm() {
 
   useEffect(() => {
     if (!userState.user) {
-      navigate("/login", { replace: false });
+      navigate("/login", { replace: true });
       return;
     } else if (userState.user) {
       navigate("/", { replace: true });
@@ -44,23 +44,27 @@ function LoginForm() {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    // "user/login" 엔드포인트로 post요청함.
-    const res = await api.post("user/login", {
-      email: emailValue,
-      password: passwordValue,
-    });
-    console.log("로그인성공", res);
-    // 유저 정보는 response의 data임.
-    const user = res.data;
-    // dispatch 함수를 이용해 로그인 성공 상태로 만듦.
-    dispatch({
-      type: "LOGIN_SUCCESS",
-      payload: user,
-    });
+    try {
+      // "user/login" 엔드포인트로 post요청함.
+      const res = await api.post("user/login", {
+        email: emailValue,
+        password: passwordValue,
+      });
+      console.log("로그인성공", res);
+      // 유저 정보는 response의 data임.
+      const user = res.data;
+      // dispatch 함수를 이용해 로그인 성공 상태로 만듦.
+      dispatch({
+        type: "LOGIN_SUCCESS",
+        payload: user,
+      });
 
-    // 기본 페이지로 이동함.
-    // window.location.href = "/";
-    navigate("/", { replace: true });
+      // 기본 페이지로 이동함.
+      // window.location.href = "/";
+      navigate("/", { replace: true });
+    } catch (err) {
+      console.log("로그인에 실패하였습니다.\n", err);
+    }
   };
 
   return (

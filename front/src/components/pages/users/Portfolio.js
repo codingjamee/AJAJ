@@ -1,5 +1,5 @@
 import React, { useContext, useState, useEffect, createContext } from "react";
-import { useNavigate, useParams } from "react-router-dom";
+import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { Container, Col, Row } from "react-bootstrap";
 
 import { UserStateContext } from "../../../App";
@@ -10,6 +10,8 @@ import Certifications from "./certificate/Certificates";
 import Awards from "./award/Awards";
 import Projects from "./project/Projects";
 import api from "../../utils/axiosConfig";
+import { useDispatch } from "react-redux";
+import { locationActions } from "../../../store/location";
 
 export const PortfolioOwnerDataContext = createContext({});
 
@@ -18,6 +20,8 @@ function Portfolio() {
   const params = useParams();
   const [portfolioOwnerData, setPortfolioOwnerData] = useState({});
   const userState = useContext(UserStateContext);
+  const dispatch = useDispatch();
+  const location = useLocation();
 
   const fetchPortfolioOwner = async (ownerId) => {
     // console.log("포트폴리오 오너 아이디" + ownerId);
@@ -31,10 +35,12 @@ function Portfolio() {
   };
 
   useEffect(() => {
+    //userState가 없는 경우
     if (!userState.user) {
-      navigate("/login", { replace: true });
-      return;
+      return navigate("/login", { replace: true });
     }
+
+    dispatch(locationActions.storeLocate({ payload: location.pathname }));
 
     // 현재 URL "/users/:userId"
     if (params.userId) {
@@ -45,7 +51,7 @@ function Portfolio() {
       const ownerId = userState.user.id;
       fetchPortfolioOwner(ownerId);
     }
-  }, [params, userState, navigate]);
+  }, []);
 
   return (
     <PortfolioOwnerDataContext.Provider value={portfolioOwnerData}>

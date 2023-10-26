@@ -88,9 +88,11 @@ const Projects = (props) => {
 
   // 모든 프로젝트 목록 가져오기 서버와 통신
   useEffect(() => {
-    api.get(`user/${portfolioOwnerData.id}/projects`).then((res) => {
-      return setProjects(res.data.projects);
-    });
+    if (userState.user) {
+      api.get(`user/${portfolioOwnerData.id}/projects`).then((res) => {
+        return setProjects(res.data.projects);
+      });
+    }
   }, [portfolioOwnerData.id]);
 
   return (
