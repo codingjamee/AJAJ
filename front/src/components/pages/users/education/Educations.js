@@ -121,6 +121,7 @@ const Educations = (props) => {
           </Card>
         )}
       </Card>
+      <br />
     </>
   );
 };

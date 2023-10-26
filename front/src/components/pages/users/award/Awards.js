@@ -124,6 +124,7 @@ const Awards = (props) => {
           </Card>
         )}
       </Card>
+      <br />
     </>
   );
 };

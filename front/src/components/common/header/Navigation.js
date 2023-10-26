@@ -38,6 +38,7 @@ function Navigation() {
     <Navbar variant="dark">
       <Nav.Link onClick={() => navigate("/")}>
         <img src={logo} alt="logo" width={"130px"} height={"100%"} />
+        AJAJ : My first portfolio
       </Nav.Link>
       <Navbar.Toggle aria-controls="basic-navbar-nav" />
       <Navbar.Collapse id="basic-navbar-nav" />

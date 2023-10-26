@@ -125,6 +125,7 @@ const Projects = (props) => {
           </Card>
         )}
       </Card>
+      <br />
     </>
   );
 };
