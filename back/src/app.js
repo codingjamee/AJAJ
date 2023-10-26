@@ -19,17 +19,15 @@ const corsOption = {
 
   exposedHeaders: ['set-cookie'],
 }
-
 app.use(cors(corsOption));
 // corsOption 제거하면 login창에서 다음으로 넘어가지 않음.
-
-// app.use(cors())
-// app.use((req, res, next) => {
-//   res.header('Access-Control-Allow-Origin', 'http://kdt-ai-9-team03.elicecoding.com');
-//   res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE');
-//   res.header('Access-Control-Allow-Headers', 'Content-Type');
-//   next();
-// });
+app.use(cors())
+app.use((req, res, next) => {
+  res.header('Access-Control-Allow-Origin', 'http://kdt-ai-9-team03.elicecoding.com');
+  res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE');
+  res.header('Access-Control-Allow-Headers', 'Content-Type');
+  next();
+});
 
 // express.json(): POST 등의 요청과 함께 오는 json형태의 데이터를 인식하고 핸들링할 수 있게 함.
 // express.urlencoded: 주로 Form submit 에 의해 만들어지는 URL-Encoded 형태의 데이터를 인식하고 핸들링할 수 있게 함.
@@ -41,7 +39,7 @@ app.get("/", (req, res) => {
   res.send("안녕하세요, Elice 레이서 1차 프로젝트 3팀 API 입니다.");
 });
 
-// router, service 구현 (userAuthRouter는 맨 s위에 있어야 함.)
+// router, service 구현 (userAuthRouter는 맨 위에 있어야 함.)
 app.use(userAuthRouter);
 app.use(educationAuthRouter);
 app.use(projectAuthRouter);
