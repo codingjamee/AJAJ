@@ -7,6 +7,7 @@ import FormWrapper from "../../../common/FormWrapper";
 import { PortfolioOwnerDataContext } from "../Portfolio";
 import { projectsCommonFormProps } from "../../../utils/formListCommonProps";
 import Project from "./Project";
+import api from "../../../utils/axiosConfig";
 
 const Projects = (props) => {
   const [addForm, setAddForm] = useState(false);
@@ -46,7 +47,7 @@ const Projects = (props) => {
 
     //post 서버와 통신
     try {
-      const res = await Api.post(`user/${userState.user.id}/project`, {
+      const res = await api.post(`user/${userState.user.id}/project`, {
         projectName,
         projectDetail,
         projectImgUrl,
@@ -77,20 +78,21 @@ const Projects = (props) => {
         setProjectEndDate("2023-01-01");
         setAddForm(false);
       } else if (res.status !== 201) {
-        throw new Error("POST 요청이 실패하였습니다.");
+        // throw new Error("POST 요청이 실패하였습니다.");
       }
     } catch (err) {
-      throw new Error("서버와 통신이 실패하였습니다.");
+      console.error(err);
+      // throw new Error("서버와 통신이 실패하였습니다.");
     }
   };
 
   // 모든 프로젝트 목록 가져오기 서버와 통신
   useEffect(() => {
-    Api.get(`user/${portfolioOwnerData.id}/projects`, "", "projects").then(
-      (res) => {
+    if (userState.user) {
+      api.get(`user/${portfolioOwnerData.id}/projects`).then((res) => {
         return setProjects(res.data.projects);
-      }
-    );
+      });
+    }
   }, [portfolioOwnerData.id]);
 
   return (
@@ -125,6 +127,7 @@ const Projects = (props) => {
           </Card>
         )}
       </Card>
+      <br />
     </>
   );
 };

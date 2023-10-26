@@ -2,6 +2,7 @@ import React, { useContext, useState } from "react";
 import { Button, Form, Card, Col, Row } from "react-bootstrap";
 import * as Api from "../../../utils/api";
 import { PortfolioOwnerDataContext } from "../Portfolio";
+import api from "../../../utils/axiosConfig";
 
 function UserEditForm({ user, setIsEditing, setUser }) {
   const [name, setName] = useState(user.name);
@@ -14,7 +15,7 @@ function UserEditForm({ user, setIsEditing, setUser }) {
     e.preventDefault();
 
     try {
-      const res = await Api.patch(`users/${portfolioOwnerData.id}`, {
+      const res = await api.patch(`users/${portfolioOwnerData.id}`, {
         name,
         email,
         description,
@@ -34,15 +35,12 @@ function UserEditForm({ user, setIsEditing, setUser }) {
         setDescription("");
         setIsEditing(false);
       } else if (res.status !== 200) {
-        throw new Error("PATCH 요청이 실패하였습니다.");
+        // throw new Error("PATCH 요청이 실패하였습니다.");
       }
     } catch (err) {
-      throw new Error("서버와 통신이 실패하였습니다.");
+      console.error(err);
     }
   };
-
-  // setUser(updatedUser);
-  // setIsEditing(false);
 
   return (
     <Card className="mb-2">

@@ -8,6 +8,7 @@ import {
   emailValidateReducer,
   paswordValidateReducer,
 } from "../../hooks/validatorReducer";
+import api from "../../utils/axiosConfig";
 
 function LoginForm() {
   const navigate = useNavigate();
@@ -33,7 +34,7 @@ function LoginForm() {
 
   useEffect(() => {
     if (!userState.user) {
-      navigate("/login", { replace: false });
+      navigate("/login", { replace: true });
       return;
     } else if (userState.user) {
       navigate("/", { replace: true });
@@ -45,7 +46,7 @@ function LoginForm() {
 
     try {
       // "user/login" 엔드포인트로 post요청함.
-      const res = await Api.post("user/login", {
+      const res = await api.post("user/login", {
         email: emailValue,
         password: passwordValue,
       });

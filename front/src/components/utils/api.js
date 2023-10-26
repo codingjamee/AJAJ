@@ -1,4 +1,4 @@
-import axios from "axios";
+import api from "./axiosConfig";
 
 const backendPortNumber = "5001";
 const serverUrl =
@@ -10,14 +10,18 @@ async function get(endpoint, params = "", component) {
   //   "color: #a25cd1;"
   // );
 
-  return axios.get(serverUrl + endpoint + "/" + params, {
-    // JWT 토큰을 헤더에 담아 백엔드 서버에 보냄.
-    // headers: {
-    //   Authorization: `Bearer ${sessionStorage.getItem("userToken")}`,
-    // },
-    // 쿠키를 서버에 보냄
-    withCredentials: true,
-  });
+  return api.get(
+    endpoint + "/" + params
+    // serverUrl + endpoint + "/" + params
+    // , {
+    //   // JWT 토큰을 헤더에 담아 백엔드 서버에 보냄.
+    //   // headers: {
+    //   //   Authorization: `Bearer ${sessionStorage.getItem("userToken")}`,
+    //   // },
+    //   // 쿠키를 서버에 보냄
+    //   withCredentials: true,
+    // }
+  );
 }
 
 async function post(endpoint, data, component) {
@@ -30,14 +34,19 @@ async function post(endpoint, data, component) {
   // );
   // console.log(`%cPOST 요청 데이터: ${bodyData}`, "color: #296aba;");
 
-  return axios.post(serverUrl + endpoint, bodyData, {
-    headers: {
-      "Content-Type": "application/json",
-      //   Authorization: `Bearer ${sessionStorage.getItem("userToken")}`,
-    },
-    // 쿠키를 서버에 보냄
-    withCredentials: true,
-  });
+  return api.post(
+    endpoint,
+    bodyData
+    // serverUrl + endpoint, bodyData
+    //   , {
+    //   headers: {
+    //     "Content-Type": "application/json",
+    //     //   Authorization: `Bearer ${sessionStorage.getItem("userToken")}`,
+    //   },
+    //   // 쿠키를 서버에 보냄
+    //   withCredentials: true,
+    // }
+  );
 }
 
 async function put(endpoint, data, components) {
@@ -50,13 +59,18 @@ async function put(endpoint, data, components) {
   // );
   // console.log(`%cPUT 요청 데이터: ${bodyData}`, "color: #059c4b;");
 
-  return axios.put(serverUrl + endpoint, bodyData, {
-    headers: {
-      "Content-Type": "application/json",
-      // Authorization: `Bearer ${sessionStorage.getItem("userToken")}`,
-    },
-    withCredentials: true,
-  });
+  return api.put(
+    endpoint,
+    bodyData
+    // serverUrl + endpoint, bodyData
+    // , {
+    //   headers: {
+    //     "Content-Type": "application/json",
+    //     // Authorization: `Bearer ${sessionStorage.getItem("userToken")}`,
+    //   },
+    //   withCredentials: true,
+    // }
+  );
 }
 
 async function patch(endpoint, data) {
@@ -66,13 +80,16 @@ async function patch(endpoint, data) {
   // console.log(`%cPATCH 요청: ${serverUrl + endpoint}`, "color: #059c4b;");
   // console.log(`%cPATCH 요청 데이터: ${bodyData}`, "color: #059c4b;");
 
-  return axios.patch(serverUrl + endpoint, bodyData, {
-    headers: {
-      "Content-Type": "application/json",
-      // Authorization: `Bearer ${sessionStorage.getItem("userToken")}`,
-    },
-    withCredentials: true,
-  });
+  return api.patch(
+    serverUrl + endpoint
+    //   , bodyData, {
+    //   headers: {
+    //     "Content-Type": "application/json",
+    //     // Authorization: `Bearer ${sessionStorage.getItem("userToken")}`,
+    //   },
+    //   withCredentials: true,
+    // }
+  );
 }
 
 // 아래 함수명에 관해, delete 단어는 자바스크립트의 reserved 단어이기에,
@@ -81,13 +98,16 @@ async function del(endpoint, params = "", component) {
   // console.log(
   //   `DELETE 요청 ${serverUrl + endpoint + "/" + params} -${component}에서`
   // );
-  return axios.delete(serverUrl + endpoint + "/" + params, {
-    // headers: {
-    //   // Authorization: `Bearer ${sessionStorage.getItem("userToken")}`,
-    // },
-    // 쿠키를 서버에 보냄
-    withCredentials: true,
-  });
+  return api.delete(
+    serverUrl + endpoint + "/" + params
+    // , {
+    //   // headers: {
+    //   //   // Authorization: `Bearer ${sessionStorage.getItem("userToken")}`,
+    //   // },
+    //   // 쿠키를 서버에 보냄
+    //   withCredentials: true,
+    // }
+  );
 }
 
 // 아래처럼 export한 후, import * as A 방식으로 가져오면,

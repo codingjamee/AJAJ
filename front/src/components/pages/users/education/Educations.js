@@ -7,6 +7,7 @@ import FormWrapper from "../../../common/FormWrapper";
 import Education from "./Education";
 import { PortfolioOwnerDataContext } from "../Portfolio";
 import { educationsCommonFormProps } from "../../../utils/formListCommonProps";
+import api from "../../../utils/axiosConfig";
 //********************************서버와 통신 ok**************************************
 
 const Educations = (props) => {
@@ -42,7 +43,7 @@ const Educations = (props) => {
 
     //post 서버와 통신
     try {
-      const res = await Api.post(`user/${userState.user.id}/education`, {
+      const res = await api.post(`user/${userState.user.id}/education`, {
         schoolName,
         major,
         degree,
@@ -73,20 +74,22 @@ const Educations = (props) => {
         setGraduationDate("2023-01-01");
         setAddForm(false);
       } else if (res.status !== 201) {
-        throw new Error("POST 요청이 실패하였습니다.");
+        // throw new Error("POST 요청이 실패하였습니다.");
       }
     } catch (err) {
-      throw new Error("서버와 통신이 실패하였습니다.");
+      console.error(err);
+      // throw new Error("서버와 통신이 실패하였습니다.");
     }
   };
 
   // 모든 학위 목록 가져오기 서버와 통신
   useEffect(() => {
-    Api.get(`user/${portfolioOwnerData.id}/educations`, "", "Educations").then(
-      (res) => {
+    //userState가 있는 경우에만
+    if (userState.user) {
+      api.get(`user/${portfolioOwnerData.id}/educations`).then((res) => {
         return setEducations(res.data.educations);
-      }
-    );
+      });
+    }
   }, [portfolioOwnerData.id]);
 
   return (
@@ -121,6 +124,7 @@ const Educations = (props) => {
           </Card>
         )}
       </Card>
+      <br />
     </>
   );
 };

@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { Container, Col, Row, Form, Button } from "react-bootstrap";
 
 import * as Api from "../../utils/api";
+import api from "../../utils/axiosConfig";
 
 function RegisterForm() {
   const navigate = useNavigate();
@@ -43,7 +44,7 @@ function RegisterForm() {
 
     try {
       // "user/register" 엔드포인트로 post요청함.
-      await Api.post("user/register", {
+      await api.post("user/register", {
         email,
         password,
         name,
