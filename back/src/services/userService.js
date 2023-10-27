@@ -102,14 +102,13 @@ class userAuthService {
   }
 
   static async getUserInfo({ userId }) {
-    const user = await User.findById({ userId });
+    const currentUserInfo = await User.findById({ userId });
     let errorMessage = null;
-
-    if (!user) {
+    if (!currentUserInfo) {
       errorMessage =
         "가입 내역이 없습니다. 다시 한 번 확인해 주세요.";
     }
-    return { errorMessage, user };
+    return { errorMessage, currentUserInfo };
   }
 
   static async getToken({ userId }) {
