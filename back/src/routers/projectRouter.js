@@ -23,6 +23,7 @@ projectAuthRouter.post("/user/:id/project", login_required, request_checked, //i
 
     res.status(201).send({
       projectId: newProject.projectId,
+      message: "프로젝트 추가에 성공했습니다."
     });
   } catch (error) {
     next(error);
@@ -58,7 +59,9 @@ projectAuthRouter.put("/user/:id/project/:projectId", login_required, userId_che
       throw new NotFoundError("해당 프로젝트가 수정되지 않았습니다.");
     }
 
-    res.status(200).send();
+    res.status(200).send({
+      message: "프로젝트 수정에 성공했습니다."
+    });
   } catch (error) {
     next(error);
   }
@@ -74,7 +77,9 @@ projectAuthRouter.delete("/user/:id/project/:projectId", login_required, userId_
       throw new NotFoundError("해당 프로젝트가 삭제되지 않았습니다.");
     }
 
-    res.status(200).send();
+    res.status(200).send({
+      message: "프로젝트 삭제에 성공했습니다."
+    });
   } catch (error) {
     next(error);
   }

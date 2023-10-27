@@ -20,6 +20,7 @@ educationAuthRouter.post("/user/:id/education", login_required, request_checked,
 
       res.status(201).send({
         eduId: newEducation.eduId,
+        message: "학력 추가에 성공했습니다."
       });
     } catch (error) {
       next(error);
@@ -42,31 +43,6 @@ educationAuthRouter.get("/user/:id/educations", login_required, async function (
 });
 
 
-// 특정 학력 가져오기
-// educationAuthRouter.get("/user/:id/education/:eduId", login_required, async function (req, res, next) {
-//   try {
-//     const eduId = req.params.eduId;
-//     const userId = req.params.id;
-//     // userId가 동일한지 확인
-//     if (userId) {
-//       const user = await educationAuthService.checkUser({ userId });
-//       if (user.id !== userId) {
-//         throw new AuthorityError("접근 권한이 없습니다");
-//       }
-//     }
-
-//     const educations = await educationAuthService.getEducation({ eduId });
-
-//     if (!educations) {
-//       throw new NotFoundError("특정 학력을 가져올 수 없습니다.");
-//     }
-//     res.status(201).send(educations);
-//   } catch (error) {
-//     next(error);
-//   }
-// });
-
-
 // 학력 수정하기
 educationAuthRouter.put("/user/:id/education/:eduId", login_required, userId_checked, request_checked, async function (req, res, next) {
     try {
@@ -81,7 +57,9 @@ educationAuthRouter.put("/user/:id/education/:eduId", login_required, userId_che
         throw new NotFoundError("해당 학력이 수정되지 않았습니다.");
       }
   
-      res.status(200).send();
+      res.status(200).send({
+        message: "학력 수정에 성공했습니다."
+      });
     } catch (error) {
       next(error);
     }
@@ -97,7 +75,9 @@ educationAuthRouter.delete("/user/:id/education/:eduId", login_required, userId_
       throw new NotFoundError("해당 학력이 삭제되지 않았습니다.");
     }
 
-    res.status(200).send();
+    res.status(200).send({
+      message: "학력 삭제에 성공했습니다."
+    });
   } catch (error) {
     next(error);
   }

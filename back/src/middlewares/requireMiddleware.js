@@ -12,6 +12,9 @@ async function deleted_checked(req, res, next) {
   try {
     const { email } = req.body;
     const user = await userAuthService.getUserDeletedAt({ email });
+    if (!user) {
+      throw new UnauthorizedError("존재하지 않는 회원입니다.");
+    }
     if (user.deletedAt) {
       throw new UnauthorizedError("탈퇴한 회원입니다.");
     }
@@ -72,7 +75,7 @@ async function login_required(req, res, next) {
         // 엑세스 토큰 발급
         userToken = jwt.sign(user)
         if (!userToken) {
-          throw new UnauthorizedError("  ");
+          throw new UnauthorizedError("권한이 없습니다.");
         }
 
         // 클라이언트로 새로운 유저 토큰을 전송

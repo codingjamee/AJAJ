@@ -11,9 +11,9 @@ class userAuthService {
 
   static async addUser({ name, email, password }) {
     const user = await User.findByEmail({ email });
+    let errorMessage = null;
     if (user) {
-      const errorMessage = "이 이메일은 현재 사용중입니다. 다른 이메일을 입력해 주세요.";
-      return { errorMessage };
+      errorMessage = "이 이메일은 현재 사용중인 이메일입니다. 다른 이메일을 사용해주세요.";
     }
 
     // 비밀번호 해쉬화
@@ -23,18 +23,17 @@ class userAuthService {
     const newUser = { id, name, email, password: hashedPassword };
 
     // db에 저장
-    const createdNewUser = await User.create({ newUser });
-    createdNewUser.errorMessage = null; // 문제 없이 db 저장 완료되었으므로 에러가 없음.
+    await User.create({ newUser });
 
-    return createdNewUser;
+    return { errorMessage };
   }
 
   static async getUser({ email, password }) {
     // 이메일 db에 존재 여부 확인
     const user = await User.findByEmail({ email });
+    let errorMessage = null;
     if (!user) {
-      const errorMessage = "가입 내역이 없습니다.";
-      return { errorMessage };
+      errorMessage = "가입 내역이 없습니다. 다시 한 번 확인해 주세요.";
     }
 
     // 비밀번호 일치 여부 확인
@@ -44,9 +43,8 @@ class userAuthService {
       correctPasswordHash
     );
     if (!isPasswordCorrect) {
-      const errorMessage =
-        "비밀번호가 일치하지 않습니다. 다시 한 번 확인해 주세요.";
-      return { errorMessage };
+      errorMessage =
+        "비밀번호가 일치하지 않습니다.";
     }
 
     const accessToken = jwt.sign(user);
@@ -55,9 +53,9 @@ class userAuthService {
     const id = user.id;
     const name = user.name;
     const description = user.description;
-    const loginUser = { id, email, name, description, errorMessage: null };
+    const loginUser = { id, email, name, description };
 
-    return { accessToken, refreshToken, loginUser };
+    return { errorMessage, accessToken, refreshToken, loginUser };
   }
 
   static async getUsers() {
@@ -67,12 +65,12 @@ class userAuthService {
 
   static async setUser({ userId, toUpdate }) {
     let user = await User.findById({ userId });
+    let errorMessage = null;
 
     // db에서 찾지 못한 경우, 에러 메시지 반환
     if (!user) {
-      const errorMessage =
+      errorMessage =
         "가입 내역이 없습니다. 다시 한 번 확인해 주세요.";
-      return { errorMessage };
     }
 
     // 업데이트 대상에 name이 있다면, 즉 name 값이 null 이 아니라면 업데이트 진행
@@ -100,17 +98,18 @@ class userAuthService {
       user = await User.update({ userId, fieldToUpdate, newValue });
     }
 
-    return user;
+    return { errorMessage };
   }
 
   static async getUserInfo({ userId }) {
     const user = await User.findById({ userId });
+    let errorMessage = null;
+
     if (!user) {
-      const errorMessage =
-        "해당 이메일은 가입 내역이 없습니다. 다시 한 번 확인해 주세요.";
-      return { errorMessage };
+      errorMessage =
+        "가입 내역이 없습니다. 다시 한 번 확인해 주세요.";
     }
-    return user;
+    return { errorMessage, user };
   }
 
   static async getToken({ userId }) {

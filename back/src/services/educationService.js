@@ -29,7 +29,7 @@ class educationAuthService {
     
         // db에서 찾지 못한 경우, 에러 메시지 반환
         if (!education) {
-          const errorMessage = "해당 학력 없습니다";
+          const errorMessage = "해당 학력이 존재하지 않습니다";
           return { errorMessage };
         }
     
