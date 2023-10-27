@@ -6,9 +6,8 @@ import axios from "axios";
 //request사용
 const config = {
   baseURL:
-    process.env.REACT_APP_API_BASE_URL || process.env.REACT_APP_BUILD_BASE_URL,
-  // 'http://localhost:5002',
-  // headers: { "Content-Type": "application/json" },
+  process.env.REACT_APP_API_BASE_URL ||  process.env.REACT_APP_BUILD_BASE_URL,
+  headers: { "Content-Type": "application/json" },
   timeout: 5000,
   withCredentials: true,
 };
@@ -48,7 +47,7 @@ api.interceptors.request.use(
 api.interceptors.response.use(
   (res) => {
     // console.log("응답이 도착했음", res);
-    alert("요청에 성공했습니다!");
+    //alert("요청에 성공했습니다!");
     if (res.statusCode >= 400 && res.status < 500) {
       alert(`요청이 실패하였습니다: error code ${res.status} `);
     } else if (res.statusCode >= 500) {
