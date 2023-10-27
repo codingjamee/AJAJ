@@ -14,6 +14,7 @@ const Home = () => {
   };
   return (
     <Card
+      border="warning"
       style={{
         width: "18rem",
         margin: "0 auto",
@@ -30,9 +31,9 @@ const Home = () => {
         <Card.Text style={{ marginTop: "30px" }}>당신의 상태</Card.Text>
         <Card.Text>{userState?.user?.description}</Card.Text>
         <ButtonCommon
-          variant="primary"
+          variant="outline-secondary"
           onClickHandler={onClick}
-          text="마이페이지"
+          text="My Page"
         />
       </Card.Body>
     </Card>

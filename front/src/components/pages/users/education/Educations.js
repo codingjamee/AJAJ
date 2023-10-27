@@ -94,8 +94,9 @@ const Educations = (props) => {
 
   return (
     <>
-      <Card>
-        <h4>학력</h4>
+      <Card border="warning">
+        <h3>학력</h3>
+        <br />
         {educations.map((education, index) => (
           <Education
             key={`education-${index}`}
@@ -116,7 +117,7 @@ const Educations = (props) => {
               />
             )}
             <ButtonCommon
-              variant="outline-info"
+              variant="light"
               size="sm"
               onClickHandler={() => setAddForm((prev) => !prev)}
               text="+"

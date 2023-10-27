@@ -96,7 +96,7 @@ const Award = ({ isEditable, award = {}, setAwards }) => {
   };
 
   return (
-    <Card style={{ width: "100%" }}>
+    <Card className="border-0" style={{ width: "100%" }}>
       {!editMode && (
         <>
           <Card.Title>{award.awardName}</Card.Title>
@@ -109,19 +109,19 @@ const Award = ({ isEditable, award = {}, setAwards }) => {
           <Card.Text>{award.awardDate}</Card.Text>
 
           {isEditable && (
-            <Form.Group className="mt-3 text-center">
-              <Col sm={{ span: 20 }}>
+            <Form.Group className="mb-5 text-center">
+              <Col>
                 <ButtonCommon
-                  variant="primary"
+                  variant="outline-primary"
                   type="submit"
                   className="me-3"
-                  text="수정"
+                  text="Edit"
                   onClickHandler={() => setEditMode((prev) => !prev)}
                 />
 
                 <ButtonCommon
-                  variant="secondary"
-                  text="삭제"
+                  variant="outline-secondary"
+                  text="Delete"
                   onClickHandler={() => onClickDel(award.awardId)}
                 />
               </Col>
