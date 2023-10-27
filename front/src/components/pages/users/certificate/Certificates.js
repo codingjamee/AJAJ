@@ -114,8 +114,9 @@ const Certificates = (props) => {
 
   return (
     <>
-      <Card>
-        <h4>자격증</h4>
+      <Card border="warning">
+        <h3>자격증</h3>
+        <br />
         {certificates.map((certificate, index) => (
           <Certificate
             key={`certificate-${index}`}
@@ -136,7 +137,7 @@ const Certificates = (props) => {
               />
             )}
             <ButtonCommon
-              variant="outline-info"
+              variant="light"
               size="sm"
               onClickHandler={() => setAddForm((prev) => !prev)}
               text="+"

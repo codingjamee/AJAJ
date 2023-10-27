@@ -14,3 +14,7 @@ Nav {
 body {
   background-color: rgb(219, 219, 219);
 }
+
+h3 {
+  border-bottom: 1.5px solid rgb(247, 201, 115);
+}

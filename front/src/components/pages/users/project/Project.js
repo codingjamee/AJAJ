@@ -114,7 +114,7 @@ const Project = ({ isEditable, project = {}, setProjects }) => {
   };
 
   return (
-    <Card style={{ width: "100%" }}>
+    <Card className="border-0" style={{ width: "100%" }}>
       {!editMode && (
         <>
           <Card.Title>{project.projectName}</Card.Title>
@@ -128,19 +128,19 @@ const Project = ({ isEditable, project = {}, setProjects }) => {
           </Card.Text>
 
           {isEditable && (
-            <Form.Group className="mt-3 text-center">
+            <Form.Group className="mb-5 text-center">
               <Col sm={{ span: 20 }}>
                 <ButtonCommon
-                  variant="primary"
+                  variant="outline-primary"
                   type="submit"
                   className="me-3"
-                  text="수정"
+                  text="Edit"
                   onClickHandler={() => setEditMode((prev) => !prev)}
                 />
 
                 <ButtonCommon
-                  variant="secondary"
-                  text="삭제"
+                  variant="outline-secondary"
+                  text="Delete"
                   onClickHandler={() => onClickDel(project.projectId)}
                 />
               </Col>

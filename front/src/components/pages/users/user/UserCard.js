@@ -4,7 +4,7 @@ import { Card, Row, Button, Col } from "react-bootstrap";
 function UserCard({ user, setIsEditing, isEditable, isNetwork }) {
   const navigate = useNavigate();
   return (
-    <Card className="mb-2 ms-3 mr-5">
+    <Card className="mb-2 ms-3 mr-5" border="warning">
       <Card.Body>
         <Row className="justify-content-md-center">
           <Card.Img
@@ -28,11 +28,11 @@ function UserCard({ user, setIsEditing, isEditable, isNetwork }) {
             <Row className="mt-3 text-center text-info">
               <Col sm={{ span: 20 }}>
                 <Button
-                  variant="outline-info"
+                  variant="outline-secondary"
                   size="sm"
                   onClick={() => setIsEditing(true)}
                 >
-                  편집
+                  Edit
                 </Button>
               </Col>
             </Row>

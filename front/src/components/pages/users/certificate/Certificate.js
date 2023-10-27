@@ -103,7 +103,7 @@ const Certificate = ({ isEditable, certificate = {}, setCertificates }) => {
   };
 
   return (
-    <Card style={{ width: "100%" }}>
+    <Card className="border-0" style={{ width: "100%" }}>
       {!editMode && (
         <>
           <Card.Title>{certificate.certificateName}</Card.Title>
@@ -113,19 +113,19 @@ const Certificate = ({ isEditable, certificate = {}, setCertificates }) => {
           </Card.Subtitle>
           <Card.Text>{certificate.acquisitionDate}</Card.Text>
           {isEditable && (
-            <Form.Group className="mt-3 text-center">
-              <Col sm={{ span: 20 }}>
+            <Form.Group className="mb-5 text-center">
+              <Col>
                 <ButtonCommon
-                  variant="primary"
+                  variant="outline-primary"
                   type="submit"
                   className="me-3"
-                  text="수정"
+                  text="Edit"
                   onClickHandler={() => setEditMode((prev) => !prev)}
                 />
 
                 <ButtonCommon
-                  variant="secondary"
-                  text="삭제"
+                  variant="outline-secondary"
+                  text="Delete"
                   onClickHandler={() => onClickDel(certificate.certificateId)}
                 />
               </Col>
