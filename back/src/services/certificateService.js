@@ -29,7 +29,7 @@ class certificateAuthService {
     
         // db에서 찾지 못한 경우, 에러 메시지 반환
         if (!certificate) {
-          const errorMessage = "해당 자격증 없습니다";
+          const errorMessage = "해당 자격증이 존재하지 않습니다";
           return { errorMessage };
         }
     

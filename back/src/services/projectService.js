@@ -29,7 +29,7 @@ class projectAuthService {
 
     // DB에서 찾지 못한 경우, 에러 메시지 반환
     if (!project) {
-      const errorMessage = "해당 프로젝트가 없습니다";
+      const errorMessage = "해당 프로젝트가 존재하지 않습니다";
       return { errorMessage };
     }
 

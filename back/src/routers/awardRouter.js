@@ -20,6 +20,7 @@ awardAuthRouter.post("/user/:id/award", login_required, request_checked, async f
 
       res.status(201).send({
         awardId: newAward.awardId,
+        message: "수상내역 추가에 성공했습니다."
       });
     } catch (error) {
       next(error);
@@ -57,7 +58,9 @@ awardAuthRouter.put("/user/:id/award/:awardId", login_required, userId_checked, 
         throw new NotFoundError("해당 수상내역이 수정되지 않았습니다.");
       }
   
-      res.status(200).send();
+      res.status(200).send({
+        message: "수상내역 수정에 성공했습니다."
+      });
     } catch (error) {
       next(error);
     }
@@ -74,7 +77,9 @@ awardAuthRouter.delete("/user/:id/award/:awardId", login_required, userId_checke
       throw new NotFoundError("해당 수상내역이 삭제되지 않았습니다.");
     }
 
-    res.status(200).send();
+    res.status(200).send({
+      message: "수상내역 삭제에 성공했습니다."
+    });
   } catch (error) {
     next(error);
   }

@@ -20,6 +20,7 @@ certificateAuthRouter.post("/user/:id/certificate", login_required, request_chec
 
       res.status(201).send({
         certificateId: newCertificate.certificateId,
+        message: "자격증 추가에 성공했습니다."
       });
     } catch (error) {
       next(error);
@@ -56,7 +57,9 @@ certificateAuthRouter.put("/user/:id/certificate/:certificateId", login_required
         throw new NotFoundError("해당 자격증이 수정되지 않았습니다.");
       }
   
-      res.status(200).send();
+      res.status(200).send({
+        message: "자격증 수정에 성공했습니다."
+      });
     } catch (error) {
       next(error);
     }
@@ -72,7 +75,9 @@ certificateAuthRouter.delete("/user/:id/certificate/:certificateId", login_requi
       throw new NotFoundError("해당 자격증이 삭제되지 않았습니다.");
     }
 
-    res.status(200).send();
+    res.status(200).send({
+      message: "자격증 삭제에 성공했습니다."
+    });
   } catch (error) {
     next(error);
   }
