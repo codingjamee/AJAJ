@@ -1,4 +1,4 @@
-import { useContext } from "react";
+import { useContext, useEffect } from "react";
 import Button from "react-bootstrap/Button";
 import Card from "react-bootstrap/Card";
 import { UserStateContext } from "../../../App";
@@ -12,6 +12,12 @@ const Home = () => {
   const onClick = () => {
     navigate(`/userState/${userState.user.id}`);
   };
+  useEffect(() => {
+    if (!userState.user) {
+      navigate("/login", { replace: true });
+      return;
+    }
+  }, [userState.user]);
   return (
     <Card
       style={{
