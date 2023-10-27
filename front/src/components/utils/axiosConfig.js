@@ -47,7 +47,7 @@ api.interceptors.request.use(
 api.interceptors.response.use(
   (res) => {
     // console.log("응답이 도착했음", res);
-    alert("요청에 성공했습니다!");
+    //alert("요청에 성공했습니다!");
     if (res.statusCode >= 400 && res.status < 500) {
       alert(`요청이 실패하였습니다: error code ${res.status} `);
     } else if (res.statusCode >= 500) {
