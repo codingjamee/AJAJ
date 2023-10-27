@@ -80,9 +80,7 @@ const Award = ({ isEditable, award = {}, setAwards }) => {
   const onClickDel = async (awardId) => {
     try {
       const res = await api.delete(
-        `user/${userState.user.id}/award`,
-        awardId,
-        "Award"
+        `user/${userState.user.id}/award/${awardId}`
       );
       // console.log(res);
       if (res.status === 200) {

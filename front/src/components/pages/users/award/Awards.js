@@ -55,7 +55,9 @@ const Awards = (props) => {
       awardDate,
     });
 
+    console.log(res.data.awardId);
     const postedNewId = res.data.awardId;
+    console.log(postedNewId);
 
     if (res.status === 201) {
       setAwards((prev) => {
