@@ -57,15 +57,15 @@ function Portfolio() {
     <PortfolioOwnerDataContext.Provider value={portfolioOwnerData}>
       <Container fluid style={{ marginTop: "50px" }}>
         <Row>
-          <Col lg={2} style={{ textAlign: "center" }}>
+          <Col md={4} lg={3} xl={2} xxl={2} style={{ textAlign: "center" }}>
             <User isEditable={portfolioOwnerData?.id === userState.user?.id} />
           </Col>
-          <Col lg={10}>
+          <Col md={8} lg={9} xl={10} xxl={10}>
             <div
               style={{
                 textAlign: "center",
                 marginRight: "50px",
-                marginLeft: "30px",
+                marginLeft: "40px",
               }}
             >
               <Educations

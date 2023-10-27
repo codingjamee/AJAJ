@@ -98,8 +98,9 @@ const Projects = (props) => {
 
   return (
     <>
-      <Card>
-        <h4>프로젝트</h4>
+      <Card border="warning">
+        <h3>프로젝트</h3>
+        <br />
         {projects.map((project, index) => (
           <Project
             key={`project-${index}`}
@@ -120,7 +121,7 @@ const Projects = (props) => {
               />
             )}
             <ButtonCommon
-              variant="outline-info"
+              variant="light"
               size="sm"
               onClickHandler={() => setAddForm((prev) => !prev)}
               text="+"

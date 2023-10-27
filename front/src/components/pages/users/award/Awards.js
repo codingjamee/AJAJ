@@ -94,8 +94,9 @@ const Awards = (props) => {
 
   return (
     <>
-      <Card>
-        <h4>수상 내역</h4>
+      <Card border="warning">
+        <h3>수상 내역</h3>
+        <br />
         {awards.map((award, index) => (
           <Award
             key={`award-${index}`}
@@ -116,7 +117,7 @@ const Awards = (props) => {
               />
             )}
             <ButtonCommon
-              variant="outline-info"
+              variant="light"
               size="sm"
               onClickHandler={() => setAddForm((prev) => !prev)}
               text="+"

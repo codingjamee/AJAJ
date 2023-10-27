@@ -24,7 +24,7 @@ function Network() {
   }, [userState, navigate]);
 
   return (
-    <Container fluid style={{ textAlign: "center" }}>
+    <Container fluid style={{ textAlign: "center", marginTop: "50px" }}>
       <Row
         lg={4}
         className="jusify-content-center"

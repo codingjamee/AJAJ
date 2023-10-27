@@ -104,7 +104,7 @@ const Education = ({ isEditable, education = {}, setEducations }) => {
   };
 
   return (
-    <Card style={{ width: "100%" }}>
+    <Card className="border-0" style={{ width: "100%" }}>
       {!editMode && (
         <>
           <Card.Title>{education.schoolName}</Card.Title>
@@ -117,19 +117,18 @@ const Education = ({ isEditable, education = {}, setEducations }) => {
             {education.admissionDate} ~ {education.graduationDate}
           </Card.Text>
           {isEditable && (
-            <Form.Group className="mt-3 text-center">
-              <Col sm={{ span: 20 }}>
+            <Form.Group className="mb-5 text-center">
+              <Col>
                 <ButtonCommon
-                  variant="primary"
+                  variant="outline-primary"
                   type="submit"
                   className="me-3"
-                  text="수정"
+                  text="Edit"
                   onClickHandler={() => setEditMode((prev) => !prev)}
                 />
-
                 <ButtonCommon
-                  variant="secondary"
-                  text="삭제"
+                  variant="outline-secondary"
+                  text="Delete"
                   onClickHandler={() => onClickDel(education.eduId)}
                 />
               </Col>
