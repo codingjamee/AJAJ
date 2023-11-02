@@ -4,9 +4,9 @@ import { Nav, Navbar } from "react-bootstrap";
 import { UserStateContext, DispatchContext } from "../../../App";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "../../../UI/design.css";
-import * as Api from "../../utils/api";
+import * as Api from "../../../utils/api";
 import logo from "./logo0.png";
-import api from "../../utils/axiosConfig";
+import api from "../../../utils/axiosConfig";
 
 function Navigation() {
   const navigate = useNavigate();

@@ -1,11 +1,11 @@
 import { useContext, useEffect, useState } from "react";
-import * as Api from "../../../utils/api";
+import * as Api from "../../../../utils/api";
 import { Form, Card, Col } from "react-bootstrap";
 import FormWrapper from "../../../common/FormWrapper";
 import ButtonCommon from "../../../common/ButtonCommon";
 import { UserStateContext } from "../../../../App";
-import { educationsCommonFormProps } from "../../../utils/formListCommonProps";
-import api from "../../../utils/axiosConfig";
+import { educationsCommonFormProps } from "../../../../utils/formListCommonProps";
+import api from "../../../../utils/axiosConfig";
 
 const Education = ({ isEditable, education = {}, setEducations }) => {
   // useState 훅을 통해 user 상태를 생성함.

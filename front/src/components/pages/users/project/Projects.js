@@ -1,13 +1,13 @@
 import React, { useContext, useEffect, useState } from "react";
 import { Card } from "react-bootstrap";
 import { UserStateContext } from "../../../../App";
-import * as Api from "../../../utils/api";
+import * as Api from "../../../../utils/api";
 import ButtonCommon from "../../../common/ButtonCommon";
 import FormWrapper from "../../../common/FormWrapper";
 import { PortfolioOwnerDataContext } from "../Portfolio";
-import { projectsCommonFormProps } from "../../../utils/formListCommonProps";
+import { projectsCommonFormProps } from "../../../../utils/formListCommonProps";
 import Project from "./Project";
-import api from "../../../utils/axiosConfig";
+import api from "../../../../utils/axiosConfig";
 
 const Projects = (props) => {
   const [addForm, setAddForm] = useState(false);

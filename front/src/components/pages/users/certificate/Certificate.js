@@ -1,12 +1,12 @@
 import { useContext, useEffect, useState } from "react";
-import * as Api from "../../../utils/api";
+import * as Api from "../../../../utils/api";
 import { Form, Card, Col } from "react-bootstrap";
 import FormWrapper from "../../../common/FormWrapper";
 import ButtonCommon from "../../../common/ButtonCommon";
-import { certificatesCommonFormProps } from "../../../utils/formListCommonProps";
+import { certificatesCommonFormProps } from "../../../../utils/formListCommonProps";
 import { PortfolioOwnerDataContext } from "../Portfolio";
 import { UserStateContext } from "../../../../App";
-import api from "../../../utils/axiosConfig";
+import api from "../../../../utils/axiosConfig";
 
 const Certificate = ({ isEditable, certificate = {}, setCertificates }) => {
   // const [user, setUser] = useState(null);

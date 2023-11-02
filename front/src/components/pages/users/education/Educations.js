@@ -1,13 +1,13 @@
 import React, { useContext, useEffect, useState } from "react";
 import { Card } from "react-bootstrap";
 import { UserStateContext } from "../../../../App";
-import * as Api from "../../../utils/api";
+import * as Api from "../../../../utils/api";
 import ButtonCommon from "../../../common/ButtonCommon";
 import FormWrapper from "../../../common/FormWrapper";
 import Education from "./Education";
 import { PortfolioOwnerDataContext } from "../Portfolio";
-import { educationsCommonFormProps } from "../../../utils/formListCommonProps";
-import api from "../../../utils/axiosConfig";
+import { educationsCommonFormProps } from "../../../../utils/formListCommonProps";
+import api from "../../../../utils/axiosConfig";
 //********************************서버와 통신 ok**************************************
 
 const Educations = (props) => {

@@ -1,11 +1,11 @@
 import { useContext, useState } from "react";
-import * as Api from "../../../utils/api";
+import * as Api from "../../../../utils/api";
 import { Form, Card, Col } from "react-bootstrap";
 import FormWrapper from "../../../common/FormWrapper";
 import ButtonCommon from "../../../common/ButtonCommon";
 import { UserStateContext } from "../../../../App";
-import { awardsCommonFormProps } from "../../../utils/formListCommonProps";
-import api from "../../../utils/axiosConfig";
+import { awardsCommonFormProps } from "../../../../utils/formListCommonProps";
+import api from "../../../../utils/axiosConfig";
 
 const Award = ({ isEditable, award = {}, setAwards }) => {
   const [editMode, setEditMode] = useState(false);

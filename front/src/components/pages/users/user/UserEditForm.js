@@ -1,8 +1,8 @@
 import React, { useContext, useState } from "react";
 import { Button, Form, Card, Col, Row } from "react-bootstrap";
-import * as Api from "../../../utils/api";
+import * as Api from "../../../../utils/api";
 import { PortfolioOwnerDataContext } from "../Portfolio";
-import api from "../../../utils/axiosConfig";
+import api from "../../../../utils/axiosConfig";
 
 function UserEditForm({ user, setIsEditing, setUser }) {
   const [name, setName] = useState(user.name);

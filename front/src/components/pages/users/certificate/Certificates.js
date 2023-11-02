@@ -1,13 +1,13 @@
 import React, { useContext, useEffect, useState } from "react";
 import { Card, Col, Container, Form } from "react-bootstrap";
 import { UserStateContext } from "../../../../App";
-import * as Api from "../../../utils/api";
+import * as Api from "../../../../utils/api";
 import ButtonCommon from "../../../common/ButtonCommon";
 import FormWrapper from "../../../common/FormWrapper";
 import Certificate from "./Certificate";
-import { certificatesCommonFormProps } from "../../../utils/formListCommonProps";
+import { certificatesCommonFormProps } from "../../../../utils/formListCommonProps";
 import { PortfolioOwnerDataContext } from "../Portfolio";
-import api from "../../../utils/axiosConfig";
+import api from "../../../../utils/axiosConfig";
 
 //********************************서버와 통신전**************************************
 
