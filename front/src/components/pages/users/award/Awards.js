@@ -122,7 +122,7 @@ const Awards = (props) => {
               variant="light"
               size="sm"
               onClickHandler={() => setAddForm((prev) => !prev)}
-              text="+"
+              text={addForm ? "-" : "+"}
             />
           </Card>
         )}
