@@ -8,6 +8,7 @@ import { PortfolioOwnerDataContext } from "../Portfolio";
 import { awardsCommonFormProps } from "../../../../utils/formListCommonProps";
 import Award from "./Award";
 import api from "../../../../utils/axiosConfig";
+import { useMemo } from "react";
 
 //********************************서버와 통신전**************************************
 
@@ -31,16 +32,35 @@ const Awards = (props) => {
   const { isEditable } = props;
 
   //form 상세설정 어레이
-  const awardState = [
-    { value: awardName, changeHandler: (v) => setAwardName(v) },
-    { value: awardDetail, changeHandler: (v) => setAwardDetail(v) },
-    { value: awardOrganization, changeHandler: (v) => setAwardOrganization(v) },
-    { value: awardDate, changeHandler: (v) => setAwardDate(v) },
-  ];
+  const awardState = useMemo(
+    () => [
+      { value: awardName, changeHandler: (v) => setAwardName(v) },
+      { value: awardDetail, changeHandler: (v) => setAwardDetail(v) },
+      {
+        value: awardOrganization,
+        changeHandler: (v) => setAwardOrganization(v),
+      },
+      { value: awardDate, changeHandler: (v) => setAwardDate(v) },
+    ],
+    [
+      awardName,
+      awardDetail,
+      awardOrganization,
+      awardDate,
+      setAwardName,
+      setAwardDetail,
+      setAwardOrganization,
+      setAwardDate,
+    ]
+  );
 
-  const awardFormList = awardsCommonFormProps.map((awardCommon, index) => {
-    return { ...awardCommon, ...awardState[index] };
-  });
+  const awardFormList = useMemo(
+    () =>
+      awardsCommonFormProps.map((awardCommon, index) => {
+        return { ...awardCommon, ...awardState[index] };
+      }),
+    [awardState]
+  );
   //제출버튼 클릭시
   const handleSubmit = async (e) => {
     e.preventDefault();

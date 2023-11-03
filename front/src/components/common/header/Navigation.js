@@ -4,7 +4,6 @@ import { Nav, Navbar } from "react-bootstrap";
 import { UserStateContext, DispatchContext } from "../../../App";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "../../../UI/design.css";
-import * as Api from "../../../utils/api";
 import logo from "./logo0.png";
 import api from "../../../utils/axiosConfig";
 import { useMemo } from "react";
@@ -19,7 +18,7 @@ function Navigation() {
   // console.log(userState);
 
   const navItems = useMemo(
-    [
+    () => [
       { path: "/", label: "홈페이지" },
       { path: `/users/${userState?.user?.id}`, label: "마이페이지" },
       { path: "/network", label: "네트워크" },

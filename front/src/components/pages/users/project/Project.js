@@ -7,6 +7,7 @@ import FormWrapper from "../../../common/FormWrapper";
 import { PortfolioOwnerDataContext } from "../Portfolio";
 import { projectsCommonFormProps } from "../../../../utils/formListCommonProps";
 import api from "../../../../utils/axiosConfig";
+import { useMemo } from "react";
 
 //********************************서버와 통신전**************************************
 //*******************프로젝트 이미지 첨부***************/
@@ -31,21 +32,37 @@ const Project = ({ isEditable, project = {}, setProjects }) => {
   const portfolioOwnerData = useContext(PortfolioOwnerDataContext);
 
   //form 상세설정 어레이
-  const projectState = [
-    { value: projectName, changeHandler: (v) => setProjectName(v) },
-    { value: projectDetail, changeHandler: (v) => setProjectDetail(v) },
-    {
-      value: projectImgUrl,
-      changeHandler: (v) => setProjectImgUrl(v),
-    },
-    { value: projectStartDate, changeHandler: (v) => setProjectStartDate(v) },
-    { value: projectEndDate, changeHandler: (v) => setProjectEndDate(v) },
-  ];
+  const projectState = useMemo(
+    () => [
+      { value: projectName, changeHandler: (v) => setProjectName(v) },
+      { value: projectDetail, changeHandler: (v) => setProjectDetail(v) },
+      {
+        value: projectImgUrl,
+        changeHandler: (v) => setProjectImgUrl(v),
+      },
+      { value: projectStartDate, changeHandler: (v) => setProjectStartDate(v) },
+      { value: projectEndDate, changeHandler: (v) => setProjectEndDate(v) },
+    ],
+    [
+      projectName,
+      setProjectName,
+      projectDetail,
+      setProjectDetail,
+      projectImgUrl,
+      setProjectImgUrl,
+      projectStartDate,
+      setProjectStartDate,
+      projectEndDate,
+      setProjectEndDate,
+    ]
+  );
 
-  const projectFormList = projectsCommonFormProps.map(
-    (projectCommon, index) => {
-      return { ...projectCommon, ...projectState[index] };
-    }
+  const projectFormList = useMemo(
+    () =>
+      projectsCommonFormProps.map((projectCommon, index) => {
+        return { ...projectCommon, ...projectState[index] };
+      }),
+    [projectState]
   );
 
   //수정해서 onSubmitHandler

@@ -8,6 +8,7 @@ import Education from "./Education";
 import { PortfolioOwnerDataContext } from "../Portfolio";
 import { educationsCommonFormProps } from "../../../../utils/formListCommonProps";
 import api from "../../../../utils/axiosConfig";
+import { useMemo } from "react";
 //********************************서버와 통신 ok**************************************
 
 const Educations = (props) => {
@@ -23,17 +24,35 @@ const Educations = (props) => {
   const portfolioOwnerData = useContext(PortfolioOwnerDataContext);
 
   //form 상세설정 어레이
-  const eduState = [
-    { value: schoolName, changeHandler: (v) => setSchoolName(v) },
-    { value: major, changeHandler: (v) => setMajor(v) },
-    { value: degree, changeHandler: (v) => setDegree(v) },
-    { value: admissionDate, changeHandler: (v) => setAdmissionDate(v) },
-    { value: graduationDate, changeHandler: (v) => setGraduationDate(v) },
-  ];
+  const eduState = useMemo(
+    () => [
+      { value: schoolName, changeHandler: (v) => setSchoolName(v) },
+      { value: major, changeHandler: (v) => setMajor(v) },
+      { value: degree, changeHandler: (v) => setDegree(v) },
+      { value: admissionDate, changeHandler: (v) => setAdmissionDate(v) },
+      { value: graduationDate, changeHandler: (v) => setGraduationDate(v) },
+    ],
+    [
+      schoolName,
+      major,
+      degree,
+      admissionDate,
+      graduationDate,
+      setSchoolName,
+      setMajor,
+      setDegree,
+      setAdmissionDate,
+      setGraduationDate,
+    ]
+  );
 
-  const eduFormList = educationsCommonFormProps.map((eduCommon, index) => {
-    return { ...eduCommon, ...eduState[index] };
-  });
+  const eduFormList = useMemo(
+    () =>
+      educationsCommonFormProps.map((eduCommon, index) => {
+        return { ...eduCommon, ...eduState[index] };
+      }),
+    [eduState]
+  );
 
   //제출버튼 클릭시
   const handleSubmit = async (e) => {

@@ -8,6 +8,7 @@ import { PortfolioOwnerDataContext } from "../Portfolio";
 import { projectsCommonFormProps } from "../../../../utils/formListCommonProps";
 import Project from "./Project";
 import api from "../../../../utils/axiosConfig";
+import { useMemo } from "react";
 
 const Projects = (props) => {
   const [addForm, setAddForm] = useState(false);
@@ -22,21 +23,37 @@ const Projects = (props) => {
   const { isEditable } = props;
 
   //form 상세설정 어레이
-  const projectState = [
-    { value: projectName, changeHandler: (v) => setProjectName(v) },
-    { value: projectDetail, changeHandler: (v) => setProjectDetail(v) },
-    {
-      value: projectImgUrl,
-      changeHandler: (v) => setProjectImgUrl(v),
-    },
-    { value: projectStartDate, changeHandler: (v) => setProjectStartDate(v) },
-    { value: projectEndDate, changeHandler: (v) => setProjectEndDate(v) },
-  ];
+  const projectState = useMemo(
+    () => [
+      { value: projectName, changeHandler: (v) => setProjectName(v) },
+      { value: projectDetail, changeHandler: (v) => setProjectDetail(v) },
+      {
+        value: projectImgUrl,
+        changeHandler: (v) => setProjectImgUrl(v),
+      },
+      { value: projectStartDate, changeHandler: (v) => setProjectStartDate(v) },
+      { value: projectEndDate, changeHandler: (v) => setProjectEndDate(v) },
+    ],
+    [
+      projectName,
+      setProjectName,
+      projectDetail,
+      setProjectDetail,
+      projectImgUrl,
+      setProjectImgUrl,
+      projectStartDate,
+      setProjectStartDate,
+      projectEndDate,
+      setProjectEndDate,
+    ]
+  );
 
-  const projectFormList = projectsCommonFormProps.map(
-    (projectCommon, index) => {
-      return { ...projectCommon, ...projectState[index] };
-    }
+  const projectFormList = useMemo(
+    () =>
+      projectsCommonFormProps.map((projectCommon, index) => {
+        return { ...projectCommon, ...projectState[index] };
+      }),
+    [projectState]
   );
 
   //제출버튼 클릭시

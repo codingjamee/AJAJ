@@ -6,6 +6,7 @@ import ButtonCommon from "../../../common/ButtonCommon";
 import { UserStateContext } from "../../../../App";
 import { educationsCommonFormProps } from "../../../../utils/formListCommonProps";
 import api from "../../../../utils/axiosConfig";
+import { useMemo } from "react";
 
 const Education = ({ isEditable, education = {}, setEducations }) => {
   // useState 훅을 통해 user 상태를 생성함.
@@ -23,17 +24,35 @@ const Education = ({ isEditable, education = {}, setEducations }) => {
   const userState = useContext(UserStateContext);
 
   //form 상세설정 어레이
-  const eduState = [
-    { value: schoolName, changeHandler: (v) => setSchoolName(v) },
-    { value: major, changeHandler: (v) => setMajor(v) },
-    { value: degree, changeHandler: (v) => setDegree(v) },
-    { value: admissionDate, changeHandler: (v) => setAdmissionDate(v) },
-    { value: graduationDate, changeHandler: (v) => setGraduationDate(v) },
-  ];
+  const eduState = useMemo(
+    () => [
+      { value: schoolName, changeHandler: (v) => setSchoolName(v) },
+      { value: major, changeHandler: (v) => setMajor(v) },
+      { value: degree, changeHandler: (v) => setDegree(v) },
+      { value: admissionDate, changeHandler: (v) => setAdmissionDate(v) },
+      { value: graduationDate, changeHandler: (v) => setGraduationDate(v) },
+    ],
+    [
+      schoolName,
+      setSchoolName,
+      major,
+      setMajor,
+      degree,
+      setDegree,
+      admissionDate,
+      setAdmissionDate,
+      graduationDate,
+      setGraduationDate,
+    ]
+  );
 
-  const eduFormList = educationsCommonFormProps.map((eduCommon, index) => {
-    return { ...eduCommon, ...eduState[index] };
-  });
+  const eduFormList = useMemo(
+    () =>
+      educationsCommonFormProps.map((eduCommon, index) => {
+        return { ...eduCommon, ...eduState[index] };
+      }),
+    [eduState]
+  );
 
   //수정해서 onSubmitHandler
   const onSubmitHandler = async (e) => {
