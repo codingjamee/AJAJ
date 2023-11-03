@@ -8,7 +8,7 @@ import React, {
 import { Routes, Route, useNavigate, useLocation } from "react-router-dom";
 
 import * as Api from "./utils/api";
-import { loginReducer } from "./components/reducers/loginReducer";
+import { loginReducer } from "./reducers/loginReducer";
 
 import Navigation from "./components/common/header/Navigation";
 import Login from "./components/pages/login/Login";
