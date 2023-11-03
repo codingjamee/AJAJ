@@ -18,7 +18,7 @@ api.interceptors.request.use(
     //요청 data가 formData일때
     // console.log("req", req);
     if (req.data && req.data instanceof FormData) {
-      req.headers["Content-Type"] = "application/json";
+      req.headers["Content-Type"] = "multipart/form-data";
     }
     //요청 data가 Object일 때
     if (req.data && req.data instanceof Object) {

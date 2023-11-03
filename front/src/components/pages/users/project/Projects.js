@@ -92,7 +92,17 @@ const Projects = (props) => {
     }
 
     const fd = new FormData();
+    console.log(Object.values(projectImgFile));
     Object.values(projectImgFile).forEach((file) => fd.append("image", file));
+
+    console.log({
+      projectName,
+      projectDetail,
+      projectImgFile,
+      projectStartDate,
+      projectEndDate,
+      image: fd,
+    });
 
     //post 서버와 통신
     try {
