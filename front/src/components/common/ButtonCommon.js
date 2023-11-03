@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useImperativeHandle, useRef } from "react";
 import { Button } from "react-bootstrap";
 
 const ButtonCommon = React.forwardRef((props, ref) => {
@@ -10,6 +10,21 @@ const ButtonCommon = React.forwardRef((props, ref) => {
     size = "",
     text = "",
   } = props;
+
+  const inputRef = useRef(null);
+
+  useImperativeHandle(
+    ref,
+    () => {
+      return {
+        focus() {
+          inputRef.current.focus();
+        },
+      };
+    },
+    []
+  );
+
   return (
     <Button
       variant={variant}
@@ -17,7 +32,7 @@ const ButtonCommon = React.forwardRef((props, ref) => {
       className={className}
       onClick={onClickHandler}
       size={size}
-      ref={ref}
+      ref={inputRef}
     >
       {text}
     </Button>

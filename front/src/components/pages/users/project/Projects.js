@@ -1,49 +1,98 @@
 import React, { useContext, useEffect, useState } from "react";
 import { Card } from "react-bootstrap";
 import { UserStateContext } from "../../../../App";
-import * as Api from "../../../utils/api";
 import ButtonCommon from "../../../common/ButtonCommon";
 import FormWrapper from "../../../common/FormWrapper";
 import { PortfolioOwnerDataContext } from "../Portfolio";
-import { projectsCommonFormProps } from "../../../utils/formListCommonProps";
+import { projectsCommonFormProps } from "../../../../utils/formListCommonProps";
 import Project from "./Project";
-import api from "../../../utils/axiosConfig";
+import api from "../../../../utils/axiosConfig";
+import { useMemo } from "react";
 
 const Projects = (props) => {
   const [addForm, setAddForm] = useState(false);
   const [projects, setProjects] = useState([]);
   const [projectName, setProjectName] = useState("");
   const [projectDetail, setProjectDetail] = useState("");
-  const [projectImgUrl, setProjectImgUrl] = useState("");
+  const [projectImgFile, setProjectImgFile] = useState("");
   const [projectStartDate, setProjectStartDate] = useState("2023-01-01");
   const [projectEndDate, setProjectEndDate] = useState("2023-01-01");
+  const [imgBase64, setImgBase64] = useState(null);
   const userState = useContext(UserStateContext);
   const portfolioOwnerData = useContext(PortfolioOwnerDataContext);
   const { isEditable } = props;
 
   //form 상세설정 어레이
-  const projectState = [
-    { value: projectName, changeHandler: (v) => setProjectName(v) },
-    { value: projectDetail, changeHandler: (v) => setProjectDetail(v) },
-    {
-      value: projectImgUrl,
-      changeHandler: (v) => setProjectImgUrl(v),
-    },
-    { value: projectStartDate, changeHandler: (v) => setProjectStartDate(v) },
-    { value: projectEndDate, changeHandler: (v) => setProjectEndDate(v) },
-  ];
-
-  const projectFormList = projectsCommonFormProps.map(
-    (projectCommon, index) => {
-      return { ...projectCommon, ...projectState[index] };
-    }
+  const projectState = useMemo(
+    () => [
+      { value: projectName, changeHandler: (v) => setProjectName(v) },
+      { value: projectDetail, changeHandler: (v) => setProjectDetail(v) },
+      {
+        value: imgBase64,
+        changeHandler: (v) => handleChangeFile(v),
+      },
+      { value: projectStartDate, changeHandler: (v) => setProjectStartDate(v) },
+      { value: projectEndDate, changeHandler: (v) => setProjectEndDate(v) },
+    ],
+    [
+      projectName,
+      setProjectName,
+      projectDetail,
+      setProjectDetail,
+      imgBase64,
+      projectStartDate,
+      setProjectStartDate,
+      projectEndDate,
+      setProjectEndDate,
+    ]
   );
+
+  const projectFormList = useMemo(
+    () =>
+      projectsCommonFormProps.map((projectCommon, index) => {
+        return { ...projectCommon, ...projectState[index] };
+      }),
+    [projectState]
+  );
+
+  const handleChangeFile = (e) => {
+    // console.log(e.target.files[0]);
+    console.log(e);
+    setProjectImgFile(e.target.files);
+    //fd.append("file", e.target.files)
+    setImgBase64([]);
+    for (var i = 0; i < e.target.files.length; i++) {
+      if (e.target.files[i]) {
+        let reader = new FileReader();
+        reader.readAsDataURL(e.target.files[i]); // 1. 파일을 읽어 버퍼에 저장합니다.
+        // 파일 상태 업데이트
+        reader.onloadend = () => {
+          // 2. 읽기가 완료되면 아래코드가 실행됩니다.
+          const base64 = reader.result;
+          if (base64) {
+            var base64Sub = base64.toString();
+
+            setImgBase64((imgBase64) => [...imgBase64, base64Sub]);
+            //  setImgBase64(newObj);
+            // 파일 base64 상태 업데이트
+            console.log(imgBase64);
+          }
+        };
+      }
+    }
+  };
 
   //제출버튼 클릭시
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    //portfolioOwnerId는 portfolio에서 받아옴
+    if (!projectImgFile) {
+      alert("이미지를 등록해주세요");
+      return;
+    }
+
+    const fd = new FormData();
+    Object.values(projectImgFile).forEach((file) => fd.append("image", file));
 
     //post 서버와 통신
     try {
@@ -51,9 +100,10 @@ const Projects = (props) => {
         const res = await api.post(`user/${userState.user.id}/project`, {
           projectName,
           projectDetail,
-          projectImgUrl,
+          projectImgFile,
           projectStartDate,
           projectEndDate,
+          image: fd,
         });
         const postedNewId = res.data.projectId;
         if (res.status === 201) {
@@ -64,7 +114,7 @@ const Projects = (props) => {
                 projectId: postedNewId,
                 projectName,
                 projectDetail,
-                projectImgUrl,
+                projectImgFile,
                 projectStartDate,
                 projectEndDate,
               },
@@ -72,7 +122,7 @@ const Projects = (props) => {
           });
           setProjectName("");
           setProjectDetail("");
-          setProjectImgUrl("");
+          setProjectImgFile("");
           setProjectStartDate("2023-01-01");
           setProjectEndDate("2023-01-01");
           setAddForm(false);
@@ -123,8 +173,11 @@ const Projects = (props) => {
             <ButtonCommon
               variant="light"
               size="sm"
-              onClickHandler={() => setAddForm((prev) => !prev)}
-              text="+"
+              onClickHandler={() => {
+                setImgBase64("");
+                setAddForm((prev) => !prev);
+              }}
+              text={addForm ? "-" : "+"}
             />
           </Card>
         )}

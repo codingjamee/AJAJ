@@ -2,10 +2,10 @@ import React, { useEffect, useContext, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { Container, Row } from "react-bootstrap";
 
-import * as Api from "../../utils/api";
+import * as Api from "../../../utils/api";
 import UserCard from "../users/user/UserCard";
 import { UserStateContext } from "../../../App";
-import api from "../../utils/axiosConfig";
+import api from "../../../utils/axiosConfig";
 
 function Network() {
   const navigate = useNavigate();

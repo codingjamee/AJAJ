@@ -7,8 +7,8 @@ import React, {
 } from "react";
 import { Routes, Route, useNavigate, useLocation } from "react-router-dom";
 
-import * as Api from "./components/utils/api";
-import { loginReducer } from "./components/hooks/loginReducer";
+import * as Api from "./utils/api";
+import { loginReducer } from "./components/reducers/loginReducer";
 
 import Navigation from "./components/common/header/Navigation";
 import Login from "./components/pages/login/Login";
@@ -18,7 +18,7 @@ import Portfolio from "./components/pages/users/Portfolio";
 import { loadingActions } from "./store/loading";
 import { useDispatch, useSelector } from "react-redux";
 import LoadingLayer from "./UI/LoadingLayer";
-import api from "./components/utils/axiosConfig";
+import api from "./utils/axiosConfig";
 import Home from "./components/pages/home/Home";
 
 export const UserStateContext = createContext(null);

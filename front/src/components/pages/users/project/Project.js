@@ -1,26 +1,22 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { useContext, useState } from "react";
 import { Card, Col, Form } from "react-bootstrap";
 import { UserStateContext } from "../../../../App";
-import * as Api from "../../../utils/api";
 import ButtonCommon from "../../../common/ButtonCommon";
 import FormWrapper from "../../../common/FormWrapper";
-import { PortfolioOwnerDataContext } from "../Portfolio";
-import { projectsCommonFormProps } from "../../../utils/formListCommonProps";
-import api from "../../../utils/axiosConfig";
-
-//********************************서버와 통신전**************************************
-//*******************프로젝트 이미지 첨부***************/
+import { projectsCommonFormProps } from "../../../../utils/formListCommonProps";
+import api from "../../../../utils/axiosConfig";
+import { useMemo } from "react";
 
 const Project = ({ isEditable, project = {}, setProjects }) => {
-  // const [projects, setProjects] = useState([]);
   const [editMode, setEditMode] = useState(false);
   const [projectName, setProjectName] = useState(project.projectName || "");
   const [projectDetail, setProjectDetail] = useState(
     project.projectDetail || ""
   );
-  const [projectImgUrl, setProjectImgUrl] = useState(
-    project.projectImgUrl || ""
+  const [projectImgFile, setProjectImgFile] = useState(
+    project.projectImgFile || null
   );
+
   const [projectStartDate, setProjectStartDate] = useState(
     project.projectStartDate || "2023-10-01"
   );
@@ -28,24 +24,39 @@ const Project = ({ isEditable, project = {}, setProjects }) => {
     project.projectEndDate || "2023-01-01"
   );
   const userState = useContext(UserStateContext);
-  const portfolioOwnerData = useContext(PortfolioOwnerDataContext);
 
   //form 상세설정 어레이
-  const projectState = [
-    { value: projectName, changeHandler: (v) => setProjectName(v) },
-    { value: projectDetail, changeHandler: (v) => setProjectDetail(v) },
-    {
-      value: projectImgUrl,
-      changeHandler: (v) => setProjectImgUrl(v),
-    },
-    { value: projectStartDate, changeHandler: (v) => setProjectStartDate(v) },
-    { value: projectEndDate, changeHandler: (v) => setProjectEndDate(v) },
-  ];
+  const projectState = useMemo(
+    () => [
+      { value: projectName, changeHandler: (v) => setProjectName(v) },
+      { value: projectDetail, changeHandler: (v) => setProjectDetail(v) },
+      {
+        value: projectImgFile,
+        changeHandler: (v) => setProjectImgFile(v),
+      },
+      { value: projectStartDate, changeHandler: (v) => setProjectStartDate(v) },
+      { value: projectEndDate, changeHandler: (v) => setProjectEndDate(v) },
+    ],
+    [
+      projectName,
+      setProjectName,
+      projectDetail,
+      setProjectDetail,
+      projectImgFile,
+      setProjectImgFile,
+      projectStartDate,
+      setProjectStartDate,
+      projectEndDate,
+      setProjectEndDate,
+    ]
+  );
 
-  const projectFormList = projectsCommonFormProps.map(
-    (projectCommon, index) => {
-      return { ...projectCommon, ...projectState[index] };
-    }
+  const projectFormList = useMemo(
+    () =>
+      projectsCommonFormProps.map((projectCommon, index) => {
+        return { ...projectCommon, ...projectState[index] };
+      }),
+    [projectState]
   );
 
   //수정해서 onSubmitHandler
@@ -61,7 +72,7 @@ const Project = ({ isEditable, project = {}, setProjects }) => {
         {
           projectName,
           projectDetail,
-          projectImgUrl,
+          projectImgFile,
           projectStartDate,
           projectEndDate,
         }
@@ -74,7 +85,7 @@ const Project = ({ isEditable, project = {}, setProjects }) => {
                 ...prevProject,
                 projectName,
                 projectDetail,
-                projectImgUrl,
+                projectImgFile,
                 projectStartDate,
                 projectEndDate,
               };
@@ -84,6 +95,7 @@ const Project = ({ isEditable, project = {}, setProjects }) => {
           return updatedProjects;
         });
         setEditMode(false);
+        setProjectImgFile("");
       } else if (res.status !== 200) {
         // throw new Error("PUT 요청이 실패하였습니다.");
       }
@@ -114,14 +126,14 @@ const Project = ({ isEditable, project = {}, setProjects }) => {
   };
 
   return (
-    <Card className="border-0" style={{ width: "100%" }}>
+    <Card className="border-0" style={{ width: "100%", margin: "20px" }}>
       {!editMode && (
         <>
           <Card.Title>{project.projectName}</Card.Title>
 
           <Card.Subtitle className="mb-2 text-muted">
             {project.projectDetail}
-            <img src={project.projectImgUrl} />
+            <img alt="projectImg" src={project.projectImgFile} />
           </Card.Subtitle>
           <Card.Text>
             {project.projectStartDate} ~ {project.projectEndDate}

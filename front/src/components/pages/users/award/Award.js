@@ -1,11 +1,11 @@
 import { useContext, useState } from "react";
-import * as Api from "../../../utils/api";
 import { Form, Card, Col } from "react-bootstrap";
 import FormWrapper from "../../../common/FormWrapper";
 import ButtonCommon from "../../../common/ButtonCommon";
 import { UserStateContext } from "../../../../App";
-import { awardsCommonFormProps } from "../../../utils/formListCommonProps";
-import api from "../../../utils/axiosConfig";
+import { awardsCommonFormProps } from "../../../../utils/formListCommonProps";
+import api from "../../../../utils/axiosConfig";
+import { useMemo } from "react";
 
 const Award = ({ isEditable, award = {}, setAwards }) => {
   const [editMode, setEditMode] = useState(false);
@@ -18,16 +18,35 @@ const Award = ({ isEditable, award = {}, setAwards }) => {
   const userState = useContext(UserStateContext);
 
   //form 상세설정 어레이
-  const awardState = [
-    { value: awardName, changeHandler: (v) => setAwardName(v) },
-    { value: awardDetail, changeHandler: (v) => setAwardDetail(v) },
-    { value: awardOrganization, changeHandler: (v) => setAwardOrganization(v) },
-    { value: awardDate, changeHandler: (v) => setAwardDate(v) },
-  ];
+  const awardState = useMemo(
+    () => [
+      { value: awardName, changeHandler: (v) => setAwardName(v) },
+      { value: awardDetail, changeHandler: (v) => setAwardDetail(v) },
+      {
+        value: awardOrganization,
+        changeHandler: (v) => setAwardOrganization(v),
+      },
+      { value: awardDate, changeHandler: (v) => setAwardDate(v) },
+    ],
+    [
+      awardName,
+      awardDetail,
+      awardOrganization,
+      awardDate,
+      setAwardName,
+      setAwardDetail,
+      setAwardOrganization,
+      setAwardDate,
+    ]
+  );
 
-  const awardFormList = awardsCommonFormProps.map((awardCommon, index) => {
-    return { ...awardCommon, ...awardState[index] };
-  });
+  const awardFormList = useMemo(
+    () =>
+      awardsCommonFormProps.map((awardCommon, index) => {
+        return { ...awardCommon, ...awardState[index] };
+      }),
+    [awardState]
+  );
 
   //수정해서 onSubmitHandler
   const onSubmitHandler = async (e) => {
@@ -47,9 +66,7 @@ const Award = ({ isEditable, award = {}, setAwards }) => {
         }
       );
 
-      console.log(res);
       if (res.status === 200) {
-        console.log(award);
         setAwards((prev) => {
           const updatedAwards = prev.map((prevAward) => {
             if (prevAward.awardId === award.awardId) {
@@ -80,9 +97,7 @@ const Award = ({ isEditable, award = {}, setAwards }) => {
   const onClickDel = async (awardId) => {
     try {
       const res = await api.delete(
-        `user/${userState.user.id}/award`,
-        awardId,
-        "Award"
+        `user/${userState.user.id}/award/${awardId}`
       );
       // console.log(res);
       if (res.status === 200) {

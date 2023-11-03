@@ -1,12 +1,13 @@
 import { useContext, useEffect, useState } from "react";
-import * as Api from "../../../utils/api";
+import * as Api from "../../../../utils/api";
 import { Form, Card, Col } from "react-bootstrap";
 import FormWrapper from "../../../common/FormWrapper";
 import ButtonCommon from "../../../common/ButtonCommon";
-import { certificatesCommonFormProps } from "../../../utils/formListCommonProps";
+import { certificatesCommonFormProps } from "../../../../utils/formListCommonProps";
 import { PortfolioOwnerDataContext } from "../Portfolio";
 import { UserStateContext } from "../../../../App";
-import api from "../../../utils/axiosConfig";
+import api from "../../../../utils/axiosConfig";
+import { useMemo } from "react";
 
 const Certificate = ({ isEditable, certificate = {}, setCertificates }) => {
   // const [user, setUser] = useState(null);
@@ -28,20 +29,38 @@ const Certificate = ({ isEditable, certificate = {}, setCertificates }) => {
   const portfolioOwnerData = useContext(PortfolioOwnerDataContext);
 
   //form 상세설정 어레이
-  const certificateState = [
-    { value: certificateName, changeHandler: (v) => setCertificateName(v) },
-    { value: certificateDetail, changeHandler: (v) => setCertificateDetail(v) },
-    {
-      value: certificateOrganization,
-      changeHandler: (v) => setCertificateOrganization(v),
-    },
-    { value: acquisitionDate, changeHandler: (v) => setAcquisitionDate(v) },
-  ];
+  const certificateState = useMemo(
+    () => [
+      { value: certificateName, changeHandler: (v) => setCertificateName(v) },
+      {
+        value: certificateDetail,
+        changeHandler: (v) => setCertificateDetail(v),
+      },
+      {
+        value: certificateOrganization,
+        changeHandler: (v) => setCertificateOrganization(v),
+      },
+      { value: acquisitionDate, changeHandler: (v) => setAcquisitionDate(v) },
+    ],
+    [
+      certificateName,
+      setCertificateName,
+      certificateDetail,
+      setCertificateDetail,
+      certificateOrganization,
+      setCertificateOrganization,
+      acquisitionDate,
+      setAcquisitionDate,
+    ]
+  );
 
-  const certificateFormList = certificatesCommonFormProps.map(
-    (certificateCommon, index) => {
-      return { ...certificateCommon, ...certificateState[index] };
-    }
+  const certificateFormList = useMemo(
+    () =>
+      certificatesCommonFormProps.map((certificateCommon, index) => {
+        return { ...certificateCommon, ...certificateState[index] };
+      }),
+
+    [certificateState]
   );
 
   //수정해서 onSubmitHandler

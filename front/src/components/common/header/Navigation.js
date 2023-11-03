@@ -4,9 +4,9 @@ import { Nav, Navbar } from "react-bootstrap";
 import { UserStateContext, DispatchContext } from "../../../App";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "../../../UI/design.css";
-import * as Api from "../../utils/api";
 import logo from "./logo0.png";
-import api from "../../utils/axiosConfig";
+import api from "../../../utils/axiosConfig";
+import { useMemo } from "react";
 
 function Navigation() {
   const navigate = useNavigate();
@@ -17,11 +17,14 @@ function Navigation() {
 
   // console.log(userState);
 
-  const navItems = [
-    { path: "/", label: "홈페이지" },
-    { path: `/users/${userState?.user?.id}`, label: "마이페이지" },
-    { path: "/network", label: "네트워크" },
-  ];
+  const navItems = useMemo(
+    () => [
+      { path: "/", label: "홈페이지" },
+      { path: `/users/${userState?.user?.id}`, label: "마이페이지" },
+      { path: "/network", label: "네트워크" },
+    ],
+    [userState?.user?.id]
+  );
 
   // 전역상태에서 user가 null이 아니라면 로그인 성공 상태임.
   const isLogin = !!userState.user;

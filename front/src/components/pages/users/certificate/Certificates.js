@@ -1,13 +1,14 @@
 import React, { useContext, useEffect, useState } from "react";
 import { Card, Col, Container, Form } from "react-bootstrap";
 import { UserStateContext } from "../../../../App";
-import * as Api from "../../../utils/api";
+import * as Api from "../../../../utils/api";
 import ButtonCommon from "../../../common/ButtonCommon";
 import FormWrapper from "../../../common/FormWrapper";
 import Certificate from "./Certificate";
-import { certificatesCommonFormProps } from "../../../utils/formListCommonProps";
+import { certificatesCommonFormProps } from "../../../../utils/formListCommonProps";
 import { PortfolioOwnerDataContext } from "../Portfolio";
-import api from "../../../utils/axiosConfig";
+import api from "../../../../utils/axiosConfig";
+import { useMemo } from "react";
 
 //********************************서버와 통신전**************************************
 
@@ -42,20 +43,37 @@ const Certificates = (props) => {
   const portfolioOwnerData = useContext(PortfolioOwnerDataContext);
 
   //form 상세설정 어레이
-  const certificateState = [
-    { value: certificateName, changeHandler: (v) => setCertificateName(v) },
-    { value: certificateDetail, changeHandler: (v) => setCertificateDetail(v) },
-    {
-      value: certificateOrganization,
-      changeHandler: (v) => setCertificateOrganization(v),
-    },
-    { value: acquisitionDate, changeHandler: (v) => setAcquisitionDate(v) },
-  ];
+  const certificateState = useMemo(
+    () => [
+      { value: certificateName, changeHandler: (v) => setCertificateName(v) },
+      {
+        value: certificateDetail,
+        changeHandler: (v) => setCertificateDetail(v),
+      },
+      {
+        value: certificateOrganization,
+        changeHandler: (v) => setCertificateOrganization(v),
+      },
+      { value: acquisitionDate, changeHandler: (v) => setAcquisitionDate(v) },
+    ],
+    [
+      certificateName,
+      setCertificateName,
+      certificateDetail,
+      setCertificateDetail,
+      certificateOrganization,
+      setCertificateOrganization,
+      acquisitionDate,
+      setAcquisitionDate,
+    ]
+  );
+  const certificateFormList = useMemo(
+    () =>
+      certificatesCommonFormProps.map((certificateCommon, index) => {
+        return { ...certificateCommon, ...certificateState[index] };
+      }),
 
-  const certificateFormList = certificatesCommonFormProps.map(
-    (certificateCommon, index) => {
-      return { ...certificateCommon, ...certificateState[index] };
-    }
+    [certificateState]
   );
 
   //제출버튼 클릭시
@@ -140,7 +158,7 @@ const Certificates = (props) => {
               variant="light"
               size="sm"
               onClickHandler={() => setAddForm((prev) => !prev)}
-              text="+"
+              text={addForm ? "-" : "+"}
             />
           </Card>
         )}
