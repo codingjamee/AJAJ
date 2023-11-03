@@ -2,13 +2,11 @@ import React, {
   useEffect,
   useReducer,
   createContext,
-  useState,
   useCallback,
 } from "react";
-import { Routes, Route, useNavigate, useLocation } from "react-router-dom";
+import { Routes, Route, useNavigate } from "react-router-dom";
 
-import * as Api from "./utils/api";
-import { loginReducer } from "./components/reducers/loginReducer";
+import { loginReducer } from "./reducers/loginReducer";
 
 import Navigation from "./components/common/header/Navigation";
 import Login from "./components/pages/login/Login";
