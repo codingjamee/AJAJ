@@ -11,8 +11,10 @@ const projectAuthRouter = Router();
 projectAuthRouter.post("/user/:id/project", login_required, request_checked, imageUploader.single('image'),
   async function (req, res, next) {
   try {
+    console.log(req.file);
     const userId = req.params.id;
     const projectImgUrl = req.file.location;
+    console.log('projectImgUrl', projectImgUrl);
     const { projectName, projectDetail, projectStartDate, projectEndDate } = req.body;
     // const { projectName, projectDetail, projectImgUrl, projectStartDate, projectEndDate } = req.body;
     const newProject = await projectAuthService.addProject({ userId, projectName, projectDetail, projectImgUrl, projectStartDate, projectEndDate });
