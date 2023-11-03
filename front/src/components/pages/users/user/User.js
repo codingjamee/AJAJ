@@ -1,10 +1,9 @@
 import React, { useState, useEffect, useContext } from "react";
 import UserEditForm from "./UserEditForm";
 import UserCard from "./UserCard";
-import * as Api from "../../../../utils/api";
 import { PortfolioOwnerDataContext } from "../Portfolio";
 
-function User({ portfolioOwnerId, isEditable }) {
+function User({ isEditable }) {
   const [isEditing, setIsEditing] = useState(false);
   const portfolioOwnerData = useContext(PortfolioOwnerDataContext);
   const [user, setUser] = useState(portfolioOwnerData);

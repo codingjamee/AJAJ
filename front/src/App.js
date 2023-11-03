@@ -2,10 +2,9 @@ import React, {
   useEffect,
   useReducer,
   createContext,
-  useState,
   useCallback,
 } from "react";
-import { Routes, Route, useNavigate, useLocation } from "react-router-dom";
+import { Routes, Route, useNavigate } from "react-router-dom";
 
 import * as Api from "./utils/api";
 import { loginReducer } from "./reducers/loginReducer";
