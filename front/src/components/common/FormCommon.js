@@ -8,6 +8,7 @@ const FormCommon = ({
   type = "text",
   changeHandler,
   value,
+  name = "",
   customClassName,
   optionValue = "",
   optionArr = [],
@@ -57,6 +58,7 @@ const FormCommon = ({
             type={type}
             placeholder={placeholder}
             onChange={(e) => changeHandler(e)}
+            name={name}
           />
         </>
       )}
