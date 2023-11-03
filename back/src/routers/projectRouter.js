@@ -2,19 +2,19 @@ const { Router } = require('express');
 const { login_required, userId_checked, request_checked } = require('../middlewares/requireMiddleware');
 const { NotFoundError } = require('../middlewares/errorHandlingMiddleware');
 const { projectAuthService } = require('../services/projectService');
-// const { imageUploader } = require("../middlewares/awssdkMiddleware");
+const { imageUploader } = require("../middlewares/awssdkMiddleware");
 
 
 const projectAuthRouter = Router();
 
 // 프로젝트 추가하기
-projectAuthRouter.post("/user/:id/project", login_required, request_checked, //imageUploader.single('image'),
+projectAuthRouter.post("/user/:id/project", login_required, request_checked, imageUploader.single('image'),
   async function (req, res, next) {
   try {
     const userId = req.params.id;
-    //const projectImgUrl = req.file.location;
-    // const { projectName, projectDetail, projectStartDate, projectEndDate } = req.body;
-    const { projectName, projectDetail, projectImgUrl, projectStartDate, projectEndDate } = req.body;
+    const projectImgUrl = req.file.location;
+    const { projectName, projectDetail, projectStartDate, projectEndDate } = req.body;
+    // const { projectName, projectDetail, projectImgUrl, projectStartDate, projectEndDate } = req.body;
     const newProject = await projectAuthService.addProject({ userId, projectName, projectDetail, projectImgUrl, projectStartDate, projectEndDate });
 
     if (!newProject) {

@@ -10,7 +10,8 @@ AWS.config.update({
     secretAccessKey: process.env.AWS_SECRET_ACESS_KEY
 });
 
-const s3 = new AWS.S3()
+console.log('s3 접속 완료');
+const s3 = new AWS.S3();
 
 const allowedExtensions = ['.png', '.jpg', 'jpeg', '.bmp']
 
