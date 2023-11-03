@@ -3,7 +3,6 @@ import axios from "axios";
 
 // import axios from "axios";
 
-//request사용
 const config = {
   baseURL: process.env.REACT_APP_API_BASE_URL,
   headers: { "Content-Type": "application/json" },
