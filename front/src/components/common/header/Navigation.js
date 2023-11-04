@@ -38,6 +38,10 @@ function Navigation() {
     navigate("/");
   };
 
+  const onClickmemberDelete = async () => {
+    await api.delete(`/users/${userState?.user?.id}`);
+  };
+
   return (
     <Navbar variant="dark">
       <Nav.Link onClick={() => navigate("/")}>
@@ -53,7 +57,12 @@ function Navigation() {
             {label}{" "}
           </Nav.Link>
         ))}
-        {isLogin && <Nav.Link onClick={logout}>로그아웃</Nav.Link>}
+        {isLogin && (
+          <>
+            <Nav.Link onClick={logout}>로그아웃</Nav.Link>
+            <Nav.Link onClick={onClickmemberDelete}>회원탈퇴</Nav.Link>
+          </>
+        )}
       </Nav>
     </Navbar>
   );
