@@ -14,7 +14,7 @@ const Projects = (props) => {
   const [projects, setProjects] = useState([]);
   const [projectName, setProjectName] = useState("");
   const [projectDetail, setProjectDetail] = useState("");
-  const [projectImgFile, setProjectImgFile] = useState("");
+  const [projectImgFile, setProjectImgFile] = useState({});
   const [projectStartDate, setProjectStartDate] = useState("2023-01-01");
   const [projectEndDate, setProjectEndDate] = useState("2023-01-01");
   const [imgBase64, setImgBase64] = useState(null);
@@ -58,9 +58,10 @@ const Projects = (props) => {
   const handleChangeFile = (e) => {
     // console.log(e.target.files[0]);
     console.log(e);
-    setProjectImgFile(e.target.files);
-    //fd.append("file", e.target.files)
-    setImgBase64([]);
+    if (e.target.files && e.target.files[0]) {
+      setProjectImgFile(e.target.files[0]);
+      setImgBase64([]);
+    }
     for (var i = 0; i < e.target.files.length; i++) {
       if (e.target.files[i]) {
         let reader = new FileReader();
@@ -86,25 +87,32 @@ const Projects = (props) => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
+    console.log(e);
+
     if (!projectImgFile) {
       alert("이미지를 등록해주세요");
       return;
     }
 
-    const fd = new FormData();
-    Object.values(projectImgFile).forEach((file) => fd.append("image", file));
+    console.log("projectImgFile", projectImgFile);
 
+    const formData = new FormData();
+
+    formData.append("image", projectImgFile);
+    formData.append("projectName", projectName);
+    formData.append("projectDetail", projectDetail);
+    formData.append("projectStartDate", projectStartDate);
+    for (let key of formData) {
+      console.log(`${key}`);
+    }
     //post 서버와 통신
     try {
       if (userState.user.id) {
-        const res = await api.post(`user/${userState.user.id}/project`, {
-          projectName,
-          projectDetail,
-          projectImgFile,
-          projectStartDate,
-          projectEndDate,
-          image: fd,
-        });
+        const res = await api.post(
+          `user/${userState.user.id}/project`,
+          formData
+        );
+
         const postedNewId = res.data.projectId;
         if (res.status === 201) {
           setProjects((prev) => {
@@ -122,17 +130,17 @@ const Projects = (props) => {
           });
           setProjectName("");
           setProjectDetail("");
-          setProjectImgFile("");
+          setProjectImgFile({});
           setProjectStartDate("2023-01-01");
           setProjectEndDate("2023-01-01");
           setAddForm(false);
         } else if (res.status !== 201) {
-          // throw new Error("POST 요청이 실패하였습니다.");
+          throw new Error("POST 요청이 실패하였습니다.");
         }
       }
     } catch (err) {
       console.error(err);
-      // throw new Error("서버와 통신이 실패하였습니다.");
+      throw new Error("서버와 통신이 실패하였습니다.");
     }
   };
 
