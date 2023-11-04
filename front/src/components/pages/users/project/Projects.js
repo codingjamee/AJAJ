@@ -7,6 +7,7 @@ import { PortfolioOwnerDataContext } from "../Portfolio";
 import { projectsCommonFormProps } from "../../../../utils/formListCommonProps";
 import Project from "./Project";
 import api from "../../../../utils/axiosConfig";
+import axios from "axios";
 import { useMemo } from "react";
 
 const Projects = (props) => {
@@ -60,6 +61,7 @@ const Projects = (props) => {
     console.log(e);
     if (e.target.files && e.target.files[0]) {
       setProjectImgFile(e.target.files[0]);
+      console.log(e.target.files[0]);
       setImgBase64([]);
     }
     for (var i = 0; i < e.target.files.length; i++) {
@@ -99,15 +101,29 @@ const Projects = (props) => {
     const formData = new FormData();
 
     formData.append("image", projectImgFile);
-    formData.append("projectName", projectName);
-    formData.append("projectDetail", projectDetail);
-    formData.append("projectStartDate", projectStartDate);
+    formData.append(
+      "projectName",
+      new Blob([JSON.stringify(projectName)], { type: "application/json" })
+    );
+    formData.append(
+      "projectDetail",
+      new Blob([JSON.stringify(projectDetail)], { type: "application/json" })
+    );
+    formData.append(
+      "projectStartDate",
+      new Blob([JSON.stringify(projectStartDate)], { type: "application/json" })
+    );
+    formData.append(
+      "projectEndDate",
+      new Blob([JSON.stringify(projectEndDate)], { type: "application/json" })
+    );
     for (let key of formData) {
       console.log(`${key}`);
     }
     //post 서버와 통신
     try {
       if (userState.user.id) {
+        console.log(`user/${userState.user.id}/project`, "여기로 보냅니다.");
         const res = await api.post(
           `user/${userState.user.id}/project`,
           formData
