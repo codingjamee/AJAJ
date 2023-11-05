@@ -3,7 +3,7 @@ import { Button, Form, Card, Col, Row } from "react-bootstrap";
 import { PortfolioOwnerDataContext } from "../Portfolio";
 import api from "../../../../utils/axiosConfig";
 
-import defaultImg from "../../../common/header/logo.png";
+import defaultImg from "../../../common/header/logo0.png";
 
 function UserEditForm({ user, setIsEditing, setUser }) {
   const [image, setImage] = useState("");
@@ -77,15 +77,17 @@ function UserEditForm({ user, setIsEditing, setUser }) {
 
   return (
     <Card border="warning" className="mb-2">
-      <Card.Body>
+      <Card.Body
+        style={{ width: "100%", display: "flex", flexDirection: "column" }}
+      >
         <Card.Subtitle
           className="mb-2 text-muted"
-          style={{ width: "100%", display: "flex" }}
+          style={{ display: "flex", justifyContent: "center" }}
         >
           <img
             alt="userImage"
             src={imageBase}
-            style={{ width: "100%", display: "flex" }}
+            style={{ display: "flex", width: "100%" }}
           />
         </Card.Subtitle>
         <Form onSubmit={onSubmitHandler}>

@@ -1,4 +1,4 @@
-import { useContext, useEffect } from "react";
+import { useContext, useEffect, useRef } from "react";
 import Card from "react-bootstrap/Card";
 import { UserStateContext } from "../../../App";
 import { Image } from "react-bootstrap";
@@ -9,14 +9,17 @@ import defaultImg from "../../common/header/logo0.png";
 const Home = () => {
   const userState = useContext(UserStateContext);
   const navigate = useNavigate();
+  const btnRef = useRef(null);
   const onClick = () => {
-    navigate(`/userState/${userState.user.id}`);
+    navigate(`/users/${userState.user.id}`);
   };
   useEffect(() => {
     if (!userState.user) {
       navigate("/login", { replace: true });
       return;
     }
+
+    btnRef.current.focus();
   }, [userState.user]);
   return (
     <Card
@@ -40,6 +43,7 @@ const Home = () => {
           variant="outline-secondary"
           onClickHandler={onClick}
           text="My Page"
+          ref={btnRef}
         />
       </Card.Body>
     </Card>
