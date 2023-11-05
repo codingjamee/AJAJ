@@ -2,8 +2,7 @@ const { Router } = require('express');
 const { deleted_checked, login_required, request_checked } = require('../middlewares/requireMiddleware');
 const { userAuthService } = require('../services/userService');
 const { NotFoundError } = require('../middlewares/errorHandlingMiddleware');
-// const { upload } = require("../middlewares/multerMiddleware");
-// const { imageUploader } = require("../middlewares/awssdkMiddleware");
+const { imageUploader } = require("../middlewares/awssdkMiddleware");
 import { RefreshTokenModel } from '../db/schemas/refreshToken'; 
 
 const userAuthRouter = Router();
@@ -66,8 +65,8 @@ userAuthRouter.post("/user/login", deleted_checked, request_checked, async funct
       console.error("리프래시 토큰 저장 중 오류 발생:", error);
     }
 
-    const { id, name, description } = loginUser;
-    res.status(200).send({ id, email, name, description, message: "로그인에 성공했습니다." });
+    const { id, name, description, userImgUrl } = loginUser;
+    res.status(200).send({ id, email, name, description, userImgUrl, message: "로그인에 성공했습니다." });
 
   } catch (error) {
     next(error);
@@ -100,8 +99,8 @@ userAuthRouter.get("/user/current", login_required, async function (req, res, ne
         throw new NotFoundError(errorMessage);
       }
       
-      const { id, email, name, description } = currentUserInfo;
-      res.status(200).send({ id, email, name, description });
+      const { id, email, name, description, userImgUrl } = currentUserInfo;
+      res.status(200).send({ id, email, name, description, userImgUrl });
     } catch (error) {
       next(error);
     }
@@ -109,11 +108,13 @@ userAuthRouter.get("/user/current", login_required, async function (req, res, ne
 );
 
 // 회원 정보 수정
-userAuthRouter.patch("/users/:id", login_required, request_checked, async function (req, res, next) {
+userAuthRouter.patch("/users/:id", login_required, imageUploader.array("image"), request_checked,
+  async function (req, res, next) {
     try {
       const userId = req.params.id;
+      const userImgUrl = req.files[0].location;
       const { name, email, password, description } = req.body;
-      const toUpdate = { name, email, password, description };
+      const toUpdate = { name, email, password, description, userImgUrl };
 
       // 해당 사용자 아이디로 사용자 정보를 db에서 찾아 업데이트함. 업데이트 요소가 없을 시 생략함
       const { errorMessage } = await userAuthService.setUser({ userId, toUpdate });
@@ -123,6 +124,7 @@ userAuthRouter.patch("/users/:id", login_required, request_checked, async functi
       }
 
       res.status(200).send({
+        userImgUrl: userImgUrl,
         message: "회원정보 수정에 성공했습니다."
       });
     } catch (error) {
@@ -140,8 +142,8 @@ userAuthRouter.get("/users/:id", login_required, async function (req, res, next)
         throw new NotFoundError(errorMessage);
       }
 
-      const { id, email, name, description } = currentUserInfo;
-      res.status(200).send({ id, email, name, description });
+      const { id, email, name, description, userImgUrl } = currentUserInfo;
+      res.status(200).send({ id, email, name, description, userImgUrl });
     } catch (error) {
       next(error);
     }

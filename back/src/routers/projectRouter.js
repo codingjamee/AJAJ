@@ -8,31 +8,31 @@ const { imageUploader } = require("../middlewares/awssdkMiddleware");
 const projectAuthRouter = Router();
 
 // 프로젝트 추가하기
-projectAuthRouter.post("/user/:id/project", login_required, request_checked,
-  imageUploader.array("image"),
+projectAuthRouter.post("/user/:id/project", login_required, imageUploader.array("image"), request_checked,
   async function (req, res, next) {
-  try {
-    console.log("req.file", req.file);
-    const userId = req.params.id;
-    const projectImgUrl = req.file.location;
-    console.log(projectImgUrl);
-    
-    const { projectName, projectDetail, projectStartDate, projectEndDate } = req.body;
-    // const { projectName, projectDetail, projectImgUrl, projectStartDate, projectEndDate } = req.body;
-    const newProject = await projectAuthService.addProject({ userId, projectName, projectDetail, projectImgUrl, projectStartDate, projectEndDate });
+    try {
+      console.log("req.body", req.body);
+      const userId = req.params.id;
+      const projectImgUrl = req.files[0].location;
+      console.log('projectImgUrl', projectImgUrl);
+      
+      const { projectName, projectDetail, projectStartDate, projectEndDate } = req.body;
+      // const { projectName, projectDetail, projectImgUrl, projectStartDate, projectEndDate } = req.body;
+      const newProject = await projectAuthService.addProject({ userId, projectName, projectDetail, projectImgUrl, projectStartDate, projectEndDate });
 
-    if (!newProject) {
-      throw new NotFoundError("해당 프로젝트가 생성되지 않았습니다.");
+      if (!newProject) {
+        throw new NotFoundError("해당 프로젝트가 생성되지 않았습니다.");
+      }
+
+      res.status(201).send({
+        projectId: newProject.projectId,
+        projectImgUrl: newProject.projectImgUrl,
+        message: "프로젝트 추가에 성공했습니다."
+      });
+    } catch (error) {
+      next(error);
     }
-
-    res.status(201).send({
-      projectId: newProject.projectId,
-      message: "프로젝트 추가에 성공했습니다."
-    });
-  } catch (error) {
-    next(error);
-  }
-});
+  });
 
 
 // 프로젝트 전체 가져오기
@@ -52,25 +52,27 @@ projectAuthRouter.get("/user/:id/projects", login_required, async function (req,
 
 
 // 프로젝트 수정하기
-projectAuthRouter.put("/user/:id/project/:projectId", login_required, userId_checked, request_checked, async function (req, res, next) {
-  try {
-    const projectId = req.params.projectId;
-    const { projectName, projectDetail, projectImgUrl, projectStartDate, projectEndDate } = req.body;
-    const toUpdate = { projectName, projectDetail, projectImgUrl, projectStartDate, projectEndDate };
+projectAuthRouter.put("/user/:id/project/:projectId", login_required, userId_checked, imageUploader.array("image"), request_checked,
+  async function (req, res, next) {
+    try {
+      const projectId = req.params.projectId;
+      const { projectName, projectDetail, projectImgUrl, projectStartDate, projectEndDate } = req.body;
+      const toUpdate = { projectName, projectDetail, projectImgUrl, projectStartDate, projectEndDate };
 
-    const updatedProject = await projectAuthService.setProject({ projectId, toUpdate });
+      const updatedProject = await projectAuthService.setProject({ projectId, toUpdate });
 
-    if (!updatedProject) {
-      throw new NotFoundError("해당 프로젝트가 수정되지 않았습니다.");
+      if (!updatedProject) {
+        throw new NotFoundError("해당 프로젝트가 수정되지 않았습니다.");
+      }
+
+      res.status(200).send({
+        projectImgUrl: updatedProject.projectImgUrl,
+        message: "프로젝트 수정에 성공했습니다."
+      });
+    } catch (error) {
+      next(error);
     }
-
-    res.status(200).send({
-      message: "프로젝트 수정에 성공했습니다."
-    });
-  } catch (error) {
-    next(error);
-  }
-});
+  });
 
 
 // 프로젝트 삭제하기

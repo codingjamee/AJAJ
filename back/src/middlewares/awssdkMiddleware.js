@@ -23,7 +23,6 @@ const imageUploader = multer({
             const uploadDirectory = req.query.directory ?? ''
             
             const extension = path.extname(file.originalname)
-            console.log('extension', extension);
             if (!allowedExtensions.includes(extension)){
                 return callback(new Error('파일의 확장자가 잘못되었습니다.'))
             }
