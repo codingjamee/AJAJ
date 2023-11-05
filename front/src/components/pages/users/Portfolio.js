@@ -3,7 +3,6 @@ import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { Container, Col, Row } from "react-bootstrap";
 
 import { UserStateContext } from "../../../App";
-import * as Api from "../../../utils/api";
 import User from "./user/User";
 import Educations from "./education/Educations";
 import Certifications from "./certificate/Certificates";

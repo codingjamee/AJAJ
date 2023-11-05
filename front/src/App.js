@@ -5,8 +5,6 @@ import React, {
   useCallback,
 } from "react";
 import { Routes, Route, useNavigate } from "react-router-dom";
-
-import * as Api from "./utils/api";
 import { loginReducer } from "./reducers/loginReducer";
 
 import Navigation from "./components/common/header/Navigation";

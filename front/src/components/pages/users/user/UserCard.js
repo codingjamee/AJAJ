@@ -1,5 +1,6 @@
 import { useNavigate } from "react-router-dom";
 import { Card, Row, Button, Col } from "react-bootstrap";
+import defaultImg from "../../../common/header/logo0.png";
 
 function UserCard({ user, setIsEditing, isEditable, isNetwork }) {
   const navigate = useNavigate();
@@ -15,7 +16,7 @@ function UserCard({ user, setIsEditing, isEditable, isNetwork }) {
               display: "block",
             }}
             className="mb-3"
-            src="http://placekitten.com/200/200"
+            src={user?.userImgUrl || defaultImg}
             alt="랜덤 고양이 사진 (http://placekitten.com API 사용)"
           />
         </Row>

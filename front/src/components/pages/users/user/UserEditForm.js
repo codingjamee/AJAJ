@@ -3,9 +3,11 @@ import { Button, Form, Card, Col, Row } from "react-bootstrap";
 import { PortfolioOwnerDataContext } from "../Portfolio";
 import api from "../../../../utils/axiosConfig";
 
+import defaultImg from "../../../common/header/logo.png";
+
 function UserEditForm({ user, setIsEditing, setUser }) {
   const [image, setImage] = useState("");
-  const [imageBase, setImageBase] = useState(null);
+  const [imageBase, setImageBase] = useState(defaultImg);
   const [name, setName] = useState(user.name);
   const [email, setEmail] = useState(user.email);
   const [description, setDescription] = useState(user.description);
@@ -15,7 +17,7 @@ function UserEditForm({ user, setIsEditing, setUser }) {
     console.log(e);
     setImage(e.target.files);
 
-    setImageBase([]);
+    // setImageBase([]);
     let reader = new FileReader();
     reader.readAsDataURL(e.target.files[0]);
     reader.onloadend = () => {
@@ -23,6 +25,7 @@ function UserEditForm({ user, setIsEditing, setUser }) {
       if (base64) {
         const base64Str = base64.toString();
         setImageBase([base64Str]);
+        setImage(e.target.files[0]);
       }
     };
   };
@@ -36,15 +39,19 @@ function UserEditForm({ user, setIsEditing, setUser }) {
       return;
     }
 
-    const fileData = new FormData();
-    Object.values(image).forEach((file) => fileData.append("image", file));
+    const userProfileData = new FormData();
+    userProfileData.append("image", image);
+    userProfileData.append("name", name);
+    userProfileData.append("email", email);
+    userProfileData.append("description", description);
 
     try {
-      const res = await api.patch(`users/${portfolioOwnerData.id}`, {
-        name,
-        email,
-        description,
-      });
+      const res = await api.patch(
+        `users/${portfolioOwnerData.id}`,
+        userProfileData
+      );
+
+      const updatedUserImgUrl = res.userImgUrl;
 
       if (res.status === 200) {
         setUser((prev) => {
@@ -53,6 +60,7 @@ function UserEditForm({ user, setIsEditing, setUser }) {
             name,
             email,
             description,
+            updatedUserImgUrl,
           };
         });
         setName("");
@@ -74,7 +82,11 @@ function UserEditForm({ user, setIsEditing, setUser }) {
           className="mb-2 text-muted"
           style={{ width: "100%", display: "flex" }}
         >
-          <img alt="userImage" src={imageBase} style={{ overflow: "hidden" }} />
+          <img
+            alt="userImage"
+            src={imageBase}
+            style={{ width: "100%", display: "flex" }}
+          />
         </Card.Subtitle>
         <Form onSubmit={onSubmitHandler}>
           <Form.Group controlId="useEditPhoto" className="mb-3">
