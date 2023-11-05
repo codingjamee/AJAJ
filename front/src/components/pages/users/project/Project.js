@@ -6,7 +6,6 @@ import FormWrapper from "../../../common/FormWrapper";
 import { projectsCommonFormProps } from "../../../../utils/formListCommonProps";
 import api from "../../../../utils/axiosConfig";
 import { useMemo } from "react";
-import defaultImg from "../../../common/header/logo0.png";
 
 const Project = ({ isEditable, project = {}, setProjects }) => {
   const [editMode, setEditMode] = useState(false);
@@ -15,7 +14,7 @@ const Project = ({ isEditable, project = {}, setProjects }) => {
     project.projectDetail || ""
   );
   const [projectImgFile, setProjectImgFile] = useState(
-    project.projectImgFile || null
+    project.projectImgUrl || null
   );
 
   const [projectStartDate, setProjectStartDate] = useState(
@@ -24,6 +23,7 @@ const Project = ({ isEditable, project = {}, setProjects }) => {
   const [projectEndDate, setProjectEndDate] = useState(
     project.projectEndDate || "2023-01-01"
   );
+  const [imgBase64, setImgBase64] = useState(null);
   const userState = useContext(UserStateContext);
 
   //form 상세설정 어레이
@@ -32,8 +32,8 @@ const Project = ({ isEditable, project = {}, setProjects }) => {
       { value: projectName, changeHandler: (v) => setProjectName(v) },
       { value: projectDetail, changeHandler: (v) => setProjectDetail(v) },
       {
-        value: projectImgFile,
-        changeHandler: (v) => setProjectImgFile(v),
+        value: imgBase64,
+        changeHandler: (v) => handleChangeFile(v),
       },
       { value: projectStartDate, changeHandler: (v) => setProjectStartDate(v) },
       { value: projectEndDate, changeHandler: (v) => setProjectEndDate(v) },
@@ -60,23 +60,52 @@ const Project = ({ isEditable, project = {}, setProjects }) => {
     [projectState]
   );
 
+  const handleChangeFile = (e) => {
+    // console.log(e.target.files[0]);
+    console.log(e);
+    if (e.target.files && e.target.files[0]) {
+      setProjectImgFile(e.target.files[0]);
+      console.log(e.target.files[0]);
+      setImgBase64([]);
+    }
+    for (var i = 0; i < e.target.files.length; i++) {
+      if (e.target.files[i]) {
+        let reader = new FileReader();
+        reader.readAsDataURL(e.target.files[i]); // 1. 파일을 읽어 버퍼에 저장합니다.
+        // 파일 상태 업데이트
+        reader.onloadend = () => {
+          // 2. 읽기가 완료되면 아래코드가 실행됩니다.
+          const base64 = reader.result;
+          if (base64) {
+            var base64Sub = base64.toString();
+
+            setImgBase64((imgBase64) => [...imgBase64, base64Sub]);
+            //  setImgBase64(newObj);
+            // 파일 base64 상태 업데이트
+            console.log(imgBase64);
+          }
+        };
+      }
+    }
+  };
+
   //수정해서 onSubmitHandler
   const onSubmitHandler = async (e) => {
     e.preventDefault();
 
     //portfolioOwnerId는 portfolio에서 받아옴
+    const formData = new FormData();
 
+    formData.append("image", projectImgFile);
+    formData.append("projectName", projectName);
+    formData.append("projectDetail", projectDetail);
+    formData.append("projectStartDate", projectStartDate);
+    formData.append("projectEndDate", projectEndDate);
     //post 서버와 통신
     try {
       const res = await api.put(
         `user/${userState.user.id}/project/${project.projectId}`,
-        {
-          projectName,
-          projectDetail,
-          projectImgFile,
-          projectStartDate,
-          projectEndDate,
-        }
+        formData
       );
       if (res.status === 200) {
         setProjects((prev) => {
@@ -86,7 +115,7 @@ const Project = ({ isEditable, project = {}, setProjects }) => {
                 ...prevProject,
                 projectName,
                 projectDetail,
-                projectImgFile,
+                imgBase64,
                 projectStartDate,
                 projectEndDate,
               };
@@ -150,7 +179,7 @@ const Project = ({ isEditable, project = {}, setProjects }) => {
             {project.projectDetail}
             <img
               alt="projectImg"
-              src={project?.projectImgUrl || defaultImg}
+              src={project.projectImgUrl}
               style={{ width: "100%" }}
             />
           </Card.Subtitle>
