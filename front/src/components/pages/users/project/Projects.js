@@ -7,7 +7,6 @@ import { PortfolioOwnerDataContext } from "../Portfolio";
 import { projectsCommonFormProps } from "../../../../utils/formListCommonProps";
 import Project from "./Project";
 import api from "../../../../utils/axiosConfig";
-import axios from "axios";
 import { useMemo } from "react";
 
 const Projects = (props) => {
@@ -16,9 +15,9 @@ const Projects = (props) => {
   const [projectName, setProjectName] = useState("");
   const [projectDetail, setProjectDetail] = useState("");
   const [projectImgFile, setProjectImgFile] = useState({});
+  const [imgBase64, setImgBase64] = useState(null);
   const [projectStartDate, setProjectStartDate] = useState("2023-01-01");
   const [projectEndDate, setProjectEndDate] = useState("2023-01-01");
-  const [imgBase64, setImgBase64] = useState(null);
   const userState = useContext(UserStateContext);
   const portfolioOwnerData = useContext(PortfolioOwnerDataContext);
   const { isEditable } = props;
@@ -101,25 +100,11 @@ const Projects = (props) => {
     const formData = new FormData();
 
     formData.append("image", projectImgFile);
-    formData.append(
-      "projectName",
-      new Blob([JSON.stringify(projectName)], { type: "application/json" })
-    );
-    formData.append(
-      "projectDetail",
-      new Blob([JSON.stringify(projectDetail)], { type: "application/json" })
-    );
-    formData.append(
-      "projectStartDate",
-      new Blob([JSON.stringify(projectStartDate)], { type: "application/json" })
-    );
-    formData.append(
-      "projectEndDate",
-      new Blob([JSON.stringify(projectEndDate)], { type: "application/json" })
-    );
-    for (let key of formData) {
-      console.log(`${key}`);
-    }
+    formData.append("projectName", projectName);
+    formData.append("projectDetail", projectDetail);
+    formData.append("projectStartDate", projectStartDate);
+    formData.append("projectEndDate", projectEndDate);
+
     //post 서버와 통신
     try {
       if (userState.user.id) {
@@ -130,6 +115,8 @@ const Projects = (props) => {
         );
 
         const postedNewId = res.data.projectId;
+        const postedNewImgUrl = res.data.projectImgUrl;
+
         if (res.status === 201) {
           setProjects((prev) => {
             return [
@@ -138,7 +125,7 @@ const Projects = (props) => {
                 projectId: postedNewId,
                 projectName,
                 projectDetail,
-                projectImgFile,
+                projectImgUrl: postedNewImgUrl,
                 projectStartDate,
                 projectEndDate,
               },

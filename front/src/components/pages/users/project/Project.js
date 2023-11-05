@@ -126,14 +126,32 @@ const Project = ({ isEditable, project = {}, setProjects }) => {
   };
 
   return (
-    <Card className="border-0" style={{ width: "100%", margin: "20px" }}>
+    <Card
+      className="border-0"
+      style={{
+        margin: "20px",
+        display: "flex",
+        flexDirection: "column",
+        boxSizing: "content-box",
+      }}
+    >
       {!editMode && (
         <>
           <Card.Title>{project.projectName}</Card.Title>
 
-          <Card.Subtitle className="mb-2 text-muted">
+          <Card.Subtitle
+            className="mb-2 text-muted"
+            style={{
+              display: "flex",
+              flexDirection: "column",
+            }}
+          >
             {project.projectDetail}
-            <img alt="projectImg" src={project.projectImgFile} />
+            <img
+              alt="projectImg"
+              src={project.projectImgUrl}
+              style={{ width: "100%" }}
+            />
           </Card.Subtitle>
           <Card.Text>
             {project.projectStartDate} ~ {project.projectEndDate}

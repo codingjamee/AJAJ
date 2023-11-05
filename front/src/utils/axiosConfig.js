@@ -16,12 +16,9 @@ export const api = axios.create(config); // 인스턴스
 api.interceptors.request.use(
   (req) => {
     //요청 data가 formData일때
-    // console.log("req", req);
     if (req.data && req.data instanceof FormData) {
       console.log("form data를 보냅니다");
-      // req.headers["Content-Type"] = "multipart/form-data";
-      // req["transformRequest"] = (data, headers) => data;
-      // delete req.headers["Content-Type"];
+      req.headers["Content-Type"] = "multipart/form-data";
       console.log(req.headers);
     }
     //요청 data가 Object일 때
