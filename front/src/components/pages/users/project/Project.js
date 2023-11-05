@@ -6,6 +6,7 @@ import FormWrapper from "../../../common/FormWrapper";
 import { projectsCommonFormProps } from "../../../../utils/formListCommonProps";
 import api from "../../../../utils/axiosConfig";
 import { useMemo } from "react";
+import defaultImg from "../../../common/header/logo0.png";
 
 const Project = ({ isEditable, project = {}, setProjects }) => {
   const [editMode, setEditMode] = useState(false);
@@ -149,7 +150,7 @@ const Project = ({ isEditable, project = {}, setProjects }) => {
             {project.projectDetail}
             <img
               alt="projectImg"
-              src={project.projectImgUrl}
+              src={project?.projectImgUrl || defaultImg}
               style={{ width: "100%" }}
             />
           </Card.Subtitle>

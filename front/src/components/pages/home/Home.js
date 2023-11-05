@@ -1,10 +1,10 @@
 import { useContext, useEffect } from "react";
-import Button from "react-bootstrap/Button";
 import Card from "react-bootstrap/Card";
 import { UserStateContext } from "../../../App";
 import { Image } from "react-bootstrap";
 import ButtonCommon from "../../common/ButtonCommon";
 import { useNavigate } from "react-router-dom";
+import defaultImg from "../../common/header/logo0.png";
 
 const Home = () => {
   const userState = useContext(UserStateContext);
@@ -33,7 +33,7 @@ const Home = () => {
     >
       <Card.Body>
         <Card.Title>{userState?.user?.name}님의 홈페이지</Card.Title>
-        <Image src="http://placekitten.com/200/200" />
+        <Image src={userState?.user?.userImgUrl || defaultImg} />
         <Card.Text style={{ marginTop: "30px" }}>당신의 상태</Card.Text>
         <Card.Text>{userState?.user?.description}</Card.Text>
         <ButtonCommon
