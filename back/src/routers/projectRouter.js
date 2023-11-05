@@ -8,13 +8,15 @@ const { imageUploader } = require("../middlewares/awssdkMiddleware");
 const projectAuthRouter = Router();
 
 // 프로젝트 추가하기
-projectAuthRouter.post("/user/:id/project", login_required, request_checked, imageUploader.single('image'),
+projectAuthRouter.post("/user/:id/project", login_required, request_checked,
+  imageUploader.array("image"),
   async function (req, res, next) {
   try {
-    console.log(req.file);
+    console.log("req.file", req.file);
     const userId = req.params.id;
     const projectImgUrl = req.file.location;
-    console.log('projectImgUrl', projectImgUrl);
+    console.log(projectImgUrl);
+    
     const { projectName, projectDetail, projectStartDate, projectEndDate } = req.body;
     // const { projectName, projectDetail, projectImgUrl, projectStartDate, projectEndDate } = req.body;
     const newProject = await projectAuthService.addProject({ userId, projectName, projectDetail, projectImgUrl, projectStartDate, projectEndDate });
@@ -31,6 +33,7 @@ projectAuthRouter.post("/user/:id/project", login_required, request_checked, ima
     next(error);
   }
 });
+
 
 // 프로젝트 전체 가져오기
 projectAuthRouter.get("/user/:id/projects", login_required, async function (req, res, next) {
@@ -68,6 +71,7 @@ projectAuthRouter.put("/user/:id/project/:projectId", login_required, userId_che
     next(error);
   }
 });
+
 
 // 프로젝트 삭제하기
 projectAuthRouter.delete("/user/:id/project/:projectId", login_required, userId_checked, async function (req, res, next) {
