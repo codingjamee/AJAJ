@@ -99,6 +99,12 @@ class userAuthService {
       user = await User.update({ userId, fieldToUpdate, newValue });
     }
 
+    if (toUpdate.userImgUrl) {
+      const fieldToUpdate = "userImgUrl";
+      const newValue = toUpdate.userImgUrl;
+      user = await User.update({ userId, fieldToUpdate, newValue });
+    }
+
     return { errorMessage };
   }
 
