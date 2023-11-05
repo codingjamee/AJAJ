@@ -10,16 +10,6 @@ import Award from "./Award";
 import api from "../../../../utils/axiosConfig";
 import { useMemo } from "react";
 
-//********************************서버와 통신전**************************************
-
-// const awards = [
-//   {
-//     awardName: "좋은 상",
-//     awardDetail: "좋은 상입니다",
-//     awardOrganization: "좋은기관에서 줌",
-//     awardDate: "2023-01-01",
-//   },
-// ];
 const Awards = (props) => {
   const [addForm, setAddForm] = useState(false);
   const [awards, setAwards] = useState([]);
@@ -68,37 +58,41 @@ const Awards = (props) => {
     //portfolioOwnerId는 portfolio에서 받아옴
 
     //post 서버와 통신
-    const res = await api.post(`user/${userState.user.id}/award`, {
-      awardName,
-      awardDetail,
-      awardOrganization,
-      awardDate,
-    });
-
-    console.log(res.data.awardId);
-    const postedNewId = res.data.awardId;
-    console.log(postedNewId);
-
-    if (res.status === 201) {
-      setAwards((prev) => {
-        return [
-          ...prev,
-          {
-            awardId: postedNewId,
-            awardName,
-            awardDetail,
-            awardOrganization,
-            awardDate,
-          },
-        ];
+    try {
+      const res = await api.post(`user/${userState.user.id}/award`, {
+        awardName,
+        awardDetail,
+        awardOrganization,
+        awardDate,
       });
-      setAwardName("");
-      setAwardDetail("");
-      setAwardOrganization("");
-      setAwardDate("2023-01-01");
-      setAddForm(false);
-    } else if (res.status !== 201) {
-      // throw new Error("POST 요청이 실패하였습니다.");
+
+      console.log(res.data.awardId);
+      const postedNewId = res.data.awardId;
+      console.log(postedNewId);
+
+      if (res.status === 201) {
+        setAwards((prev) => {
+          return [
+            ...prev,
+            {
+              awardId: postedNewId,
+              awardName,
+              awardDetail,
+              awardOrganization,
+              awardDate,
+            },
+          ];
+        });
+        setAwardName("");
+        setAwardDetail("");
+        setAwardOrganization("");
+        setAwardDate("2023-01-01");
+        setAddForm(false);
+      } else if (res.status !== 201) {
+        // throw new Error("POST 요청이 실패하였습니다.");
+      }
+    } catch (err) {
+      throw new Error("POST요청 실패");
     }
   };
 
