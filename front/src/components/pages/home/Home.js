@@ -34,7 +34,14 @@ const Home = () => {
         textAlign: "center",
       }}
     >
-      <Card.Body>
+      <Card.Body
+        style={{
+          display: "flex",
+          flexDirection: "column",
+          width: "100%",
+          margin: "10px",
+        }}
+      >
         <Card.Title>{userState?.user?.name}님의 홈페이지</Card.Title>
         <Image src={userState?.user?.userImgUrl || defaultImg} />
         <Card.Text style={{ marginTop: "30px" }}>당신의 상태</Card.Text>
