@@ -25,7 +25,7 @@ api.interceptors.request.use(
       console.log(req.headers);
     }
     //요청 data가 Object일 때
-    if (req.data && req.data instanceof Object) {
+    else if (req.data && req.data instanceof Object) {
       req.headers["Content-Type"] = "application/json";
       req.data = JSON.stringify(req.data);
     }
