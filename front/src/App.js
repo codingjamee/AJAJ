@@ -19,6 +19,7 @@ import { useDispatch, useSelector } from "react-redux";
 import LoadingLayer from "./UI/LoadingLayer";
 import api from "./utils/axiosConfig";
 import Home from "./components/pages/home/Home";
+import NotFound from "./components/pages/404/NotFound";
 
 export const UserStateContext = createContext(null);
 export const DispatchContext = createContext(null);
@@ -56,12 +57,12 @@ function App() {
     fetchCurrentUser();
   }, []);
 
-  useEffect(() => {
-    if (!userState.user) {
-      navigate("/login", { replace: true });
-      return;
-    }
-  }, [userState.user]);
+  // useEffect(() => {
+  //   if (!userState.user) {
+  //     navigate("/login", { replace: true });
+  //     return;
+  //   }
+  // }, [userState.user]);
 
   if (loadingState) {
     return <LoadingLayer message="Loading....." />;
@@ -77,7 +78,7 @@ function App() {
           <Route path="/register" element={<RegisterForm />} />
           <Route path="/users/:userId" element={<Portfolio />} />
           <Route path="/network" element={<Network />} />
-          <Route path="*" element={<Portfolio />} />
+          <Route path="*" element={<NotFound />} />
         </Routes>
       </UserStateContext.Provider>
     </DispatchContext.Provider>
