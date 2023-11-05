@@ -13,17 +13,14 @@ const Project = ({ isEditable, project = {}, setProjects }) => {
   const [projectDetail, setProjectDetail] = useState(
     project.projectDetail || ""
   );
-  const [projectImgFile, setProjectImgFile] = useState(
-    project.projectImgUrl || null
-  );
-
+  const [projectImgFile, setProjectImgFile] = useState(null);
   const [projectStartDate, setProjectStartDate] = useState(
     project.projectStartDate || "2023-10-01"
   );
   const [projectEndDate, setProjectEndDate] = useState(
     project.projectEndDate || "2023-01-01"
   );
-  const [imgBase64, setImgBase64] = useState(null);
+  const [imgBase64, setImgBase64] = useState(project.projectImgUrl || null);
   const userState = useContext(UserStateContext);
 
   //form 상세설정 어레이
@@ -43,8 +40,7 @@ const Project = ({ isEditable, project = {}, setProjects }) => {
       setProjectName,
       projectDetail,
       setProjectDetail,
-      projectImgFile,
-      setProjectImgFile,
+      imgBase64,
       projectStartDate,
       setProjectStartDate,
       projectEndDate,
@@ -62,31 +58,25 @@ const Project = ({ isEditable, project = {}, setProjects }) => {
 
   const handleChangeFile = (e) => {
     // console.log(e.target.files[0]);
-    console.log(e);
+    console.log(e.target.files);
     if (e.target.files && e.target.files[0]) {
       setProjectImgFile(e.target.files[0]);
       console.log(e.target.files[0]);
       setImgBase64([]);
     }
-    for (var i = 0; i < e.target.files.length; i++) {
-      if (e.target.files[i]) {
-        let reader = new FileReader();
-        reader.readAsDataURL(e.target.files[i]); // 1. 파일을 읽어 버퍼에 저장합니다.
-        // 파일 상태 업데이트
-        reader.onloadend = () => {
-          // 2. 읽기가 완료되면 아래코드가 실행됩니다.
-          const base64 = reader.result;
-          if (base64) {
-            var base64Sub = base64.toString();
 
-            setImgBase64((imgBase64) => [...imgBase64, base64Sub]);
-            //  setImgBase64(newObj);
-            // 파일 base64 상태 업데이트
-            console.log(imgBase64);
-          }
-        };
+    let reader = new FileReader();
+    reader.readAsDataURL(e.target.files[0]); // 1. 파일을 읽어 버퍼에 저장합니다.
+    // 파일 상태 업데이트
+    reader.onloadend = () => {
+      // 2. 읽기가 완료되면 아래코드가 실행됩니다.
+      const base64 = reader.result;
+      if (base64) {
+        var base64Sub = base64.toString();
+
+        setImgBase64(base64Sub);
       }
-    }
+    };
   };
 
   //수정해서 onSubmitHandler
@@ -107,7 +97,9 @@ const Project = ({ isEditable, project = {}, setProjects }) => {
         `user/${userState.user.id}/project/${project.projectId}`,
         formData
       );
+
       if (res.status === 200) {
+        const postedNewImgUrl = res.data.projectImgUrl;
         setProjects((prev) => {
           const updatedProjects = prev.map((prevProject) => {
             if (prevProject.projectId === project.projectId) {
@@ -115,7 +107,7 @@ const Project = ({ isEditable, project = {}, setProjects }) => {
                 ...prevProject,
                 projectName,
                 projectDetail,
-                imgBase64,
+                projectImgUrl: postedNewImgUrl,
                 projectStartDate,
                 projectEndDate,
               };
@@ -124,7 +116,9 @@ const Project = ({ isEditable, project = {}, setProjects }) => {
           });
           return updatedProjects;
         });
+        alert(res.data.message);
         setEditMode(false);
+        setImgBase64(null);
         setProjectImgFile("");
       } else if (res.status !== 200) {
         // throw new Error("PUT 요청이 실패하였습니다.");

@@ -39,8 +39,6 @@ function Portfolio() {
       return navigate("/login", { replace: true });
     }
 
-    dispatch(locationActions.storeLocate({ payload: location.pathname }));
-
     // 현재 URL "/users/:userId"
     if (params.userId) {
       const ownerId = params.userId;
