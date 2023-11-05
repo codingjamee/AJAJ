@@ -63,25 +63,25 @@ const Projects = (props) => {
       console.log(e.target.files[0]);
       setImgBase64([]);
     }
-    for (var i = 0; i < e.target.files.length; i++) {
-      if (e.target.files[i]) {
-        let reader = new FileReader();
-        reader.readAsDataURL(e.target.files[i]); // 1. 파일을 읽어 버퍼에 저장합니다.
-        // 파일 상태 업데이트
-        reader.onloadend = () => {
-          // 2. 읽기가 완료되면 아래코드가 실행됩니다.
-          const base64 = reader.result;
-          if (base64) {
-            var base64Sub = base64.toString();
+    // for (var i = 0; i < e.target.files.length; i++) {
+    //   if (e.target.files[i]) {
+    let reader = new FileReader();
+    reader.readAsDataURL(e.target.files[0]); // 1. 파일을 읽어 버퍼에 저장합니다.
+    // 파일 상태 업데이트
+    reader.onloadend = () => {
+      // 2. 읽기가 완료되면 아래코드가 실행됩니다.
+      const base64 = reader.result;
+      if (base64) {
+        var base64Sub = base64.toString();
 
-            setImgBase64((imgBase64) => [...imgBase64, base64Sub]);
-            //  setImgBase64(newObj);
-            // 파일 base64 상태 업데이트
-            console.log(imgBase64);
-          }
-        };
+        setImgBase64(base64Sub);
+        //  setImgBase64(newObj);
+        // 파일 base64 상태 업데이트
+        console.log(imgBase64);
       }
-    }
+      //   };
+      // }
+    };
   };
 
   //제출버튼 클릭시
@@ -131,6 +131,7 @@ const Projects = (props) => {
               },
             ];
           });
+          alert(res.data.message);
           setProjectName("");
           setProjectDetail("");
           setProjectImgFile({});

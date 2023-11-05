@@ -51,7 +51,7 @@ function UserEditForm({ user, setIsEditing, setUser }) {
         userProfileData
       );
 
-      const updatedUserImgUrl = res.userImgUrl;
+      const updatedUserImgUrl = res.data.userImgUrl;
 
       if (res.status === 200) {
         setUser((prev) => {
@@ -60,7 +60,7 @@ function UserEditForm({ user, setIsEditing, setUser }) {
             name,
             email,
             description,
-            updatedUserImgUrl,
+            userImgUrl: updatedUserImgUrl,
           };
         });
         setName("");
