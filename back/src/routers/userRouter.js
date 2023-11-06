@@ -136,7 +136,6 @@ userAuthRouter.get("/users/:id", login_required, async function (req, res, next)
     try {
       const userId = req.params.id;
       const { errorMessage, currentUserInfo } = await userAuthService.getUserInfo({ userId });
-
       if (errorMessage) {
         throw new NotFoundError(errorMessage);
       }
