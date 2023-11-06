@@ -63,9 +63,11 @@ export const projectsCommonFormProps = [
     placeholder: "프로젝트설명",
   },
   {
-    controlId: "projectImageUrl",
+    controlId: "image",
     customClassName: "mb-3",
     label: "프로젝트사진",
+    type: "file",
+    name: "image",
     placeholder: "https://",
   },
   {

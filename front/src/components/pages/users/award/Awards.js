@@ -1,23 +1,14 @@
 import React, { useContext, useEffect, useState } from "react";
 import { Card } from "react-bootstrap";
 import { UserStateContext } from "../../../../App";
-import * as Api from "../../../utils/api";
 import ButtonCommon from "../../../common/ButtonCommon";
 import FormWrapper from "../../../common/FormWrapper";
 import { PortfolioOwnerDataContext } from "../Portfolio";
-import { awardsCommonFormProps } from "../../../utils/formListCommonProps";
+import { awardsCommonFormProps } from "../../../../utils/formListCommonProps";
 import Award from "./Award";
+import api from "../../../../utils/axiosConfig";
+import { useMemo } from "react";
 
-//********************************서버와 통신전**************************************
-
-// const awards = [
-//   {
-//     awardName: "좋은 상",
-//     awardDetail: "좋은 상입니다",
-//     awardOrganization: "좋은기관에서 줌",
-//     awardDate: "2023-01-01",
-//   },
-// ];
 const Awards = (props) => {
   const [addForm, setAddForm] = useState(false);
   const [awards, setAwards] = useState([]);
@@ -30,16 +21,35 @@ const Awards = (props) => {
   const { isEditable } = props;
 
   //form 상세설정 어레이
-  const awardState = [
-    { value: awardName, changeHandler: (v) => setAwardName(v) },
-    { value: awardDetail, changeHandler: (v) => setAwardDetail(v) },
-    { value: awardOrganization, changeHandler: (v) => setAwardOrganization(v) },
-    { value: awardDate, changeHandler: (v) => setAwardDate(v) },
-  ];
+  const awardState = useMemo(
+    () => [
+      { value: awardName, changeHandler: (v) => setAwardName(v) },
+      { value: awardDetail, changeHandler: (v) => setAwardDetail(v) },
+      {
+        value: awardOrganization,
+        changeHandler: (v) => setAwardOrganization(v),
+      },
+      { value: awardDate, changeHandler: (v) => setAwardDate(v) },
+    ],
+    [
+      awardName,
+      awardDetail,
+      awardOrganization,
+      awardDate,
+      setAwardName,
+      setAwardDetail,
+      setAwardOrganization,
+      setAwardDate,
+    ]
+  );
 
-  const awardFormList = awardsCommonFormProps.map((awardCommon, index) => {
-    return { ...awardCommon, ...awardState[index] };
-  });
+  const awardFormList = useMemo(
+    () =>
+      awardsCommonFormProps.map((awardCommon, index) => {
+        return { ...awardCommon, ...awardState[index] };
+      }),
+    [awardState]
+  );
   //제출버튼 클릭시
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -47,55 +57,61 @@ const Awards = (props) => {
     //portfolioOwnerId는 portfolio에서 받아옴
 
     //post 서버와 통신
-    const res = await Api.post(
-      `user/${userState.user.id}/award`,
-      {
+    try {
+      const res = await api.post(`user/${userState.user.id}/award`, {
         awardName,
         awardDetail,
         awardOrganization,
         awardDate,
-      },
-      "Awards"
-    );
-
-    const postedNewId = res.data.awardId;
-
-    if (res.status === 201) {
-      setAwards((prev) => {
-        return [
-          ...prev,
-          {
-            awardId: postedNewId,
-            awardName,
-            awardDetail,
-            awardOrganization,
-            awardDate,
-          },
-        ];
       });
-      setAwardName("");
-      setAwardDetail("");
-      setAwardOrganization("");
-      setAwardDate("2023-01-01");
-      setAddForm(false);
-    } else if (res.status !== 201) {
-      throw new Error("POST 요청이 실패하였습니다.");
+
+      console.log(res.data.awardId);
+      const postedNewId = res.data.awardId;
+      console.log(postedNewId);
+
+      if (res.status === 201) {
+        setAwards((prev) => {
+          return [
+            ...prev,
+            {
+              awardId: postedNewId,
+              awardName,
+              awardDetail,
+              awardOrganization,
+              awardDate,
+            },
+          ];
+        });
+        setAwardName("");
+        setAwardDetail("");
+        setAwardOrganization("");
+        setAwardDate("2023-01-01");
+        setAddForm(false);
+      } else if (res.status !== 201) {
+        // throw new Error("POST 요청이 실패하였습니다.");
+      }
+    } catch (err) {
+      throw new Error("POST요청 실패");
     }
   };
 
   // 모든 수상 목록 가져오기 서버와 통신
   useEffect(() => {
-    Api.get(`user/${portfolioOwnerData.id}/awards`, "", "Awards").then(
-      (res) => {
-        return setAwards(res.data.awards);
-      }
-    );
+    //portfolioOwnerData.id를 가져오고 나서 실행
+    if (portfolioOwnerData.id) {
+      api
+        .get(`user/${portfolioOwnerData.id}/awards`, "", "Awards")
+        .then((res) => {
+          return setAwards(res.data.awards);
+        });
+    }
   }, [portfolioOwnerData.id]);
 
   return (
     <>
-      <Card>
-        <h4>수상 내역</h4>
+      <Card border="warning">
+        <h3>수상 내역</h3>
+        <br />
         {awards.map((award, index) => (
           <Award
             key={`award-${index}`}
@@ -116,14 +132,15 @@ const Awards = (props) => {
               />
             )}
             <ButtonCommon
-              variant="outline-info"
+              variant="light"
               size="sm"
               onClickHandler={() => setAddForm((prev) => !prev)}
-              text="+"
+              text={addForm ? "-" : "+"}
             />
           </Card>
         )}
       </Card>
+      <br />
     </>
   );
 };

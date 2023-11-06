@@ -1,7 +1,7 @@
 import { Form, Row, Col } from "react-bootstrap";
 import ButtonCommon from "./ButtonCommon";
 import FormCommon from "./FormCommon";
-import { useMemo, useState } from "react";
+import { useMemo } from "react";
 
 //form button 상세설정 어레이
 
@@ -11,11 +11,6 @@ const FormWrapper = ({
   setAddForm,
   isEditable,
 }) => {
-  // const [formView, setFormView] = useState(false);
-  // const btnToggle = () => {
-  //   setFormView((prev) => !prev);
-  // };
-
   const btnSet = useMemo(
     () => [
       {

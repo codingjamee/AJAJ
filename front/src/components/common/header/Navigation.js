@@ -4,8 +4,9 @@ import { Nav, Navbar } from "react-bootstrap";
 import { UserStateContext, DispatchContext } from "../../../App";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "../../../UI/design.css";
-import * as Api from "../../utils/api";
 import logo from "./logo0.png";
+import api from "../../../utils/axiosConfig";
+import { useMemo } from "react";
 
 function Navigation() {
   const navigate = useNavigate();
@@ -16,11 +17,14 @@ function Navigation() {
 
   // console.log(userState);
 
-  const navItems = [
-    { path: "/", label: "홈페이지" },
-    { path: `/users/${userState?.user?.id}`, label: "마이페이지" },
-    { path: "/network", label: "네트워크" },
-  ];
+  const navItems = useMemo(
+    () => [
+      { path: "/", label: "홈페이지" },
+      { path: `/users/${userState?.user?.id}`, label: "마이페이지" },
+      { path: "/network", label: "네트워크" },
+    ],
+    [userState?.user?.id]
+  );
 
   // 전역상태에서 user가 null이 아니라면 로그인 성공 상태임.
   const isLogin = !!userState.user;
@@ -28,16 +32,21 @@ function Navigation() {
   // 로그아웃 클릭 시 실행되는 함수
   //api 작성되면 추후에 구현
   const logout = async () => {
-    await Api.get("logout", "", "Navigation");
+    await api.get("logout", "", "Navigation");
     dispatch({ type: "LOGOUT" });
     //   // 기본 페이지로 돌아감.
     navigate("/");
+  };
+
+  const onClickmemberDelete = async () => {
+    await api.delete(`/users/${userState?.user?.id}`);
   };
 
   return (
     <Navbar variant="dark">
       <Nav.Link onClick={() => navigate("/")}>
         <img src={logo} alt="logo" width={"130px"} height={"100%"} />
+        AJAJ : My first portfolio
       </Nav.Link>
       <Navbar.Toggle aria-controls="basic-navbar-nav" />
       <Navbar.Collapse id="basic-navbar-nav" />
@@ -48,7 +57,12 @@ function Navigation() {
             {label}{" "}
           </Nav.Link>
         ))}
-        {isLogin && <Nav.Link onClick={logout}>로그아웃</Nav.Link>}
+        {isLogin && (
+          <>
+            <Nav.Link onClick={logout}>로그아웃</Nav.Link>
+            <Nav.Link onClick={onClickmemberDelete}>회원탈퇴</Nav.Link>
+          </>
+        )}
       </Nav>
     </Navbar>
   );

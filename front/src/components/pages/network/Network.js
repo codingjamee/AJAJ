@@ -1,10 +1,11 @@
 import React, { useEffect, useContext, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { Container, Row } from "react-bootstrap";
 
-import * as Api from "../../utils/api";
+import * as Api from "../../../utils/api";
 import UserCard from "../users/user/UserCard";
 import { UserStateContext } from "../../../App";
+import api from "../../../utils/axiosConfig";
 
 function Network() {
   const navigate = useNavigate();
@@ -19,11 +20,11 @@ function Network() {
       return;
     }
     // "userlist" 엔드포인트로 GET 요청을 하고, users를 response의 data로 세팅함.
-    Api.get("userlist", "", "Network").then((res) => setUsers(res.data));
+    api.get("userlist").then((res) => setUsers(res.data));
   }, [userState, navigate]);
 
   return (
-    <Container fluid style={{ textAlign: "center" }}>
+    <Container fluid style={{ textAlign: "center", marginTop: "50px" }}>
       <Row
         lg={4}
         className="jusify-content-center"

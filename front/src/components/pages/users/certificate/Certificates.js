@@ -1,12 +1,14 @@
 import React, { useContext, useEffect, useState } from "react";
 import { Card, Col, Container, Form } from "react-bootstrap";
 import { UserStateContext } from "../../../../App";
-import * as Api from "../../../utils/api";
+import * as Api from "../../../../utils/api";
 import ButtonCommon from "../../../common/ButtonCommon";
 import FormWrapper from "../../../common/FormWrapper";
 import Certificate from "./Certificate";
-import { certificatesCommonFormProps } from "../../../utils/formListCommonProps";
+import { certificatesCommonFormProps } from "../../../../utils/formListCommonProps";
 import { PortfolioOwnerDataContext } from "../Portfolio";
+import api from "../../../../utils/axiosConfig";
+import { useMemo } from "react";
 
 //********************************서버와 통신전**************************************
 
@@ -41,20 +43,37 @@ const Certificates = (props) => {
   const portfolioOwnerData = useContext(PortfolioOwnerDataContext);
 
   //form 상세설정 어레이
-  const certificateState = [
-    { value: certificateName, changeHandler: (v) => setCertificateName(v) },
-    { value: certificateDetail, changeHandler: (v) => setCertificateDetail(v) },
-    {
-      value: certificateOrganization,
-      changeHandler: (v) => setCertificateOrganization(v),
-    },
-    { value: acquisitionDate, changeHandler: (v) => setAcquisitionDate(v) },
-  ];
+  const certificateState = useMemo(
+    () => [
+      { value: certificateName, changeHandler: (v) => setCertificateName(v) },
+      {
+        value: certificateDetail,
+        changeHandler: (v) => setCertificateDetail(v),
+      },
+      {
+        value: certificateOrganization,
+        changeHandler: (v) => setCertificateOrganization(v),
+      },
+      { value: acquisitionDate, changeHandler: (v) => setAcquisitionDate(v) },
+    ],
+    [
+      certificateName,
+      setCertificateName,
+      certificateDetail,
+      setCertificateDetail,
+      certificateOrganization,
+      setCertificateOrganization,
+      acquisitionDate,
+      setAcquisitionDate,
+    ]
+  );
+  const certificateFormList = useMemo(
+    () =>
+      certificatesCommonFormProps.map((certificateCommon, index) => {
+        return { ...certificateCommon, ...certificateState[index] };
+      }),
 
-  const certificateFormList = certificatesCommonFormProps.map(
-    (certificateCommon, index) => {
-      return { ...certificateCommon, ...certificateState[index] };
-    }
+    [certificateState]
   );
 
   //제출버튼 클릭시
@@ -65,7 +84,7 @@ const Certificates = (props) => {
 
     // post 서버와 통신
     try {
-      const res = await Api.post(`user/${userState.user.id}/certificate`, {
+      const res = await api.post(`user/${userState.user.id}/certificate`, {
         certificateName,
         certificateDetail,
         certificateOrganization,
@@ -93,28 +112,29 @@ const Certificates = (props) => {
         setAcquisitionDate("2023-01-01");
         setAddForm(false);
       } else if (res.status !== 201) {
-        throw new Error("POST 요청이 실패하였습니다.");
+        // throw new Error("POST 요청이 실패하였습니다.");
       }
     } catch (err) {
-      throw new Error("서버와 통신이 실패하였습니다.");
+      console.error(err);
+      // throw new Error("서버와 통신이 실패하였습니다.");
     }
   };
 
   // 모든 학위 목록 가져오기 서버와 통신
   useEffect(() => {
-    Api.get(
-      `user/${portfolioOwnerData.id}/certificates`,
-      "",
-      "Certificates"
-    ).then((res) => {
-      return setCertificates(res.data.certificates);
-    });
+    //portfolioOwnerData.id를 가져오고 나서 실행
+    if (portfolioOwnerData.id) {
+      api.get(`user/${portfolioOwnerData.id}/certificates`).then((res) => {
+        return setCertificates(res.data.certificates);
+      });
+    }
   }, [portfolioOwnerData.id]);
 
   return (
     <>
-      <Card>
-        <h4>자격증</h4>
+      <Card border="warning">
+        <h3>자격증</h3>
+        <br />
         {certificates.map((certificate, index) => (
           <Certificate
             key={`certificate-${index}`}
@@ -135,14 +155,15 @@ const Certificates = (props) => {
               />
             )}
             <ButtonCommon
-              variant="outline-info"
+              variant="light"
               size="sm"
               onClickHandler={() => setAddForm((prev) => !prev)}
-              text="+"
+              text={addForm ? "-" : "+"}
             />
           </Card>
         )}
       </Card>
+      <br />
     </>
   );
 };

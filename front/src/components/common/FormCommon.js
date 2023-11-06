@@ -1,4 +1,4 @@
-import { Form } from "react-bootstrap";
+import { Form, Image, Card } from "react-bootstrap";
 
 const FormCommon = ({
   controlId,
@@ -8,14 +8,19 @@ const FormCommon = ({
   type = "text",
   changeHandler,
   value,
+  name = "",
   customClassName,
   optionValue = "",
   optionArr = [],
 }) => {
   return (
-    <Form.Group controlId={controlId} className={customClassName}>
+    <Form.Group
+      controlId={controlId}
+      className={customClassName}
+      style={{ margin: "10px" }}
+    >
       {label && <Form.Label>{label}</Form.Label>}
-      {!select && (
+      {!select && type !== "file" && (
         <Form.Control
           type={type}
           placeholder={placeholder}
@@ -36,6 +41,26 @@ const FormCommon = ({
             </option>
           ))}
         </Form.Select>
+      )}
+      {type === "file" && (
+        <>
+          <Card style={{ margin: "10px" }}>
+            <Image
+              style={{
+                width: "100%",
+                height: "8rem",
+                margin: "0 auto",
+              }}
+              src={value}
+            />
+          </Card>
+          <Form.Control
+            type={type}
+            placeholder={placeholder}
+            onChange={(e) => changeHandler(e)}
+            name={name}
+          />
+        </>
       )}
     </Form.Group>
   );

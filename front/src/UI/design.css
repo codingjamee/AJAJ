@@ -4,6 +4,8 @@ Nav {
   align-items: left;
   background-color: rgba(95, 95, 95);
   color: rgb(247, 200, 115);
+  font-size: large;
+  font-weight: bold;
 }
 .mr-auto {
   margin-right: 20px;
@@ -11,4 +13,8 @@ Nav {
 
 body {
   background-color: rgb(219, 219, 219);
+}
+
+h3 {
+  border-bottom: 1.5px solid rgb(247, 201, 115);
 }

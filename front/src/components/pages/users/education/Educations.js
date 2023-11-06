@@ -1,12 +1,14 @@
 import React, { useContext, useEffect, useState } from "react";
 import { Card } from "react-bootstrap";
 import { UserStateContext } from "../../../../App";
-import * as Api from "../../../utils/api";
+import * as Api from "../../../../utils/api";
 import ButtonCommon from "../../../common/ButtonCommon";
 import FormWrapper from "../../../common/FormWrapper";
 import Education from "./Education";
 import { PortfolioOwnerDataContext } from "../Portfolio";
-import { educationsCommonFormProps } from "../../../utils/formListCommonProps";
+import { educationsCommonFormProps } from "../../../../utils/formListCommonProps";
+import api from "../../../../utils/axiosConfig";
+import { useMemo } from "react";
 //********************************서버와 통신 ok**************************************
 
 const Educations = (props) => {
@@ -22,17 +24,35 @@ const Educations = (props) => {
   const portfolioOwnerData = useContext(PortfolioOwnerDataContext);
 
   //form 상세설정 어레이
-  const eduState = [
-    { value: schoolName, changeHandler: (v) => setSchoolName(v) },
-    { value: major, changeHandler: (v) => setMajor(v) },
-    { value: degree, changeHandler: (v) => setDegree(v) },
-    { value: admissionDate, changeHandler: (v) => setAdmissionDate(v) },
-    { value: graduationDate, changeHandler: (v) => setGraduationDate(v) },
-  ];
+  const eduState = useMemo(
+    () => [
+      { value: schoolName, changeHandler: (v) => setSchoolName(v) },
+      { value: major, changeHandler: (v) => setMajor(v) },
+      { value: degree, changeHandler: (v) => setDegree(v) },
+      { value: admissionDate, changeHandler: (v) => setAdmissionDate(v) },
+      { value: graduationDate, changeHandler: (v) => setGraduationDate(v) },
+    ],
+    [
+      schoolName,
+      major,
+      degree,
+      admissionDate,
+      graduationDate,
+      setSchoolName,
+      setMajor,
+      setDegree,
+      setAdmissionDate,
+      setGraduationDate,
+    ]
+  );
 
-  const eduFormList = educationsCommonFormProps.map((eduCommon, index) => {
-    return { ...eduCommon, ...eduState[index] };
-  });
+  const eduFormList = useMemo(
+    () =>
+      educationsCommonFormProps.map((eduCommon, index) => {
+        return { ...eduCommon, ...eduState[index] };
+      }),
+    [eduState]
+  );
 
   //제출버튼 클릭시
   const handleSubmit = async (e) => {
@@ -42,7 +62,7 @@ const Educations = (props) => {
 
     //post 서버와 통신
     try {
-      const res = await Api.post(`user/${userState.user.id}/education`, {
+      const res = await api.post(`user/${userState.user.id}/education`, {
         schoolName,
         major,
         degree,
@@ -73,26 +93,29 @@ const Educations = (props) => {
         setGraduationDate("2023-01-01");
         setAddForm(false);
       } else if (res.status !== 201) {
-        throw new Error("POST 요청이 실패하였습니다.");
+        // throw new Error("POST 요청이 실패하였습니다.");
       }
     } catch (err) {
-      throw new Error("서버와 통신이 실패하였습니다.");
+      console.error(err);
+      // throw new Error("서버와 통신이 실패하였습니다.");
     }
   };
 
   // 모든 학위 목록 가져오기 서버와 통신
   useEffect(() => {
-    Api.get(`user/${portfolioOwnerData.id}/educations`, "", "Educations").then(
-      (res) => {
+    //portfolioOwnerData.id를 가져오고 나서 실행
+    if (portfolioOwnerData.id) {
+      api.get(`user/${portfolioOwnerData.id}/educations`).then((res) => {
         return setEducations(res.data.educations);
-      }
-    );
+      });
+    }
   }, [portfolioOwnerData.id]);
 
   return (
     <>
-      <Card>
-        <h4>학력</h4>
+      <Card border="warning">
+        <h3>학력</h3>
+        <br />
         {educations.map((education, index) => (
           <Education
             key={`education-${index}`}
@@ -113,14 +136,15 @@ const Educations = (props) => {
               />
             )}
             <ButtonCommon
-              variant="outline-info"
+              variant="light"
               size="sm"
               onClickHandler={() => setAddForm((prev) => !prev)}
-              text="+"
+              text={addForm ? "-" : "+"}
             />
           </Card>
         )}
       </Card>
+      <br />
     </>
   );
 };

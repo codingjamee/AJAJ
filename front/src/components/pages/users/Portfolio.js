@@ -1,14 +1,16 @@
 import React, { useContext, useState, useEffect, createContext } from "react";
-import { useNavigate, useParams } from "react-router-dom";
+import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { Container, Col, Row } from "react-bootstrap";
 
 import { UserStateContext } from "../../../App";
-import * as Api from "../../utils/api";
 import User from "./user/User";
 import Educations from "./education/Educations";
 import Certifications from "./certificate/Certificates";
 import Awards from "./award/Awards";
 import Projects from "./project/Projects";
+import api from "../../../utils/axiosConfig";
+import { useDispatch } from "react-redux";
+import { locationActions } from "../../../store/location";
 
 export const PortfolioOwnerDataContext = createContext({});
 
@@ -17,22 +19,24 @@ function Portfolio() {
   const params = useParams();
   const [portfolioOwnerData, setPortfolioOwnerData] = useState({});
   const userState = useContext(UserStateContext);
+  const dispatch = useDispatch();
+  const location = useLocation();
 
   const fetchPortfolioOwner = async (ownerId) => {
     // console.log("포트폴리오 오너 아이디" + ownerId);
     try {
-      const res = await Api.get("users", ownerId, "portfolio");
+      const res = await api.get(`users/${ownerId}`);
       const ownerData = res.data;
       setPortfolioOwnerData(ownerData);
     } catch (err) {
-      throw new Error("서버와 통신에 실패하였습니다");
+      console.error(err);
     }
   };
 
   useEffect(() => {
+    //userState가 없는 경우
     if (!userState.user) {
-      navigate("/login", { replace: false });
-      return;
+      return navigate("/login", { replace: true });
     }
 
     // 현재 URL "/users/:userId"
@@ -44,21 +48,27 @@ function Portfolio() {
       const ownerId = userState.user.id;
       fetchPortfolioOwner(ownerId);
     }
-  }, [params, userState, navigate]);
+  }, []);
 
   return (
     <PortfolioOwnerDataContext.Provider value={portfolioOwnerData}>
-      <Container fluid style={{ overflow: "auto", marginTop: "50px" }}>
+      <Container fluid style={{ margin: "50px 20px 20px" }}>
         <Row>
-          <Col lg={2} style={{ textAlign: "center" }}>
+          <Col
+            md={4}
+            lg={3}
+            xl={2}
+            xxl={2}
+            style={{ textAlign: "center", overFlow: "hidden" }}
+          >
             <User isEditable={portfolioOwnerData?.id === userState.user?.id} />
           </Col>
-          <Col lg={10}>
+          <Col md={8} lg={9} xl={10} xxl={10}>
             <div
               style={{
                 textAlign: "center",
                 marginRight: "50px",
-                marginLeft: "30px",
+                marginLeft: "40px",
               }}
             >
               <Educations

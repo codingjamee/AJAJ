@@ -1,10 +1,11 @@
 import { useNavigate } from "react-router-dom";
 import { Card, Row, Button, Col } from "react-bootstrap";
+import defaultImg from "../../../common/header/logo0.png";
 
 function UserCard({ user, setIsEditing, isEditable, isNetwork }) {
   const navigate = useNavigate();
   return (
-    <Card className="mb-2 ms-3 mr-5">
+    <Card className="mb-2 ms-3 mr-5" border="warning">
       <Card.Body>
         <Row className="justify-content-md-center">
           <Card.Img
@@ -15,7 +16,7 @@ function UserCard({ user, setIsEditing, isEditable, isNetwork }) {
               display: "block",
             }}
             className="mb-3"
-            src="http://placekitten.com/200/200"
+            src={user?.userImgUrl || defaultImg}
             alt="랜덤 고양이 사진 (http://placekitten.com API 사용)"
           />
         </Row>
@@ -28,11 +29,11 @@ function UserCard({ user, setIsEditing, isEditable, isNetwork }) {
             <Row className="mt-3 text-center text-info">
               <Col sm={{ span: 20 }}>
                 <Button
-                  variant="outline-info"
+                  variant="outline-secondary"
                   size="sm"
                   onClick={() => setIsEditing(true)}
                 >
-                  편집
+                  Edit
                 </Button>
               </Col>
             </Row>

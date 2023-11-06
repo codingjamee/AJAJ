@@ -1,53 +1,49 @@
-import React, { useState, useContext, useReducer, useEffect } from "react";
+import React, { useState, useContext, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Container, Col, Row, Form, Button } from "react-bootstrap";
 
-import * as Api from "../../utils/api";
 import { DispatchContext, UserStateContext } from "../../../App";
-import {
-  emailValidateReducer,
-  paswordValidateReducer,
-} from "../../hooks/validatorReducer";
+import api from "../../../utils/axiosConfig";
+import { validateEmail, validatePassword } from "../../../utils/validate";
+import { useMemo } from "react";
 
 function LoginForm() {
   const navigate = useNavigate();
   const dispatch = useContext(DispatchContext);
-  const [emailState, dispatchEmail] = useReducer(emailValidateReducer, {
-    value: "",
-    isEmailValid: null,
-  });
-  const [passwordState, dispatchPassword] = useReducer(paswordValidateReducer, {
-    value: "",
-    isPasswordValid: null,
-  });
-  const [isFormValid, setIsFormValid] = useState(false);
+  const [emailState, setEmail] = useState("");
+  const [passwordState, setPassword] = useState("");
+  // const [isFirst, setIsFirst] = useState(true);
   const userState = useContext(UserStateContext);
 
   // // 이메일과 비밀번호 조건이 동시에 만족되는지 확인함.
-  const { isEmailValid, value: emailValue } = emailState;
-  const { isPasswordValid, value: passwordValue } = passwordState;
-
-  useEffect(() => {
-    setIsFormValid(isEmailValid && isPasswordValid);
-  }, [isEmailValid, isPasswordValid]);
+  const isEmailValid = useMemo(() => validateEmail(emailState), [emailState]);
+  const isPasswordValid = useMemo(
+    () => validatePassword(passwordState),
+    [passwordState]
+  );
+  const isFormValid = useMemo(
+    () => isEmailValid && isPasswordValid,
+    [isEmailValid, isPasswordValid]
+  );
+  // }
 
   useEffect(() => {
     if (!userState.user) {
-      navigate("/login", { replace: false });
+      navigate("/login", { replace: true });
       return;
     } else if (userState.user) {
       navigate("/", { replace: true });
     }
-  }, []);
+  }, [userState.user, navigate]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
 
     try {
       // "user/login" 엔드포인트로 post요청함.
-      const res = await Api.post("user/login", {
-        email: emailValue,
-        password: passwordValue,
+      const res = await api.post("user/login", {
+        email: emailState,
+        password: passwordState,
       });
       console.log("로그인성공", res);
       // 유저 정보는 response의 data임.
@@ -76,14 +72,12 @@ function LoginForm() {
               <Form.Control
                 type="email"
                 autoComplete="on"
-                value={emailState.value}
-                onChange={(e) =>
-                  dispatchEmail({
-                    type: "EMAIL_VALIDATOR",
-                    value: e.target.value || "",
-                  })
-                }
-                onBlur={() => dispatchEmail({ type: "INPUT_BLUR" })}
+                value={emailState}
+                onChange={(e) => setEmail(e.target.value)}
+                onBlur={() => {
+                  // setIsFirst(false);
+                  return validateEmail(emailState);
+                }}
               />
               {!isEmailValid && (
                 <Form.Text className="text-success">
@@ -97,14 +91,12 @@ function LoginForm() {
               <Form.Control
                 type="password"
                 autoComplete="on"
-                value={passwordState.value}
-                onChange={(e) =>
-                  dispatchPassword({
-                    type: "PASSWORD_VALIDATOR",
-                    value: e.target.value || "",
-                  })
-                }
-                onBlur={() => dispatchPassword({ type: "INPUT_BLUR" })}
+                value={passwordState}
+                onChange={(e) => setPassword(e.target.value)}
+                onBlur={() => {
+                  // setIsFirst(false);
+                  validatePassword(passwordState);
+                }}
               />
               {!isPasswordValid && (
                 <Form.Text className="text-success">

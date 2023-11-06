@@ -53,7 +53,8 @@ class userAuthService {
     const id = user.id;
     const name = user.name;
     const description = user.description;
-    const loginUser = { id, email, name, description };
+    const userImgUrl = user.userImgUrl;
+    const loginUser = { id, email, name, description, userImgUrl };
 
     return { errorMessage, accessToken, refreshToken, loginUser };
   }
@@ -98,18 +99,23 @@ class userAuthService {
       user = await User.update({ userId, fieldToUpdate, newValue });
     }
 
+    if (toUpdate.userImgUrl) {
+      const fieldToUpdate = "userImgUrl";
+      const newValue = toUpdate.userImgUrl;
+      user = await User.update({ userId, fieldToUpdate, newValue });
+    }
+
     return { errorMessage };
   }
 
   static async getUserInfo({ userId }) {
-    const user = await User.findById({ userId });
+    const currentUserInfo = await User.findById({ userId });
     let errorMessage = null;
-
-    if (!user) {
+    if (!currentUserInfo) {
       errorMessage =
         "가입 내역이 없습니다. 다시 한 번 확인해 주세요.";
     }
-    return { errorMessage, user };
+    return { errorMessage, currentUserInfo };
   }
 
   static async getToken({ userId }) {

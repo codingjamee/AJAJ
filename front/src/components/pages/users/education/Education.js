@@ -1,10 +1,12 @@
 import { useContext, useEffect, useState } from "react";
-import * as Api from "../../../utils/api";
+import * as Api from "../../../../utils/api";
 import { Form, Card, Col } from "react-bootstrap";
 import FormWrapper from "../../../common/FormWrapper";
 import ButtonCommon from "../../../common/ButtonCommon";
 import { UserStateContext } from "../../../../App";
-import { educationsCommonFormProps } from "../../../utils/formListCommonProps";
+import { educationsCommonFormProps } from "../../../../utils/formListCommonProps";
+import api from "../../../../utils/axiosConfig";
+import { useMemo } from "react";
 
 const Education = ({ isEditable, education = {}, setEducations }) => {
   // useState 훅을 통해 user 상태를 생성함.
@@ -22,17 +24,35 @@ const Education = ({ isEditable, education = {}, setEducations }) => {
   const userState = useContext(UserStateContext);
 
   //form 상세설정 어레이
-  const eduState = [
-    { value: schoolName, changeHandler: (v) => setSchoolName(v) },
-    { value: major, changeHandler: (v) => setMajor(v) },
-    { value: degree, changeHandler: (v) => setDegree(v) },
-    { value: admissionDate, changeHandler: (v) => setAdmissionDate(v) },
-    { value: graduationDate, changeHandler: (v) => setGraduationDate(v) },
-  ];
+  const eduState = useMemo(
+    () => [
+      { value: schoolName, changeHandler: (v) => setSchoolName(v) },
+      { value: major, changeHandler: (v) => setMajor(v) },
+      { value: degree, changeHandler: (v) => setDegree(v) },
+      { value: admissionDate, changeHandler: (v) => setAdmissionDate(v) },
+      { value: graduationDate, changeHandler: (v) => setGraduationDate(v) },
+    ],
+    [
+      schoolName,
+      setSchoolName,
+      major,
+      setMajor,
+      degree,
+      setDegree,
+      admissionDate,
+      setAdmissionDate,
+      graduationDate,
+      setGraduationDate,
+    ]
+  );
 
-  const eduFormList = educationsCommonFormProps.map((eduCommon, index) => {
-    return { ...eduCommon, ...eduState[index] };
-  });
+  const eduFormList = useMemo(
+    () =>
+      educationsCommonFormProps.map((eduCommon, index) => {
+        return { ...eduCommon, ...eduState[index] };
+      }),
+    [eduState]
+  );
 
   //수정해서 onSubmitHandler
   const onSubmitHandler = async (e) => {
@@ -43,7 +63,7 @@ const Education = ({ isEditable, education = {}, setEducations }) => {
 
     //post 서버와 통신
     try {
-      const res = await Api.put(
+      const res = await api.put(
         `user/${userState.user.id}/education/${education.eduId}`,
         {
           schoolName,
@@ -51,8 +71,7 @@ const Education = ({ isEditable, education = {}, setEducations }) => {
           degree,
           admissionDate,
           graduationDate,
-        },
-        "Education"
+        }
       );
       // console.log(res.data);
       if (res.status === 200) {
@@ -74,10 +93,11 @@ const Education = ({ isEditable, education = {}, setEducations }) => {
         });
         setEditMode(false);
       } else if (res.status !== 200) {
-        throw new Error("POST 요청을 실패하였습니다.");
+        // throw new Error("POST 요청을 실패하였습니다.");
       }
     } catch (err) {
-      throw new Error("서버와 통신이 실패하였습니다");
+      console.error(err);
+      // throw new Error("서버와 통신이 실패하였습니다");
     }
   };
 
@@ -85,10 +105,8 @@ const Education = ({ isEditable, education = {}, setEducations }) => {
 
   const onClickDel = async (eduId) => {
     try {
-      const res = await Api.delete(
-        `user/${userState.user.id}/education`,
-        eduId,
-        "Education"
+      const res = await api.delete(
+        `user/${userState.user.id}/education/${eduId}`
       );
       // console.log(res);
       if (res.status === 200) {
@@ -96,15 +114,16 @@ const Education = ({ isEditable, education = {}, setEducations }) => {
           return prevObj.filter((edus) => edus.eduId !== eduId);
         });
       } else if (res.status !== 200) {
-        throw new Error("삭제를 실패하였습니다");
+        // throw new Error("삭제를 실패하였습니다");
       }
     } catch (err) {
-      throw new Error("서버와 통신에 실패하였습니다");
+      console.error(err);
+      // throw new Error("서버와 통신에 실패하였습니다");
     }
   };
 
   return (
-    <Card style={{ width: "100%" }}>
+    <Card className="border-0" style={{ width: "100%" }}>
       {!editMode && (
         <>
           <Card.Title>{education.schoolName}</Card.Title>
@@ -117,19 +136,18 @@ const Education = ({ isEditable, education = {}, setEducations }) => {
             {education.admissionDate} ~ {education.graduationDate}
           </Card.Text>
           {isEditable && (
-            <Form.Group className="mt-3 text-center">
-              <Col sm={{ span: 20 }}>
+            <Form.Group className="mb-5 text-center">
+              <Col>
                 <ButtonCommon
-                  variant="primary"
+                  variant="outline-primary"
                   type="submit"
                   className="me-3"
-                  text="수정"
+                  text="Edit"
                   onClickHandler={() => setEditMode((prev) => !prev)}
                 />
-
                 <ButtonCommon
-                  variant="secondary"
-                  text="삭제"
+                  variant="outline-secondary"
+                  text="Delete"
                   onClickHandler={() => onClickDel(education.eduId)}
                 />
               </Col>

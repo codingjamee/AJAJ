@@ -1,11 +1,13 @@
 import { useContext, useEffect, useState } from "react";
-import * as Api from "../../../utils/api";
+import * as Api from "../../../../utils/api";
 import { Form, Card, Col } from "react-bootstrap";
 import FormWrapper from "../../../common/FormWrapper";
 import ButtonCommon from "../../../common/ButtonCommon";
-import { certificatesCommonFormProps } from "../../../utils/formListCommonProps";
+import { certificatesCommonFormProps } from "../../../../utils/formListCommonProps";
 import { PortfolioOwnerDataContext } from "../Portfolio";
 import { UserStateContext } from "../../../../App";
+import api from "../../../../utils/axiosConfig";
+import { useMemo } from "react";
 
 const Certificate = ({ isEditable, certificate = {}, setCertificates }) => {
   // const [user, setUser] = useState(null);
@@ -27,20 +29,38 @@ const Certificate = ({ isEditable, certificate = {}, setCertificates }) => {
   const portfolioOwnerData = useContext(PortfolioOwnerDataContext);
 
   //form 상세설정 어레이
-  const certificateState = [
-    { value: certificateName, changeHandler: (v) => setCertificateName(v) },
-    { value: certificateDetail, changeHandler: (v) => setCertificateDetail(v) },
-    {
-      value: certificateOrganization,
-      changeHandler: (v) => setCertificateOrganization(v),
-    },
-    { value: acquisitionDate, changeHandler: (v) => setAcquisitionDate(v) },
-  ];
+  const certificateState = useMemo(
+    () => [
+      { value: certificateName, changeHandler: (v) => setCertificateName(v) },
+      {
+        value: certificateDetail,
+        changeHandler: (v) => setCertificateDetail(v),
+      },
+      {
+        value: certificateOrganization,
+        changeHandler: (v) => setCertificateOrganization(v),
+      },
+      { value: acquisitionDate, changeHandler: (v) => setAcquisitionDate(v) },
+    ],
+    [
+      certificateName,
+      setCertificateName,
+      certificateDetail,
+      setCertificateDetail,
+      certificateOrganization,
+      setCertificateOrganization,
+      acquisitionDate,
+      setAcquisitionDate,
+    ]
+  );
 
-  const certificateFormList = certificatesCommonFormProps.map(
-    (certificateCommon, index) => {
-      return { ...certificateCommon, ...certificateState[index] };
-    }
+  const certificateFormList = useMemo(
+    () =>
+      certificatesCommonFormProps.map((certificateCommon, index) => {
+        return { ...certificateCommon, ...certificateState[index] };
+      }),
+
+    [certificateState]
   );
 
   //수정해서 onSubmitHandler
@@ -49,15 +69,14 @@ const Certificate = ({ isEditable, certificate = {}, setCertificates }) => {
 
     //post 서버와 통신
     try {
-      const res = await Api.put(
+      const res = await api.put(
         `user/${userState.user.id}/certificate/${certificate.certificateId}`,
         {
           certificateName,
           // certificateDetail,
           certificateOrganization,
           acquisitionDate,
-        },
-        "Certificate"
+        }
       );
       console.log(res.data);
       if (res.status === 200) {
@@ -78,19 +97,17 @@ const Certificate = ({ isEditable, certificate = {}, setCertificates }) => {
         });
         setEditMode(false);
       } else if (res.status !== 200) {
-        throw new Error("POST 요청을 실패하였습니다.");
+        // throw new Error("POST 요청을 실패하였습니다.");
       }
     } catch (err) {
-      throw new Error("서버와 통신이 실패하였습니다");
+      // throw new Error("서버와 통신이 실패하였습니다");
     }
   };
 
   //삭제함수
   const onClickDel = async (certificateId) => {
-    const res = await Api.delete(
-      `user/${userState.user.id}/certificate`,
-      certificateId,
-      "certificate"
+    const res = await api.delete(
+      `user/${userState.user.id}/certificate/${certificateId}`
     );
     // console.log(res);
     if (res.status === 200) {
@@ -100,12 +117,12 @@ const Certificate = ({ isEditable, certificate = {}, setCertificates }) => {
         )
       );
     } else if (res.status !== 200) {
-      throw new Error("삭제를 실패하였습니다");
+      // throw new Error("삭제를 실패하였습니다");
     }
   };
 
   return (
-    <Card style={{ width: "100%" }}>
+    <Card className="border-0" style={{ width: "100%" }}>
       {!editMode && (
         <>
           <Card.Title>{certificate.certificateName}</Card.Title>
@@ -115,19 +132,19 @@ const Certificate = ({ isEditable, certificate = {}, setCertificates }) => {
           </Card.Subtitle>
           <Card.Text>{certificate.acquisitionDate}</Card.Text>
           {isEditable && (
-            <Form.Group className="mt-3 text-center">
-              <Col sm={{ span: 20 }}>
+            <Form.Group className="mb-5 text-center">
+              <Col>
                 <ButtonCommon
-                  variant="primary"
+                  variant="outline-primary"
                   type="submit"
                   className="me-3"
-                  text="수정"
+                  text="Edit"
                   onClickHandler={() => setEditMode((prev) => !prev)}
                 />
 
                 <ButtonCommon
-                  variant="secondary"
-                  text="삭제"
+                  variant="outline-secondary"
+                  text="Delete"
                   onClickHandler={() => onClickDel(certificate.certificateId)}
                 />
               </Col>
