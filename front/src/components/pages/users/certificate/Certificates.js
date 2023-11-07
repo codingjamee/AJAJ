@@ -1,7 +1,5 @@
 import React, { useContext, useEffect, useState } from "react";
-import { Card, Col, Container, Form } from "react-bootstrap";
-import { UserStateContext } from "../../../../App";
-import * as Api from "../../../../utils/api";
+import { Card } from "react-bootstrap";
 import ButtonCommon from "../../../common/ButtonCommon";
 import FormWrapper from "../../../common/FormWrapper";
 import Certificate from "./Certificate";
@@ -9,27 +7,7 @@ import { certificatesCommonFormProps } from "../../../../utils/formListCommonPro
 import { PortfolioOwnerDataContext } from "../Portfolio";
 import api from "../../../../utils/axiosConfig";
 import { useMemo } from "react";
-
-//********************************서버와 통신전**************************************
-
-//서버와 통신전 더미어레이
-
-// const certificates = [
-//   {
-//     id: "1",
-//     certificateName: "자격증 이름1",
-//     certificateDetail: "자격증 내용입니다11111",
-//     certificateOrganization: "자격증 수여 기관",
-//     certificateDate: "2003-02-02",
-//   },
-//   {
-//     id: "2",
-// certificateName: "자격증 이름3",
-// certificateDetail: "자격증 내용입니다22222",
-// certificateOrganization: "자격증 수여 기관",
-// certificateDate: "2003-02-02",
-//   },
-// ];
+import { useSelector } from "react-redux";
 
 const Certificates = (props) => {
   const [addForm, setAddForm] = useState(false);
@@ -39,7 +17,7 @@ const Certificates = (props) => {
   const [certificateOrganization, setCertificateOrganization] = useState("");
   const [acquisitionDate, setAcquisitionDate] = useState("2023-01-01");
   const { isEditable } = props;
-  const userState = useContext(UserStateContext);
+  const userState = useSelector((state) => state.userInfo);
   const portfolioOwnerData = useContext(PortfolioOwnerDataContext);
 
   //form 상세설정 어레이
@@ -84,7 +62,7 @@ const Certificates = (props) => {
 
     // post 서버와 통신
     try {
-      const res = await api.post(`user/${userState.user.id}/certificate`, {
+      const res = await api.post(`user/${userState.userInfo?.id}/certificate`, {
         certificateName,
         certificateDetail,
         certificateOrganization,

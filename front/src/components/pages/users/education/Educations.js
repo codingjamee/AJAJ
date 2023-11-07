@@ -1,7 +1,5 @@
 import React, { useContext, useEffect, useState } from "react";
 import { Card } from "react-bootstrap";
-import { UserStateContext } from "../../../../App";
-import * as Api from "../../../../utils/api";
 import ButtonCommon from "../../../common/ButtonCommon";
 import FormWrapper from "../../../common/FormWrapper";
 import Education from "./Education";
@@ -9,7 +7,7 @@ import { PortfolioOwnerDataContext } from "../Portfolio";
 import { educationsCommonFormProps } from "../../../../utils/formListCommonProps";
 import api from "../../../../utils/axiosConfig";
 import { useMemo } from "react";
-//********************************서버와 통신 ok**************************************
+import { useSelector } from "react-redux";
 
 const Educations = (props) => {
   const [addForm, setAddForm] = useState(false);
@@ -20,7 +18,7 @@ const Educations = (props) => {
   const [graduationDate, setGraduationDate] = useState("2023-01-01");
   const [educations, setEducations] = useState([]);
   const { isEditable } = props;
-  const userState = useContext(UserStateContext);
+  const userState = useSelector((state) => state.userLogin);
   const portfolioOwnerData = useContext(PortfolioOwnerDataContext);
 
   //form 상세설정 어레이
@@ -62,7 +60,7 @@ const Educations = (props) => {
 
     //post 서버와 통신
     try {
-      const res = await api.post(`user/${userState.user.id}/education`, {
+      const res = await api.post(`user/${userState.userInfo?.id}/education`, {
         schoolName,
         major,
         degree,

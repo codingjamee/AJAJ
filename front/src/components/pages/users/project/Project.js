@@ -1,11 +1,11 @@
 import React, { useContext, useState } from "react";
 import { Card, Col, Form } from "react-bootstrap";
-import { UserStateContext } from "../../../../App";
 import ButtonCommon from "../../../common/ButtonCommon";
 import FormWrapper from "../../../common/FormWrapper";
 import { projectsCommonFormProps } from "../../../../utils/formListCommonProps";
 import api from "../../../../utils/axiosConfig";
 import { useMemo } from "react";
+import { useSelector } from "react-redux";
 
 const Project = ({ isEditable, project = {}, setProjects }) => {
   const [editMode, setEditMode] = useState(false);
@@ -21,7 +21,7 @@ const Project = ({ isEditable, project = {}, setProjects }) => {
     project.projectEndDate || "2023-01-01"
   );
   const [imgBase64, setImgBase64] = useState(project.projectImgUrl || null);
-  const userState = useContext(UserStateContext);
+  const userState = useSelector((state) => state.userLogin);
 
   //form 상세설정 어레이
   const projectState = useMemo(
@@ -57,11 +57,8 @@ const Project = ({ isEditable, project = {}, setProjects }) => {
   );
 
   const handleChangeFile = (e) => {
-    // console.log(e.target.files[0]);
-    console.log(e.target.files);
     if (e.target.files && e.target.files[0]) {
       setProjectImgFile(e.target.files[0]);
-      console.log(e.target.files[0]);
       setImgBase64([]);
     }
 
@@ -94,7 +91,7 @@ const Project = ({ isEditable, project = {}, setProjects }) => {
     //post 서버와 통신
     try {
       const res = await api.put(
-        `user/${userState.user.id}/project/${project.projectId}`,
+        `user/${userState.userInfo?.id}/project/${project.projectId}`,
         formData
       );
 
@@ -134,7 +131,7 @@ const Project = ({ isEditable, project = {}, setProjects }) => {
   const onClickDel = async (projectId) => {
     try {
       const res = await api.delete(
-        `user/${userState.user.id}/project/${projectId}`
+        `user/${userState.userInfo?.id}/project/${projectId}`
       );
       if (res.status === 200) {
         setProjects((prevObj) => {

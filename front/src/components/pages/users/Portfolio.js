@@ -2,15 +2,13 @@ import React, { useContext, useState, useEffect, createContext } from "react";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { Container, Col, Row } from "react-bootstrap";
 
-import { UserStateContext } from "../../../App";
 import User from "./user/User";
 import Educations from "./education/Educations";
 import Certifications from "./certificate/Certificates";
 import Awards from "./award/Awards";
 import Projects from "./project/Projects";
 import api from "../../../utils/axiosConfig";
-import { useDispatch } from "react-redux";
-import { locationActions } from "../../../store/location";
+import { useSelector } from "react-redux";
 
 export const PortfolioOwnerDataContext = createContext({});
 
@@ -18,12 +16,9 @@ function Portfolio() {
   const navigate = useNavigate();
   const params = useParams();
   const [portfolioOwnerData, setPortfolioOwnerData] = useState({});
-  const userState = useContext(UserStateContext);
-  const dispatch = useDispatch();
-  const location = useLocation();
+  const userState = useSelector((state) => state.userLogin);
 
   const fetchPortfolioOwner = async (ownerId) => {
-    // console.log("포트폴리오 오너 아이디" + ownerId);
     try {
       const res = await api.get(`users/${ownerId}`);
       const ownerData = res.data;
@@ -35,7 +30,7 @@ function Portfolio() {
 
   useEffect(() => {
     //userState가 없는 경우
-    if (!userState.user) {
+    if (!userState.userInfo?.id) {
       return navigate("/login", { replace: true });
     }
 
@@ -45,7 +40,7 @@ function Portfolio() {
       fetchPortfolioOwner(ownerId);
     } else {
       // URL "/"
-      const ownerId = userState.user.id;
+      const ownerId = userState.userInfo?.id;
       fetchPortfolioOwner(ownerId);
     }
   }, []);
@@ -61,7 +56,9 @@ function Portfolio() {
             xxl={2}
             style={{ textAlign: "center", overFlow: "hidden" }}
           >
-            <User isEditable={portfolioOwnerData?.id === userState.user?.id} />
+            <User
+              isEditable={portfolioOwnerData?.id === userState.userInfo?.id}
+            />
           </Col>
           <Col md={8} lg={9} xl={10} xxl={10}>
             <div
@@ -72,16 +69,16 @@ function Portfolio() {
               }}
             >
               <Educations
-                isEditable={portfolioOwnerData?.id === userState.user?.id}
+                isEditable={portfolioOwnerData?.id === userState.userInfo?.id}
               />
               <Certifications
-                isEditable={portfolioOwnerData?.id === userState.user?.id}
+                isEditable={portfolioOwnerData?.id === userState.userInfo?.id}
               />
               <Awards
-                isEditable={portfolioOwnerData?.id === userState.user?.id}
+                isEditable={portfolioOwnerData?.id === userState.userInfo?.id}
               />
               <Projects
-                isEditable={portfolioOwnerData?.id === userState.user?.id}
+                isEditable={portfolioOwnerData?.id === userState.userInfo?.id}
               />
             </div>
           </Col>

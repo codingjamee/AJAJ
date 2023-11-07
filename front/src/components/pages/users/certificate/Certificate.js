@@ -1,13 +1,11 @@
-import { useContext, useEffect, useState } from "react";
-import * as Api from "../../../../utils/api";
+import { useState } from "react";
 import { Form, Card, Col } from "react-bootstrap";
 import FormWrapper from "../../../common/FormWrapper";
 import ButtonCommon from "../../../common/ButtonCommon";
 import { certificatesCommonFormProps } from "../../../../utils/formListCommonProps";
-import { PortfolioOwnerDataContext } from "../Portfolio";
-import { UserStateContext } from "../../../../App";
 import api from "../../../../utils/axiosConfig";
 import { useMemo } from "react";
+import { useSelector } from "react-redux";
 
 const Certificate = ({ isEditable, certificate = {}, setCertificates }) => {
   // const [user, setUser] = useState(null);
@@ -25,8 +23,7 @@ const Certificate = ({ isEditable, certificate = {}, setCertificates }) => {
     certificate.acquisitionDate || "2023-01-01"
   );
 
-  const userState = useContext(UserStateContext);
-  const portfolioOwnerData = useContext(PortfolioOwnerDataContext);
+  const userState = useSelector((state) => state.userLogin);
 
   //form 상세설정 어레이
   const certificateState = useMemo(
@@ -70,7 +67,7 @@ const Certificate = ({ isEditable, certificate = {}, setCertificates }) => {
     //post 서버와 통신
     try {
       const res = await api.put(
-        `user/${userState.user.id}/certificate/${certificate.certificateId}`,
+        `user/${userState.userInfo?.id}/certificate/${certificate.certificateId}`,
         {
           certificateName,
           // certificateDetail,
@@ -78,7 +75,6 @@ const Certificate = ({ isEditable, certificate = {}, setCertificates }) => {
           acquisitionDate,
         }
       );
-      console.log(res.data);
       if (res.status === 200) {
         setCertificates((prev) => {
           const updatedCert = prev.map((prevCert) => {
@@ -107,9 +103,8 @@ const Certificate = ({ isEditable, certificate = {}, setCertificates }) => {
   //삭제함수
   const onClickDel = async (certificateId) => {
     const res = await api.delete(
-      `user/${userState.user.id}/certificate/${certificateId}`
+      `user/${userState.userInfo?.id}/certificate/${certificateId}`
     );
-    // console.log(res);
     if (res.status === 200) {
       setCertificates((prev) =>
         prev.filter(

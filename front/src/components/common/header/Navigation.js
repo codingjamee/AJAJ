@@ -1,45 +1,39 @@
-import React, { useContext } from "react";
+import React from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { Nav, Navbar } from "react-bootstrap";
-import { UserStateContext, DispatchContext } from "../../../App";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "../../../UI/design.css";
 import logo from "./logo0.png";
 import api from "../../../utils/axiosConfig";
 import { useMemo } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { userLoginActions } from "../../../store/userLogin";
 
 function Navigation() {
   const navigate = useNavigate();
   const location = useLocation();
-
-  const userState = useContext(UserStateContext);
-  const dispatch = useContext(DispatchContext);
-
-  // console.log(userState);
+  const userState = useSelector((state) => state.userLogin.userInfo);
+  const dispatch = useDispatch();
 
   const navItems = useMemo(
     () => [
       { path: "/", label: "홈페이지" },
-      { path: `/users/${userState?.user?.id}`, label: "마이페이지" },
+      { path: `/users/${userState?.userInfo?.id}`, label: "마이페이지" },
       { path: "/network", label: "네트워크" },
     ],
-    [userState?.user?.id]
+    [userState?.userInfo?.id]
   );
 
-  // 전역상태에서 user가 null이 아니라면 로그인 성공 상태임.
-  const isLogin = !!userState.user;
+  const isLogin = !!userState?.userInfo?.id;
 
-  // 로그아웃 클릭 시 실행되는 함수
-  //api 작성되면 추후에 구현
   const logout = async () => {
     await api.get("logout", "", "Navigation");
-    dispatch({ type: "LOGOUT" });
-    //   // 기본 페이지로 돌아감.
+    dispatch(userLoginActions.clearUser);
     navigate("/");
   };
 
   const onClickmemberDelete = async () => {
-    await api.delete(`/users/${userState?.user?.id}`);
+    await api.delete(`/users/${userState?.userInfo?.id}`);
   };
 
   return (
@@ -53,8 +47,7 @@ function Navigation() {
       <Nav className="mr-auto" activeKey={location.pathname}>
         {navItems.map(({ path, label }, index) => (
           <Nav.Link key={`navitem-${index}`} onClick={() => navigate(path)}>
-            {" "}
-            {label}{" "}
+            {label}
           </Nav.Link>
         ))}
         {isLogin && (

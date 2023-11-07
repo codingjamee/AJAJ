@@ -1,20 +1,20 @@
-import React, { useState, useContext, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Container, Col, Row, Form, Button } from "react-bootstrap";
 
-import { DispatchContext, UserStateContext } from "../../../App";
 import api from "../../../utils/axiosConfig";
 import { validateEmail, validatePassword } from "../../../utils/validate";
 import { useMemo } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { userLoginActions } from "../../../store/userLogin";
 
 function LoginForm() {
   const navigate = useNavigate();
-  const dispatch = useContext(DispatchContext);
+  const dispatch = useDispatch();
   const [emailState, setEmail] = useState("");
   const [passwordState, setPassword] = useState("");
   // const [isFirst, setIsFirst] = useState(true);
-  const userState = useContext(UserStateContext);
-
+  const userState = useSelector((state) => state.userLogin);
   // // 이메일과 비밀번호 조건이 동시에 만족되는지 확인함.
   const isEmailValid = useMemo(() => validateEmail(emailState), [emailState]);
   const isPasswordValid = useMemo(
@@ -28,13 +28,13 @@ function LoginForm() {
   // }
 
   useEffect(() => {
-    if (!userState.user) {
+    if (!userState?.userInfo?.id) {
       navigate("/login", { replace: true });
       return;
     } else if (userState.user) {
       navigate("/", { replace: true });
     }
-  }, [userState.user, navigate]);
+  }, [userState?.userInfo?.id, navigate]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -49,10 +49,7 @@ function LoginForm() {
       // 유저 정보는 response의 data임.
       const user = res.data;
       // dispatch 함수를 이용해 로그인 성공 상태로 만듦.
-      dispatch({
-        type: "LOGIN_SUCCESS",
-        payload: user,
-      });
+      dispatch(userLoginActions.storeUser(user));
 
       // 기본 페이지로 이동함.
       // window.location.href = "/";
