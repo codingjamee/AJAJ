@@ -4,7 +4,7 @@ const { userAuthService } = require('../services/userService');
 const { NotFoundError } = require('../middlewares/errorHandlingMiddleware');
 const { imageUploader } = require("../middlewares/awssdkMiddleware");
 const { RefreshTokenModel } = require('../db/schemas/refreshToken');
-const { pageChecking } = require('../middlewares/pageCheck');
+// const { pageChecking } = require('../middlewares/pageCheck');
 
 const userAuthRouter = Router();
 
@@ -92,9 +92,9 @@ userAuthRouter.post("/user/login", deleted_checked, request_checked, async funct
 
 
 // 전체 사용자목록 가져오기 - 페이징
-userAuthRouter.get("/userlist", async function (req, res, next) {
+userAuthRouter.get("/userlist", login_required, async function (req, res, next) {
   try {
-    console.log(req.query);
+    console.log('query', req.query);
     const currentPage = req.query.page;
     
     const users = await userAuthService.getUsers_paging({ currentPage });
