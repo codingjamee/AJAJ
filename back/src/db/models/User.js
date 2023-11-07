@@ -32,6 +32,26 @@ class User {
     return result;
   }
 
+  // 페이징 part
+  static async findAll_paging({ currentPage }) {
+    console.log('접근');
+    const users = await UserModel.find().skip(currentPage).limit(4);
+    // limit()으로는 가져올 개수 설정
+    // skip()은 처음에 건너뛸 개수
+    console.log('페이징개수: ', users.length);
+    // const filteredUsers = users.map(({...rest}) => [rest._doc].map(({_id, password, createdAt, updatedAt, __v, deletedAt, ...rest}) => rest)).flat();
+    // const result = filteredUsers.sort(((a,b) => {
+    //   // 이름순으로 정렬
+    //   if (a.name > b.name) return 1;
+    //   if (a.name < b.name) return -1;
+
+    //   // 동명이인이라면 이메일 순으로 정렬
+    //   if (a.email > b.email) return 1;
+    //   if (a.email < b.email) return -1;
+    // }));
+    return users;
+  }
+
   static async update({ userId, fieldToUpdate, newValue }) {
     const filter = { id: userId };
     const update = { [fieldToUpdate]: newValue };

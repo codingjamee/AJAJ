@@ -64,6 +64,13 @@ class userAuthService {
     return users;
   }
 
+  // 페이징 part
+  static async getUsers_paging({ currentPage }) {
+    const users = await User.findAll_paging({ currentPage });
+    return users;
+  }
+
+
   static async setUser({ userId, toUpdate }) {
     let user = await User.findById({ userId });
     let errorMessage = null;

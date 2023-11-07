@@ -3,7 +3,8 @@ const { deleted_checked, login_required, request_checked } = require('../middlew
 const { userAuthService } = require('../services/userService');
 const { NotFoundError } = require('../middlewares/errorHandlingMiddleware');
 const { imageUploader } = require("../middlewares/awssdkMiddleware");
-import { RefreshTokenModel } from '../db/schemas/refreshToken'; 
+const { RefreshTokenModel } = require('../db/schemas/refreshToken');
+const { pageChecking } = require('../middlewares/pageCheck');
 
 const userAuthRouter = Router();
 
@@ -75,19 +76,40 @@ userAuthRouter.post("/user/login", deleted_checked, request_checked, async funct
 
 
 // 전체 사용자목록 가져오기
-userAuthRouter.get("/userlist", login_required, async function (req, res, next) {
-    try {
-      const users = await userAuthService.getUsers();
+// userAuthRouter.get("/userlist", login_required, async function (req, res, next) {
+//     try {
+//       const users = await userAuthService.getUsers();
+//       if (!users) {
+//         throw new NotFoundError("사용자 목록을 가져올 수 없습니다.");
+//       }
+
+//       res.status(200).send(users);
+//     } catch (error) {
+//       next(error);
+//     }
+//   }
+// );
+
+
+// 전체 사용자목록 가져오기 - 페이징
+userAuthRouter.get("/userlist", async function (req, res, next) {
+  try {
+    console.log(req.query);
+    const currentPage = req.query.page;
+    
+    const users = await userAuthService.getUsers_paging({ currentPage });
+
       if (!users) {
         throw new NotFoundError("사용자 목록을 가져올 수 없습니다.");
       }
 
-      res.status(200).send(users);
-    } catch (error) {
-      next(error);
-    }
+    res.status(200).send(users);
+  } catch (error) {
+    next(error);
   }
+}
 );
+
 
 // 회원 정보 가져오기
 userAuthRouter.get("/user/current", login_required, async function (req, res, next) {
