@@ -14,6 +14,10 @@ const corsOption = {
   origin: [
     "http://kdt-ai-9-team3.elicecoding.com",
     "http://kdt-ai-9-team3.elicecoding.com:3000",
+    "http://ec2-13-124-235-120.ap-northeast-2.compute.amazonaws.com",
+    "http://ec2-13-124-235-120.ap-northeast-2.compute.amazonaws.com:3000",
+    "13.124.235.120",
+    "13.124.235.120:80",
     "http://localhost:3000",
     "http://34.64.75.220",
     "http://34.64.75.220:3000",
@@ -26,6 +30,7 @@ const corsOption = {
   exposedHeaders: ["set-cookie"],
 };
 app.use(cors(corsOption));
+//app.use(cors());
 // corsOption 제거하면 login창에서 다음으로 넘어가지 않음.
 
 
@@ -42,11 +47,11 @@ app.get("/", (req, res) => {
 
 
 // router, service 구현 (userAuthRouter는 맨 위에 있어야 함.)
-app.use(userAuthRouter);
-app.use(educationAuthRouter);
-app.use(projectAuthRouter);
-app.use(awardAuthRouter);
-app.use(certificateAuthRouter);
+app.use("/api", userAuthRouter);
+app.use("/api", educationAuthRouter);
+app.use("/api", projectAuthRouter);
+app.use("/api", awardAuthRouter);
+app.use("/api", certificateAuthRouter);
 
 
 // 순서 중요 (router 에서 next() 시 아래의 에러 핸들링  middleware로 전달됨)

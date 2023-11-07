@@ -17,7 +17,7 @@ const allowedExtensions = ['.png', '.jpg', '.jpeg', '.bmp']
 const imageUploader = multer({
     storage: multerS3({
         s3: s3,
-        bucket: 'elice-ajaj',
+        bucket: 'elice-ajaj2',
         key: (req, file, callback) => {
             console.log('file', file);
             const uploadDirectory = req.query.directory ?? ''

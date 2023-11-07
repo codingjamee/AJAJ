@@ -12,6 +12,7 @@ async function deleted_checked(req, res, next) {
   try {
     const { email } = req.body;
     const user = await userAuthService.getUserDeletedAt({ email });
+    console.log(`delete_checked ${user}`);
     if (!user) {
       throw new UnauthorizedError("존재하지 않는 회원입니다.");
     }
@@ -165,6 +166,7 @@ async function userId_checked(req, res, next) {
 // 요청 값 있는지 확인
 function request_checked(req, res, next) {
   try {
+	  console.log("request_checked", is.emptyObject(req.body));
     if (is.emptyObject(req.body)) {
       throw new BadRequestError("요청 값이 없습니다.")
     }
