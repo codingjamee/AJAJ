@@ -4,7 +4,7 @@ import axios from "axios";
 // import axios from "axios";
 
 const config = {
-  baseURL: process.env.REACT_APP_API_BASE_URL,
+  baseURL: process.env.REACT_APP_API_BASE_URL + "/api",
   headers: { "Content-Type": "application/json" },
   timeout: 5000,
   withCredentials: true,
@@ -22,7 +22,7 @@ api.interceptors.request.use(
     //요청 data가 Object일 때
     else if (req.data && req.data instanceof Object) {
       req.headers["Content-Type"] = "application/json";
-     // req.data = JSON.stringify(req.data);
+      //req.data = JSON.stringify(req.data);
     }
     if (req.status >= 400 && req.status < 400) {
       console.log(`잘못된 요청입니다. ${req.status}`);
