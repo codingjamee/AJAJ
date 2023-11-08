@@ -22,20 +22,12 @@ api.interceptors.request.use(
     //요청 data가 Object일 때
     else if (req.data && req.data instanceof Object) {
       req.headers["Content-Type"] = "application/json";
-      //req.data = JSON.stringify(req.data);
     }
-    if (req.status >= 400 && req.status < 400) {
-      console.log(`잘못된 요청입니다. ${req.status}`);
-      // throw new Error("Error");
-    }
-    if (req.status <= 500) {
-      console.log(`에러가 발생하였습니다 ${req.status}`);
-    }
+
     return req;
   },
   (err) => {
-    // 400(Bad Requeset), 404(NotFound)
-    console.log(err);
+    console.log("인터셉터에서 잡은", err);
   }
 );
 
@@ -44,24 +36,13 @@ api.interceptors.request.use(
 api.interceptors.response.use(
   (res) => {
     // console.log("응답이 도착했음", res);
-    //alert("요청에 성공했습니다!");
-    if (res.statusCode >= 400 && res.status < 500) {
-      alert(`요청이 실패하였습니다: error code ${res.status} `);
-    } else if (res.statusCode >= 500) {
-      alert(`요청이 실패하였습니다 error code ${res.status}`);
-    }
+    // alert("요청에 성공했습니다!");
     return res;
+  },
+  (err) => {
+    console.log("인터셉터에서 잡은", err);
+    throw new Error("잘못된 요청입니다");
   }
-  // (err) => {
-  //   if (err.status >= 400 && err.status < 500) {
-  //     alert(`요청이 실패하였습니다: error code ${err.status} `);
-  //   } else if (err.status >= 500) {
-  //     alert(`요청이 실패하였습니다 error code ${err.status}`);
-  //   } else {
-  //     // console.log("응답이 도착했음");
-  //   }
-  //   return Promise.reject(err);
-  // }
 );
 
 export default api;

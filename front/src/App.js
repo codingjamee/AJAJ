@@ -1,4 +1,4 @@
-import React, { useEffect, createContext, useCallback } from "react";
+import React, { useEffect, useCallback } from "react";
 import { Routes, Route, useNavigate } from "react-router-dom";
 
 import Navigation from "./components/common/header/Navigation";
@@ -14,8 +14,6 @@ import api from "./utils/axiosConfig";
 import Home from "./components/pages/home/Home";
 import NotFound from "./components/pages/404/NotFound";
 
-export const DispatchContext = createContext(null);
-
 function App() {
   const reduxDispatch = useDispatch();
   const loadingState = useSelector((state) => state.loading.open);
@@ -27,13 +25,14 @@ function App() {
       reduxDispatch(loadingActions.open());
       const res = await api.get("user/current");
       const currentUser = res.data.id;
+      console.log(currentUser);
       if (currentUser) {
         //쿠키에 유저가 있는 경우만
         reduxDispatch(userLoginActions.storeUser(res.data));
-        console.log("%c 로그인 인증된 쿠키 있음.", "color: #d93d1a;");
+        console.log("%c 로그인 되었습니다.", "color: #d93d1a;");
       }
     } catch {
-      console.log("%c 로그인 인증된 쿠키 없음.", "color: #d93d1a;");
+      console.log("%c 로그인 후 사용해주세요.", "color: #d93d1a;");
     } finally {
       reduxDispatch(loadingActions.close());
     }

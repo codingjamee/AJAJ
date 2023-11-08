@@ -12,7 +12,7 @@ import { userLoginActions } from "../../../store/userLogin";
 function Navigation() {
   const navigate = useNavigate();
   const location = useLocation();
-  const userState = useSelector((state) => state.userLogin.userInfo);
+  const userState = useSelector((state) => state.userLogin);
   const dispatch = useDispatch();
 
   const navItems = useMemo(
@@ -28,7 +28,7 @@ function Navigation() {
 
   const logout = async () => {
     await api.get("logout", "", "Navigation");
-    dispatch(userLoginActions.clearUser);
+    dispatch(userLoginActions.clearUser());
     navigate("/");
   };
 

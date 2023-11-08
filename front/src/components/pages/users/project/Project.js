@@ -1,4 +1,4 @@
-import React, { useContext, useState } from "react";
+import React, { useState } from "react";
 import { Card, Col, Form } from "react-bootstrap";
 import ButtonCommon from "../../../common/ButtonCommon";
 import FormWrapper from "../../../common/FormWrapper";
@@ -80,7 +80,6 @@ const Project = ({ isEditable, project = {}, setProjects }) => {
   const onSubmitHandler = async (e) => {
     e.preventDefault();
 
-    //portfolioOwnerId는 portfolio에서 받아옴
     const formData = new FormData();
 
     formData.append("image", projectImgFile);

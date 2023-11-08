@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Container, Col, Row, Form, Button } from "react-bootstrap";
-
 import api from "../../../utils/axiosConfig";
 import { validateEmail, validatePassword } from "../../../utils/validate";
 import { useMemo } from "react";
@@ -15,7 +14,6 @@ function LoginForm() {
   const [passwordState, setPassword] = useState("");
   // const [isFirst, setIsFirst] = useState(true);
   const userState = useSelector((state) => state.userLogin);
-  // // 이메일과 비밀번호 조건이 동시에 만족되는지 확인함.
   const isEmailValid = useMemo(() => validateEmail(emailState), [emailState]);
   const isPasswordValid = useMemo(
     () => validatePassword(passwordState),
@@ -25,13 +23,12 @@ function LoginForm() {
     () => isEmailValid && isPasswordValid,
     [isEmailValid, isPasswordValid]
   );
-  // }
 
   useEffect(() => {
     if (!userState?.userInfo?.id) {
       navigate("/login", { replace: true });
       return;
-    } else if (userState.user) {
+    } else if (userState?.user?.id) {
       navigate("/", { replace: true });
     }
   }, [userState?.userInfo?.id, navigate]);
@@ -40,22 +37,16 @@ function LoginForm() {
     e.preventDefault();
 
     try {
-      // "user/login" 엔드포인트로 post요청함.
       const res = await api.post("user/login", {
         email: emailState,
         password: passwordState,
       });
       console.log("로그인성공", res);
-      // 유저 정보는 response의 data임.
       const user = res.data;
-      // dispatch 함수를 이용해 로그인 성공 상태로 만듦.
       dispatch(userLoginActions.storeUser(user));
-
-      // 기본 페이지로 이동함.
-      // window.location.href = "/";
       navigate("/", { replace: true });
     } catch (err) {
-      console.log("로그인에 실패하였습니다.\n", err);
+      throw new Error("로그인에 실패했습니다");
     }
   };
 
