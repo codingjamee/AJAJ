@@ -1,25 +1,24 @@
 const { Router } = require('express');
 const { login_required, userId_checked, request_checked } = require('../middlewares/requireMiddleware');
 const { NotFoundError } = require('../middlewares/errorHandlingMiddleware');
-
 const { educationAuthService } = require('../services/educationService');
+const ObjectId = require('mongoose').Types.ObjectId;
 
 const educationAuthRouter = Router();
 
 // 학력 추가하기
 educationAuthRouter.post("/user/:id/education", login_required, request_checked, async function (req, res, next) {
     try {
-        const userId = req.params.id;
+        const userId = ObjectId(req.params.id);
         const { schoolName, major, degree, admissionDate, graduationDate } = req.body;
-        const newEducation = await educationAuthService.addEducation({
-            userId, schoolName, major, degree, admissionDate, graduationDate});
+        const newEducation = await educationAuthService.addEducation({ userId, schoolName, major, degree, admissionDate, graduationDate});
 
       if (!newEducation) {
         throw new NotFoundError("해당 학력이 생성되지 않았습니다.");
       }
 
       res.status(201).send({
-        eduId: newEducation.eduId,
+        eduId: newEducation._id,
         message: "학력 추가에 성공했습니다."
       });
     } catch (error) {
@@ -30,7 +29,7 @@ educationAuthRouter.post("/user/:id/education", login_required, request_checked,
 // 학력 전체 가져오기
 educationAuthRouter.get("/user/:id/educations", login_required, async function (req, res, next) {
   try {
-    const userId = req.params.id;
+    const userId = ObjectId(req.params.id);
     const educations = await educationAuthService.getEducations({userId});
 
     if (!educations) {
@@ -46,7 +45,7 @@ educationAuthRouter.get("/user/:id/educations", login_required, async function (
 // 학력 수정하기
 educationAuthRouter.put("/user/:id/education/:eduId", login_required, userId_checked, request_checked, async function (req, res, next) {
     try {
-      const eduId = req.params.eduId;
+      const eduId = ObjectId(req.params.eduId);
 
       const { schoolName, major, degree, admissionDate, graduationDate } = req.body;
       const toUpdate = { schoolName, major, degree, admissionDate, graduationDate };
@@ -67,7 +66,7 @@ educationAuthRouter.put("/user/:id/education/:eduId", login_required, userId_che
 
 // 학력 삭제하기
 educationAuthRouter.delete("/user/:id/education/:eduId", login_required, userId_checked, async function (req, res, next) {
-  const eduId = req.params.eduId;
+  const eduId = ObjectId(req.params.eduId);
   try {
     const deleteEducation = await educationAuthService.deleteEducation({ eduId });
 

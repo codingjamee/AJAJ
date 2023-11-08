@@ -6,6 +6,7 @@ const { certificateAuthService } = require('../services/certificateService');
 const { projectAuthService } = require('../services/projectService');
 const { NotFoundError, UnauthorizedError, BadRequestError } = require('../middlewares/errorHandlingMiddleware');
 const jwt = require('./jwtMiddleware');
+const ObjectId = require('mongoose').Types.ObjectId;
 
 // 탈퇴한 회원인지 확인
 async function deleted_checked(req, res, next) {
@@ -36,7 +37,6 @@ async function login_required(req, res, next) {
 
   // 쿠키를 정렬합니다.
   const sortedCookies = cookieArray.map((cookie) => cookie.trim());
-
   // 정렬된 쿠키에서 유저 토큰을 찾습니다.
   for (const cookie of sortedCookies) {
     const [name, value] = cookie.split('=');
@@ -52,13 +52,13 @@ async function login_required(req, res, next) {
 
   let userId = '';
   if (current_userId) {
-    userId = current_userId;
+    userId = ObjectId(current_userId);
   } else if (userlist_userId) {
-    userId = userlist_userId;
+    userId = ObjectId(userlist_userId);
   } else {
-    userId = params_userId;
+    userId = ObjectId(params_userId);
   }
-  
+
   try {
     if (userToken) {
       // 해당 token이 정상적인 token인지 확인
@@ -72,7 +72,6 @@ async function login_required(req, res, next) {
         }
 
         const user = await userAuthService.getUserInfo({ userId });
-
         // 엑세스 토큰 발급
         userToken = jwt.sign(user)
         if (!userToken) {
@@ -94,7 +93,7 @@ async function login_required(req, res, next) {
         next();
       } else if (jwtDecoded.errormessage === null) {
 
-        const user_id = jwtDecoded.user_id;
+        const user_id = ObjectId(jwtDecoded.user_id);
         req.currentUserId = user_id;
         next();
       } else {
@@ -112,47 +111,52 @@ async function login_required(req, res, next) {
 // 수정 및 삭제 시 권한 있는지 확인
 // 접근 중인 userId(User)와 mvp id의 userId와 같은지 확인 -> mvp 모델에 따라 다르게
 async function userId_checked(req, res, next) {
-  const userId = req.params.id;
-  const eduId = req.params.eduId;
-  const projectId = req.params.projectId;
-  const awardId = req.params.awardId;
-  const certificateId = req.params.certificateId;
+  let userId = req.params.id;
+  let eduId = req.params.eduId;
+  let projectId = req.params.projectId;
+  let awardId = req.params.awardId;
+  let certificateId = req.params.certificateId;
 
   try {
     if (userId) {
+      userId = ObjectId(userId);
       if (eduId) {
+        eduId = ObjectId(eduId);
         const user = await educationAuthService.checkEducation({ eduId });
         if (!user) {
           throw new NotFoundError("Not Found");
         }
-        if (user.userId !== userId) {
+        if (user.userId.toString() !== userId.toString()) {
           throw new UnauthorizedError("접근 권한이 없습니다.");
         }
       }
       if (projectId) {
+        projectId = ObjectId(projectId);
         const user = await projectAuthService.checkProject({ projectId });
         if (!user) {
           throw new NotFoundError("Not Found");
         }
-        if (user.userId !== userId) {
+        if (user.userId.toString() !== userId.toString()) {
           throw new UnauthorizedError("접근 권한이 없습니다.");
         }
       }
       if (awardId) {
+        awardId = ObjectId(awardId);
         const user = await awardAuthService.checkAward({ awardId });
         if (!user) {
           throw new NotFoundError("Not Found");
         }
-        if (user.userId !== userId) {
+        if (user.userId.toString() !== userId.toString()) {
           throw new UnauthorizedError("접근 권한이 없습니다.");
         }
       }
       if (certificateId) {
+        certificateId = ObjectId(certificateId);
         const user = await certificateAuthService.checkCertificate({ certificateId });
         if (!user) {
           throw new NotFoundError("Not Found");
         }
-        if (user.userId !== userId) {
+        if (user.userId.toString() !== userId.toString()) {
           throw new UnauthorizedError("접근 권한이 없습니다.");
         }
       }

@@ -1,4 +1,5 @@
-import { ProjectModel } from "../schemas/project"; // Project 모델을 import
+import { ProjectModel } from "../schemas/project";
+const ObjectId = require('mongoose').Types.ObjectId;
 
 class Project {
   static async create({ newProject }) {
@@ -7,13 +8,13 @@ class Project {
   }
 
   static async checkProjectId({ projectId }) {
-    const project = await ProjectModel.findOne({ projectId });
+    const project = await ProjectModel.findOne({ _id: ObjectId(projectId) });
     return project;
   }
 
   static async findAll({ userId }) {
     const projects = await ProjectModel.find({ userId });
-    const filteredProjects = projects.map(({...rest}) => [rest._doc].map(({userId, _id, createdAt, updatedAt, __v, ...rest}) => rest)).flat();
+    const filteredProjects = projects.map(({...rest}) => [rest._doc].map(({userId, createdAt, updatedAt, __v, ...rest}) => rest)).flat();
     const result = filteredProjects.sort(((a,b) => {
       if (new Date(a.projectStartDate) > new Date(b.projectStartDate)) return 1;
       if (new Date(a.projectStartDate) < new Date(b.projectStartDate)) return -1;
@@ -26,12 +27,12 @@ class Project {
   }
 
   static async findByProjectId({ projectId }) {
-    const project = await ProjectModel.findOne({ projectId });
+    const project = await ProjectModel.findOne({ _id: ObjectId(projectId) });
     return project;
   }
 
   static async update({ projectId, fieldToUpdate, newValue }) {
-    const filter = { projectId: projectId };
+    const filter = { _id: projectId };
     const update = { [fieldToUpdate]: newValue };
     const option = { returnOriginal: false };
     const updatedProject = await ProjectModel.findOneAndUpdate(filter, update, option);
@@ -39,7 +40,7 @@ class Project {
   }
 
   static async delete({ projectId }) {
-    const result = await ProjectModel.findOneAndDelete({ projectId });
+    const result = await ProjectModel.findOneAndDelete({ _id: ObjectId(projectId) });
     return result;
   }
 }

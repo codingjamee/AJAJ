@@ -1,4 +1,5 @@
 import { AwardModel } from "../schemas/award";
+const ObjectId = require('mongoose').Types.ObjectId;
 
 class Award {
   static async create({ newAward }) {
@@ -7,18 +8,18 @@ class Award {
   }
 
   static async checkAwardId({ awardId }) {
-    const user = await AwardModel.findOne({ awardId });
+    const user = await AwardModel.findOne({ _id: ObjectId(awardId) });
     return user;
   }
 
   static async findByAwardId({ awardId }) {
-    const award = await AwardModel.findOne({ awardId });
+    const award = await AwardModel.findOne({ _id: ObjectId(awardId) });
     return award;
   }
 
   static async findAll({ userId }) {
     const awards = await AwardModel.find({ userId });
-    const filteredAwards = awards.map(({...rest}) => [rest._doc].map(({userId, _id, createdAt, updatedAt, __v, ...rest}) => rest)).flat();
+    const filteredAwards = awards.map(({...rest}) => [rest._doc].map(({userId, createdAt, updatedAt, __v, ...rest}) => rest)).flat();
     const result = filteredAwards.sort(((a,b) => {
       if (new Date(a.awardDate) > new Date(b.awardDate)) return 1;
       if (new Date(a.awardDate) < new Date(b.awardDate)) return -1;
@@ -30,7 +31,7 @@ class Award {
   }
 
   static async update({ awardId, fieldToUpdate, newValue }) {
-    const filter = { awardId };
+    const filter = { _id: awardId };
     const update = { [fieldToUpdate]: newValue };
     const option = { returnOriginal: false };
 
@@ -39,7 +40,8 @@ class Award {
   }
 
   static async delete({ awardId }) {
-    const result = await AwardModel.findOneAndDelete({ awardId });
+    const result = await AwardModel.findOneAndDelete({ _id: ObjectId(awardId) });
+    console.log('result', result);
     return result;
   }
 }

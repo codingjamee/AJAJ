@@ -1,13 +1,19 @@
-import { Schema, model } from "mongoose";
+import { Schema, model } from 'mongoose';
+
 
 const refreshTokenSchema = new Schema({
   userId: {
-    type: String,
-    ref: 'User', // 사용자 모델을 참조하도록 조정
+    type: Schema.Types.ObjectId,
+    required: true,
+    ref: 'User',
   },
   token: {
     type: String,
     required: true,
+  },
+  madeAt: {
+    type: Date,
+    default: null,
   },
 });
 
