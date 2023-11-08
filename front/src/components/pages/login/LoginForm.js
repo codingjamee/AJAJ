@@ -1,19 +1,18 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Container, Col, Row, Form, Button } from "react-bootstrap";
-import api from "../../../utils/axiosConfig";
 import { validateEmail, validatePassword } from "../../../utils/validate";
 import { useMemo } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import { userLoginActions } from "../../../store/userLogin";
+import { useSelector } from "react-redux";
+import useApi from "../../../hooks/useApi";
 
 function LoginForm() {
   const navigate = useNavigate();
-  const dispatch = useDispatch();
   const [emailState, setEmail] = useState("");
   const [passwordState, setPassword] = useState("");
   // const [isFirst, setIsFirst] = useState(true);
   const userState = useSelector((state) => state.userLogin);
+  const { result, loading, sendRequest } = useApi();
   const isEmailValid = useMemo(() => validateEmail(emailState), [emailState]);
   const isPasswordValid = useMemo(
     () => validatePassword(passwordState),
@@ -28,26 +27,17 @@ function LoginForm() {
     if (!userState?.userInfo?.id) {
       navigate("/login", { replace: true });
       return;
-    } else if (userState?.user?.id) {
+    } else if (userState?.userInfo?.id) {
       navigate("/", { replace: true });
     }
   }, [userState?.userInfo?.id, navigate]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
-    try {
-      const res = await api.post("user/login", {
-        email: emailState,
-        password: passwordState,
-      });
-      console.log("로그인성공", res);
-      const user = res.data;
-      dispatch(userLoginActions.storeUser(user));
-      navigate("/", { replace: true });
-    } catch (err) {
-      throw new Error("로그인에 실패했습니다");
-    }
+    sendRequest("user/login", "post", {
+      email: emailState,
+      password: passwordState,
+    });
   };
 
   return (

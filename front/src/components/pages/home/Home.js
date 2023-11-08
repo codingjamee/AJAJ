@@ -11,16 +11,16 @@ const Home = () => {
   const navigate = useNavigate();
   const btnRef = useRef(null);
   const onClick = () => {
-    navigate(`/users/${userState.userInfo.id}`);
+    navigate(`/users/${userState.userInfo?.id}`);
   };
   useEffect(() => {
-    if (!userState.userInfo.id) {
+    if (!userState.userInfo?.id) {
       navigate("/login", { replace: true });
       return;
     }
 
     btnRef.current.focus();
-  }, [userState.userInfo.id]);
+  }, [userState.userInfo?.id]);
   return (
     <Card
       border="warning"

@@ -1,26 +1,34 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import api from "../utils/axiosConfig";
+import { useDispatch } from "react-redux";
+import { userLoginActions } from "../store/userLogin";
+import { Navigate } from "react-router-dom";
+import { useErrorBoundary } from "react-error-boundary";
 
-const useApi = (url) => {
+const useApi = () => {
   const [result, setResult] = useState();
-  //이렇게 사용하면 loading의 상태를 redux로 관리할 필요가 있을까?
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(false);
+  const dispatch = useDispatch();
+  const { showBoundary } = useErrorBoundary();
 
-  useEffect(() => {
-    let cancelled = false;
+  const sendRequest = async (url, method, data) => {
     setLoading(true);
-    api.get(url).then((result) => {
-      if (!cancelled) {
-        setResult(result.data);
-        setLoading(false);
+    if (method === "post") {
+      try {
+        const res = await api.post(url, data);
+        console.log("로그인성공", res);
+        setResult(res.data);
+        const user = res.data;
+        dispatch(userLoginActions.storeUser(user));
+        Navigate("/", { replace: true });
+      } catch (err) {
+        showBoundary(err);
       }
-    });
-    return () => {
-      cancelled = true;
-    };
-  }, [url]);
+    }
+  };
 
-  return [result, loading];
+  return { result, loading, sendRequest };
 };
 
 export default useApi;
