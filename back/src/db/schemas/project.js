@@ -1,16 +1,17 @@
-import { Schema, model } from "mongoose";
+import { Schema, model } from 'mongoose';
+
 
 const ProjectSchema = new Schema(
   {
     userId: {
-      type: String,
+      type: Schema.Types.ObjectId,
       required: true,
       ref: "User",
     },
-    projectId: {
-      type: String,
-      required: true,
-    },
+    // projectId: {
+    //   type: String,
+    //   required: true,
+    // },
     projectName: {
       type: String,
       required: true,

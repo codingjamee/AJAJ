@@ -1,4 +1,5 @@
 import { CertificateModel } from "../schemas/certificate";
+const ObjectId = require('mongoose').Types.ObjectId;
 
 class Certificate {
   static async create({ newCertificate }) {
@@ -7,18 +8,18 @@ class Certificate {
   }
 
   static async checkCertificateId({ certificateId }) {
-    const user = await CertificateModel.findOne({ certificateId });
+    const user = await CertificateModel.findOne({ _id: ObjectId(certificateId) });
     return user;
   }
 
   static async findByCertificateId({ certificateId }) {
-    const certificate = await CertificateModel.findOne({ certificateId });
+    const certificate = await CertificateModel.findOne({ _id: ObjectId(certificateId) });
     return certificate;
   }
 
   static async findAll({ userId }) {
     const certificates = await CertificateModel.find({ userId });
-    const filteredCertificates = certificates.map(({...rest}) => [rest._doc].map(({userId, _id, createdAt, updatedAt, __v, ...rest}) => rest)).flat();
+    const filteredCertificates = certificates.map(({...rest}) => [rest._doc].map(({userId, createdAt, updatedAt, __v, ...rest}) => rest)).flat();
     const result = filteredCertificates.sort(((a,b) => {
       if (new Date(a.acquisitionDate) > new Date(b.acquisitionDate)) return 1;
       if (new Date(a.acquisitionDate) < new Date(b.acquisitionDate)) return -1;
@@ -30,7 +31,7 @@ class Certificate {
   }
 
   static async update({ certificateId, fieldToUpdate, newValue }) {
-    const filter = { certificateId };
+    const filter = { _id: certificateId };
     const update = { [fieldToUpdate]: newValue };
     const option = { returnOriginal: false };
 
@@ -39,7 +40,7 @@ class Certificate {
   }
 
   static async delete({ certificateId }) {
-    const result = await CertificateModel.findOneAndDelete({ certificateId });
+    const result = await CertificateModel.findOneAndDelete({ _id: ObjectId(certificateId) });
     return result;
   }
 }

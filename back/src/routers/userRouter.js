@@ -4,7 +4,7 @@ const { userAuthService } = require('../services/userService');
 const { NotFoundError } = require('../middlewares/errorHandlingMiddleware');
 const { imageUploader } = require("../middlewares/awssdkMiddleware");
 const { RefreshTokenModel } = require('../db/schemas/refreshToken');
-// const { pageChecking } = require('../middlewares/pageCheck');
+const ObjectId = require('mongoose').Types.ObjectId;
 
 const userAuthRouter = Router();
 
@@ -31,7 +31,6 @@ userAuthRouter.post("/user/register", request_checked, async function (req, res,
 userAuthRouter.post("/user/login", deleted_checked, request_checked, async function (req, res, next) {
   try {
     const { email, password } = req.body;
-
     const { errorMessage, accessToken, refreshToken, loginUser } = await userAuthService.getUser({ email, password });
     if (errorMessage) {
       throw new NotFoundError(errorMessage);
@@ -58,6 +57,7 @@ userAuthRouter.post("/user/login", deleted_checked, request_checked, async funct
       const refreshTokenDocument = new RefreshTokenModel({
         userId: userId,
         token: refreshToken,
+        madeAt: new Date()
       });
 
       // 데이터베이스에 리프래시 토큰 저장
@@ -94,7 +94,6 @@ userAuthRouter.post("/user/login", deleted_checked, request_checked, async funct
 // 전체 사용자목록 가져오기 - 페이징
 userAuthRouter.get("/userlist", login_required, async function (req, res, next) {
   try {
-    console.log('query', req.query);
     const currentPage = req.query.page;
     
     const users = await userAuthService.getUsers_paging({ currentPage });
@@ -114,7 +113,7 @@ userAuthRouter.get("/userlist", login_required, async function (req, res, next) 
 // 회원 정보 가져오기
 userAuthRouter.get("/user/current", login_required, async function (req, res, next) {
     try {
-      const userId = req.currentUserId;
+      const userId = ObjectId(req.currentUserId);
       const { errorMessage, currentUserInfo } = await userAuthService.getUserInfo({ userId });
 
       if (errorMessage) {
@@ -133,7 +132,7 @@ userAuthRouter.get("/user/current", login_required, async function (req, res, ne
 userAuthRouter.patch("/users/:id", login_required, imageUploader.array("image"), request_checked,
   async function (req, res, next) {
     try {
-      const userId = req.params.id;
+      const userId = ObjectId(req.params.id);
       const userImgUrl = req.files[0].location;
       const { name, email, password, description } = req.body;
       const toUpdate = { name, email, password, description, userImgUrl };
@@ -158,7 +157,7 @@ userAuthRouter.patch("/users/:id", login_required, imageUploader.array("image"),
 // 회원 정보 가져오기
 userAuthRouter.get("/users/:id", login_required, async function (req, res, next) {
     try {
-      const userId = req.params.id;
+      const userId = ObjectId(req.params.id);
       const { errorMessage, currentUserInfo } = await userAuthService.getUserInfo({ userId });
       if (errorMessage) {
         throw new NotFoundError(errorMessage);
@@ -181,7 +180,7 @@ userAuthRouter.get("/logout", async function (req, res, next) {
 // 회원 탈퇴
 userAuthRouter.delete("/users/:id", login_required, async function (req, res, next) {
   try {
-    const userId = req.params.id;
+    const userId = ObjectId(req.params.id);
     const deletedUser = await userAuthService.deleteUser({ userId });
     if (!deletedUser) {
       throw new NotFoundError("탈퇴과정에서 오류가 났습니다. 다시 시도해주세요.");

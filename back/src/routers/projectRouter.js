@@ -3,7 +3,7 @@ const { login_required, userId_checked, request_checked } = require('../middlewa
 const { NotFoundError } = require('../middlewares/errorHandlingMiddleware');
 const { projectAuthService } = require('../services/projectService');
 const { imageUploader } = require("../middlewares/awssdkMiddleware");
-
+const ObjectId = require('mongoose').Types.ObjectId;
 
 const projectAuthRouter = Router();
 
@@ -11,13 +11,10 @@ const projectAuthRouter = Router();
 projectAuthRouter.post("/user/:id/project", login_required, imageUploader.array("image"), request_checked,
   async function (req, res, next) {
     try {
-      console.log("req.body", req.body);
-      const userId = req.params.id;
+      const userId = ObjectId(req.params.id);
       const projectImgUrl = req.files[0].location;
-      console.log('projectImgUrl', projectImgUrl);
       
       const { projectName, projectDetail, projectStartDate, projectEndDate } = req.body;
-      // const { projectName, projectDetail, projectImgUrl, projectStartDate, projectEndDate } = req.body;
       const newProject = await projectAuthService.addProject({ userId, projectName, projectDetail, projectImgUrl, projectStartDate, projectEndDate });
 
       if (!newProject) {
@@ -25,7 +22,7 @@ projectAuthRouter.post("/user/:id/project", login_required, imageUploader.array(
       }
 
       res.status(201).send({
-        projectId: newProject.projectId,
+        projectId: newProject._id,
         projectImgUrl: newProject.projectImgUrl,
         message: "프로젝트 추가에 성공했습니다."
       });
@@ -38,7 +35,7 @@ projectAuthRouter.post("/user/:id/project", login_required, imageUploader.array(
 // 프로젝트 전체 가져오기
 projectAuthRouter.get("/user/:id/projects", login_required, async function (req, res, next) {
   try {
-    const userId = req.params.id;
+    const userId = ObjectId(req.params.id);
     const projects = await projectAuthService.getProjects({ userId });
 
     if (!projects) {
@@ -55,7 +52,7 @@ projectAuthRouter.get("/user/:id/projects", login_required, async function (req,
 projectAuthRouter.put("/user/:id/project/:projectId", login_required, userId_checked, imageUploader.array("image"), request_checked,
   async function (req, res, next) {
     try {
-      const projectId = req.params.projectId;
+      const projectId = ObjectId(req.params.projectId);
       const { projectName, projectDetail, projectImgUrl, projectStartDate, projectEndDate } = req.body;
       const toUpdate = { projectName, projectDetail, projectImgUrl, projectStartDate, projectEndDate };
 
@@ -77,7 +74,7 @@ projectAuthRouter.put("/user/:id/project/:projectId", login_required, userId_che
 
 // 프로젝트 삭제하기
 projectAuthRouter.delete("/user/:id/project/:projectId", login_required, userId_checked, async function (req, res, next) {
-  const projectId = req.params.projectId;
+  const projectId = ObjectId(req.params.projectId);
   try {
     const deleteProject = await projectAuthService.deleteProject({ projectId });
 

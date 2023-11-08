@@ -1,7 +1,8 @@
 import { User } from "../db"; // from을 폴더(db) 로 설정 시, 디폴트로 index.js 로부터 import함.
 import bcrypt from "bcrypt";
-import { v4 as uuidv4 } from "uuid";
+// import { v4 as uuidv4 } from "uuid";
 const jwt = require('../middlewares/jwtMiddleware');
+
 
 class userAuthService {
   static async getUserDeletedAt({ email }) {
@@ -19,8 +20,7 @@ class userAuthService {
     // 비밀번호 해쉬화
     const hashedPassword = await bcrypt.hash(password, 10);
 
-    const id = uuidv4();
-    const newUser = { id, name, email, password: hashedPassword };
+    const newUser = { name, email, password: hashedPassword };
 
     // db에 저장
     await User.create({ newUser });
@@ -50,7 +50,7 @@ class userAuthService {
     const accessToken = jwt.sign(user);
     const refreshToken = jwt.refresh();
 
-    const id = user.id;
+    const id = user._id;
     const name = user.name;
     const description = user.description;
     const userImgUrl = user.userImgUrl;
