@@ -1,26 +1,26 @@
-import { useContext, useEffect, useRef } from "react";
+import { useEffect, useRef } from "react";
 import Card from "react-bootstrap/Card";
-import { UserStateContext } from "../../../App";
 import { Image } from "react-bootstrap";
 import ButtonCommon from "../../common/ButtonCommon";
 import { useNavigate } from "react-router-dom";
 import defaultImg from "../../common/header/logo0.png";
+import { useSelector } from "react-redux";
 
 const Home = () => {
-  const userState = useContext(UserStateContext);
+  const userState = useSelector((state) => state.userLogin);
   const navigate = useNavigate();
   const btnRef = useRef(null);
   const onClick = () => {
-    navigate(`/users/${userState.user.id}`);
+    navigate(`/users/${userState.userInfo.id}`);
   };
   useEffect(() => {
-    if (!userState.user) {
+    if (!userState.userInfo.id) {
       navigate("/login", { replace: true });
       return;
     }
 
     btnRef.current.focus();
-  }, [userState.user]);
+  }, [userState.userInfo.id]);
   return (
     <Card
       border="warning"
@@ -42,10 +42,10 @@ const Home = () => {
           margin: "10px",
         }}
       >
-        <Card.Title>{userState?.user?.name}님의 홈페이지</Card.Title>
-        <Image src={userState?.user?.userImgUrl || defaultImg} />
+        <Card.Title>{userState?.userInfo?.name}님의 홈페이지</Card.Title>
+        <Image src={userState?.userInfo?.userImgUrl || defaultImg} />
         <Card.Text style={{ marginTop: "30px" }}>당신의 상태</Card.Text>
-        <Card.Text>{userState?.user?.description}</Card.Text>
+        <Card.Text>{userState?.userInfo?.description}</Card.Text>
         <ButtonCommon
           variant="outline-secondary"
           onClickHandler={onClick}

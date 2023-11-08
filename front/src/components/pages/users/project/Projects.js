@@ -1,6 +1,5 @@
 import React, { useContext, useEffect, useState } from "react";
 import { Card } from "react-bootstrap";
-import { UserStateContext } from "../../../../App";
 import ButtonCommon from "../../../common/ButtonCommon";
 import FormWrapper from "../../../common/FormWrapper";
 import { PortfolioOwnerDataContext } from "../Portfolio";
@@ -8,6 +7,7 @@ import { projectsCommonFormProps } from "../../../../utils/formListCommonProps";
 import Project from "./Project";
 import api from "../../../../utils/axiosConfig";
 import { useMemo } from "react";
+import { useSelector } from "react-redux";
 
 const Projects = (props) => {
   const [addForm, setAddForm] = useState(false);
@@ -18,7 +18,7 @@ const Projects = (props) => {
   const [imgBase64, setImgBase64] = useState(null);
   const [projectStartDate, setProjectStartDate] = useState("2023-01-01");
   const [projectEndDate, setProjectEndDate] = useState("2023-01-01");
-  const userState = useContext(UserStateContext);
+  const userState = useSelector((state) => state.userLogin);
   const portfolioOwnerData = useContext(PortfolioOwnerDataContext);
   const { isEditable } = props;
 
@@ -56,11 +56,8 @@ const Projects = (props) => {
   );
 
   const handleChangeFile = (e) => {
-    // console.log(e.target.files[0]);
-    console.log(e);
     if (e.target.files && e.target.files[0]) {
       setProjectImgFile(e.target.files[0]);
-      console.log(e.target.files[0]);
       setImgBase64([]);
     }
     // for (var i = 0; i < e.target.files.length; i++) {
@@ -77,7 +74,6 @@ const Projects = (props) => {
         setImgBase64(base64Sub);
         //  setImgBase64(newObj);
         // 파일 base64 상태 업데이트
-        console.log(imgBase64);
       }
       //   };
       // }
@@ -88,14 +84,10 @@ const Projects = (props) => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    console.log(e);
-
     if (!projectImgFile) {
       alert("이미지를 등록해주세요");
       return;
     }
-
-    console.log("projectImgFile", projectImgFile);
 
     const formData = new FormData();
 
@@ -107,10 +99,9 @@ const Projects = (props) => {
 
     //post 서버와 통신
     try {
-      if (userState.user.id) {
-        console.log(`user/${userState.user.id}/project`, "여기로 보냅니다.");
+      if (userState.userInfo?.id) {
         const res = await api.post(
-          `user/${userState.user.id}/project`,
+          `user/${userState.userInfo?.id}/project`,
           formData
         );
 

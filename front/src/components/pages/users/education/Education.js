@@ -1,12 +1,11 @@
-import { useContext, useEffect, useState } from "react";
-import * as Api from "../../../../utils/api";
+import { useState } from "react";
 import { Form, Card, Col } from "react-bootstrap";
 import FormWrapper from "../../../common/FormWrapper";
 import ButtonCommon from "../../../common/ButtonCommon";
-import { UserStateContext } from "../../../../App";
 import { educationsCommonFormProps } from "../../../../utils/formListCommonProps";
 import api from "../../../../utils/axiosConfig";
 import { useMemo } from "react";
+import { useSelector } from "react-redux";
 
 const Education = ({ isEditable, education = {}, setEducations }) => {
   // useState 훅을 통해 user 상태를 생성함.
@@ -21,7 +20,7 @@ const Education = ({ isEditable, education = {}, setEducations }) => {
   const [graduationDate, setGraduationDate] = useState(
     education.graduationDate || "2023-01-01"
   );
-  const userState = useContext(UserStateContext);
+  const userState = useSelector((state) => state.userLogin);
 
   //form 상세설정 어레이
   const eduState = useMemo(
@@ -64,7 +63,7 @@ const Education = ({ isEditable, education = {}, setEducations }) => {
     //post 서버와 통신
     try {
       const res = await api.put(
-        `user/${userState.user.id}/education/${education.eduId}`,
+        `user/${userState.userInfo?.id}/education/${education.eduId}`,
         {
           schoolName,
           major,
@@ -73,7 +72,6 @@ const Education = ({ isEditable, education = {}, setEducations }) => {
           graduationDate,
         }
       );
-      // console.log(res.data);
       if (res.status === 200) {
         setEducations((prev) => {
           const updatedEdus = prev.map((prevEdu) => {
@@ -106,7 +104,7 @@ const Education = ({ isEditable, education = {}, setEducations }) => {
   const onClickDel = async (eduId) => {
     try {
       const res = await api.delete(
-        `user/${userState.user.id}/education/${eduId}`
+        `user/${userState.userInfo?.id}/education/${eduId}`
       );
       // console.log(res);
       if (res.status === 200) {

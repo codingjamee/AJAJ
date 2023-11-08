@@ -14,7 +14,6 @@ function UserEditForm({ user, setIsEditing, setUser }) {
   const portfolioOwnerData = useContext(PortfolioOwnerDataContext);
 
   const onAddImage = (e) => {
-    console.log(e);
     setImage(e.target.files);
 
     // setImageBase([]);

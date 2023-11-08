@@ -1,11 +1,11 @@
-import { useContext, useState } from "react";
+import { useState } from "react";
 import { Form, Card, Col } from "react-bootstrap";
 import FormWrapper from "../../../common/FormWrapper";
 import ButtonCommon from "../../../common/ButtonCommon";
-import { UserStateContext } from "../../../../App";
 import { awardsCommonFormProps } from "../../../../utils/formListCommonProps";
 import api from "../../../../utils/axiosConfig";
 import { useMemo } from "react";
+import { useSelector } from "react-redux";
 
 const Award = ({ isEditable, award = {}, setAwards }) => {
   const [editMode, setEditMode] = useState(false);
@@ -15,7 +15,7 @@ const Award = ({ isEditable, award = {}, setAwards }) => {
     award.awardOrganization || ""
   );
   const [awardDate, setAwardDate] = useState(award.awardDate || "2023-01-01");
-  const userState = useContext(UserStateContext);
+  const userState = useSelector((state) => state.userLogin);
 
   //form 상세설정 어레이
   const awardState = useMemo(
@@ -57,7 +57,7 @@ const Award = ({ isEditable, award = {}, setAwards }) => {
     //post 서버와 통신
     try {
       const res = await api.put(
-        `user/${userState.user.id}/award/${award.awardId}`,
+        `user/${userState.userInfo?.id}/award/${award.awardId}`,
         {
           awardName,
           awardDetail,
@@ -97,7 +97,7 @@ const Award = ({ isEditable, award = {}, setAwards }) => {
   const onClickDel = async (awardId) => {
     try {
       const res = await api.delete(
-        `user/${userState.user.id}/award/${awardId}`
+        `user/${userState.userInfo.id}/award/${awardId}`
       );
       // console.log(res);
       if (res.status === 200) {

@@ -1,6 +1,5 @@
 import React, { useContext, useEffect, useState } from "react";
 import { Card } from "react-bootstrap";
-import { UserStateContext } from "../../../../App";
 import ButtonCommon from "../../../common/ButtonCommon";
 import FormWrapper from "../../../common/FormWrapper";
 import { PortfolioOwnerDataContext } from "../Portfolio";
@@ -8,6 +7,7 @@ import { awardsCommonFormProps } from "../../../../utils/formListCommonProps";
 import Award from "./Award";
 import api from "../../../../utils/axiosConfig";
 import { useMemo } from "react";
+import { useSelector } from "react-redux";
 
 const Awards = (props) => {
   const [addForm, setAddForm] = useState(false);
@@ -16,7 +16,7 @@ const Awards = (props) => {
   const [awardDetail, setAwardDetail] = useState("");
   const [awardOrganization, setAwardOrganization] = useState("");
   const [awardDate, setAwardDate] = useState("2023-01-01");
-  const userState = useContext(UserStateContext);
+  const userState = useSelector((state) => state.userInfo);
   const portfolioOwnerData = useContext(PortfolioOwnerDataContext);
   const { isEditable } = props;
 
@@ -58,7 +58,7 @@ const Awards = (props) => {
 
     //post 서버와 통신
     try {
-      const res = await api.post(`user/${userState.user.id}/award`, {
+      const res = await api.post(`user/${userState.userInfo?.id}/award`, {
         awardName,
         awardDetail,
         awardOrganization,
