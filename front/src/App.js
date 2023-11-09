@@ -1,5 +1,5 @@
-import React, { useEffect, useCallback } from "react";
-import { Routes, Route, useNavigate } from "react-router-dom";
+import React, { useEffect, useCallback, Suspense } from "react";
+import { Routes, Route } from "react-router-dom";
 
 import Navigation from "./components/common/header/Navigation";
 import Login from "./components/pages/login/Login";
@@ -17,8 +17,6 @@ import NotFound from "./components/pages/404/NotFound";
 function App() {
   const reduxDispatch = useDispatch();
   const loadingState = useSelector((state) => state.loading.open);
-  const navigate = useNavigate();
-  const userState = useSelector((state) => state.userLogin);
 
   const fetchCurrentUser = useCallback(async () => {
     try {
@@ -55,15 +53,17 @@ function App() {
 
   return (
     <>
-      <Navigation />
-      <Routes>
-        <Route path="/" exact element={<Home />} />
-        <Route path="/login" element={<Login />} />
-        <Route path="/register" element={<RegisterForm />} />
-        <Route path="/users/:userId" element={<Portfolio />} />
-        <Route path="/network" element={<Network />} />
-        <Route path="*" element={<NotFound />} />
-      </Routes>
+      <Suspense fallback={<div>페이지를 불러오는 중.....</div>}>
+        <Navigation />
+        <Routes>
+          <Route path="/" exact element={<Home />} />
+          <Route path="/login" element={<Login />} />
+          <Route path="/register" element={<RegisterForm />} />
+          <Route path="/users/:userId" element={<Portfolio />} />
+          <Route path="/network" element={<Network />} />
+          <Route path="*" element={<NotFound />} />
+        </Routes>
+      </Suspense>
     </>
   );
 }

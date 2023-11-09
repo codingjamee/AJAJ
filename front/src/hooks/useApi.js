@@ -13,9 +13,9 @@ const useApi = () => {
   const { showBoundary } = useErrorBoundary();
 
   const sendRequest = async (url, method, data) => {
-    setLoading(true);
     if (method === "post") {
       try {
+        setLoading(true);
         const res = await api.post(url, data);
         console.log("로그인성공", res);
         setResult(res.data);
@@ -24,6 +24,8 @@ const useApi = () => {
         Navigate("/", { replace: true });
       } catch (err) {
         showBoundary(err);
+      } finally {
+        setLoading(false);
       }
     }
   };
