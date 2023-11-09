@@ -1,5 +1,5 @@
 import React, { useEffect, useCallback, Suspense } from "react";
-import { Routes, Route } from "react-router-dom";
+import { Routes, Route, useLocation } from "react-router-dom";
 
 import Navigation from "./components/common/header/Navigation";
 import Login from "./components/pages/login/Login";
@@ -14,13 +14,17 @@ import api from "./utils/axiosConfig";
 import Home from "./components/pages/home/Home";
 import NotFound from "./components/pages/404/NotFound";
 
+const preventCurrentApiCallPaths = ["/register"];
+
 function App() {
   const reduxDispatch = useDispatch();
   const loadingState = useSelector((state) => state.loading.open);
+  const location = useLocation();
 
   const fetchCurrentUser = useCallback(async () => {
     try {
       reduxDispatch(loadingActions.open());
+      if (preventCurrentApiCallPaths.includes(location.pathname)) return;
       const res = await api.get("user/current");
       const currentUser = res.data.id;
       console.log(currentUser);
