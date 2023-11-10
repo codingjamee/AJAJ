@@ -9,6 +9,8 @@ import api from "../../../../utils/axiosConfig";
 import { useMemo } from "react";
 import { useSelector } from "react-redux";
 import useInput from "../../../../hooks/useInput";
+import useApi from "../../../../hooks/useApi";
+import LoadingLayer from "../../../../UI/LoadingLayer";
 
 const initialValue = {
   schoolName: "",
@@ -19,14 +21,14 @@ const initialValue = {
 };
 
 const Educations = (props) => {
-  const [addForm, setAddForm] = useState(false);
-  const [data, onChange, onChangeSelect, reset] = useInput(initialValue);
-  const [educations, setEducations] = useState([]);
   const { isEditable } = props;
-  const userState = useSelector((state) => state.userLogin);
   const portfolioOwnerData = useContext(PortfolioOwnerDataContext);
-
+  const userState = useSelector((state) => state.userLogin);
+  const [addForm, setAddForm] = useState(false);
+  const [educations, setEducations] = useState([]);
+  const [data, onChange, onChangeSelect, reset] = useInput(initialValue);
   const { schoolName, major, degree, admissionDate, graduationDate } = data;
+  const { result, loading, sendRequest } = useApi();
 
   //form 상세설정 어레이
   const eduState = useMemo(
@@ -71,73 +73,67 @@ const Educations = (props) => {
     [eduState]
   );
 
+  useEffect(() => {
+    if (portfolioOwnerData.id) {
+      api
+        .get(`user/${portfolioOwnerData.id}/educations`)
+        .then((res) => setEducations(res.data.educations || []));
+    }
+  }, [portfolioOwnerData.id]);
+
   //제출버튼 클릭시
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    //portfolioOwnerId는 portfolio에서 받아옴
-
     //post 서버와 통신
-    try {
-      const res = await api.post(`user/${userState.userInfo?.id}/education`, {
-        schoolName,
-        major,
-        degree,
-        admissionDate,
-        graduationDate,
-      });
-
-      const postedNewId = res.data.eduId;
-
-      if (res.status === 201) {
-        setEducations((prev) => {
-          return [
-            ...prev,
-            {
-              _id: postedNewId,
-              schoolName,
-              major,
-              degree,
-              admissionDate,
-              graduationDate,
-            },
-          ];
-        });
-        reset();
-        setAddForm(false);
-      } else if (res.status !== 201) {
-        // throw new Error("POST 요청이 실패하였습니다.");
-      }
-    } catch (err) {
-      console.error(err);
-      // throw new Error("서버와 통신이 실패하였습니다.");
-    }
+    await sendRequest(`user/${userState.userInfo?.id}/education`, "post", {
+      schoolName,
+      major,
+      degree,
+      admissionDate,
+      graduationDate,
+    });
   };
 
-  // 모든 학위 목록 가져오기 서버와 통신
+  //요청성공시 재렌더링
   useEffect(() => {
-    //portfolioOwnerData.id를 가져오고 나서 실행
-    if (portfolioOwnerData.id) {
-      api.get(`user/${portfolioOwnerData.id}/educations`).then((res) => {
-        return setEducations(res.data.educations);
+    const postedNewId = result.data?.eduId;
+    if (result.status === 201) {
+      setEducations((prev) => {
+        return [
+          ...prev,
+          {
+            eduId: postedNewId,
+            schoolName,
+            major,
+            degree,
+            admissionDate,
+            graduationDate,
+          },
+        ];
       });
+      reset();
+      setAddForm(false);
     }
-  }, [portfolioOwnerData.id]);
+  }, [result]);
 
   return (
     <>
       <Card border="warning">
         <h3>학력</h3>
         <br />
-        {educations.map((education, index) => (
-          <Education
-            key={`education-${index}`}
-            isEditable={isEditable}
-            formList={eduFormList}
-            setEducations={setEducations}
-            education={education}
-          />
-        ))}
+        {loading && <LoadingLayer message="Loading....." />}
+        {!loading &&
+          educations &&
+          educations.map((education, index) => (
+            <Education
+              key={`education-${index}`}
+              isEditable={isEditable}
+              formList={eduFormList}
+              setEducations={setEducations}
+              education={education}
+            />
+          ))}
         {isEditable && (
           <Card>
             {addForm && (
@@ -160,6 +156,7 @@ const Educations = (props) => {
           </Card>
         )}
       </Card>
+
       <br />
     </>
   );

@@ -17,6 +17,7 @@ function Portfolio() {
   const params = useParams();
   const [portfolioOwnerData, setPortfolioOwnerData] = useState({});
   const userState = useSelector((state) => state.userLogin);
+  const isEditable = portfolioOwnerData?.id === userState.userInfo?.id;
 
   const fetchPortfolioOwner = async (ownerId) => {
     try {
@@ -56,9 +57,7 @@ function Portfolio() {
             xxl={2}
             style={{ textAlign: "center", overFlow: "hidden" }}
           >
-            <User
-              isEditable={portfolioOwnerData?.id === userState.userInfo?.id}
-            />
+            <User isEditable={isEditable} />
           </Col>
           <Col md={8} lg={9} xl={10} xxl={10}>
             <div
@@ -68,18 +67,10 @@ function Portfolio() {
                 marginLeft: "40px",
               }}
             >
-              <Educations
-                isEditable={portfolioOwnerData?.id === userState.userInfo?.id}
-              />
-              <Certifications
-                isEditable={portfolioOwnerData?.id === userState.userInfo?.id}
-              />
-              <Awards
-                isEditable={portfolioOwnerData?.id === userState.userInfo?.id}
-              />
-              <Projects
-                isEditable={portfolioOwnerData?.id === userState.userInfo?.id}
-              />
+              <Educations isEditable={isEditable} />
+              <Certifications isEditable={isEditable} />
+              <Awards isEditable={isEditable} />
+              <Projects isEditable={isEditable} />
             </div>
           </Col>
         </Row>

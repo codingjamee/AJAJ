@@ -9,6 +9,8 @@ import api from "../../../../utils/axiosConfig";
 import { useMemo } from "react";
 import { useSelector } from "react-redux";
 import useInput from "../../../../hooks/useInput";
+import useApi from "../../../../hooks/useApi";
+import LoadingLayer from "../../../../UI/LoadingLayer";
 
 const initialValue = {
   certificateName: "",
@@ -18,19 +20,19 @@ const initialValue = {
 };
 
 const Certificates = (props) => {
+  const { isEditable } = props;
+  const portfolioOwnerData = useContext(PortfolioOwnerDataContext);
+  const userState = useSelector((state) => state.userLogin);
   const [addForm, setAddForm] = useState(false);
-  const [data, onChange, _, reset] = useInput(initialValue);
   const [certificates, setCertificates] = useState([]);
+  const [data, onChange, _, reset] = useInput(initialValue);
   const {
     certificateName,
     certificateDetail,
     certificateOrganization,
     acquisitionDate,
   } = data;
-
-  const { isEditable } = props;
-  const userState = useSelector((state) => state.userLogin);
-  const portfolioOwnerData = useContext(PortfolioOwnerDataContext);
+  const { result, loading, sendRequest } = useApi();
 
   //form 상세설정 어레이
   const certificateState = useMemo(
@@ -63,61 +65,56 @@ const Certificates = (props) => {
     [certificateState]
   );
 
-  //제출버튼 클릭시
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-
-    // portfolioOwnerId는 portfolio에서 받아옴
-
-    // post 서버와 통신
-    try {
-      const res = await api.post(`user/${userState.userInfo?.id}/certificate`, {
-        certificateName,
-        certificateDetail,
-        certificateOrganization,
-        acquisitionDate,
-      });
-
-      const updatedCertId = res.data.certificateId;
-      if (res.status === 201) {
-        setCertificates((prev) => {
-          return [
-            ...prev,
-            {
-              _id: updatedCertId,
-              certificateName,
-              certificateDetail,
-              certificateOrganization,
-              acquisitionDate,
-            },
-          ];
-        });
-        reset();
-        setAddForm(false);
-      } else if (res.status !== 201) {
-        // throw new Error("POST 요청이 실패하였습니다.");
-      }
-    } catch (err) {
-      console.error(err);
-      // throw new Error("서버와 통신이 실패하였습니다.");
-    }
-  };
-
   // 모든 학위 목록 가져오기 서버와 통신
   useEffect(() => {
     //portfolioOwnerData.id를 가져오고 나서 실행
     if (portfolioOwnerData.id) {
-      api.get(`user/${portfolioOwnerData.id}/certificates`).then((res) => {
-        return setCertificates(res.data.certificates);
-      });
+      api
+        .get(`user/${portfolioOwnerData.id}/certificates`)
+        .then((res) => setCertificates(res.data.certificates || []));
     }
   }, [portfolioOwnerData.id]);
+
+  //제출버튼 클릭시
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    // post 서버와 통신
+    await sendRequest(`user/${userState.userInfo?.id}/certificate`, "post", {
+      certificateName,
+      certificateDetail,
+      certificateOrganization,
+      acquisitionDate,
+    });
+  };
+
+  //요청성공시 재렌더링
+  useEffect(() => {
+    const updatedCertId = result.data?.certificateId;
+    if (result.status === 201) {
+      setCertificates((prev) => {
+        return [
+          ...prev,
+          {
+            certificateId: updatedCertId,
+            certificateName,
+            certificateDetail,
+            certificateOrganization,
+            acquisitionDate,
+          },
+        ];
+      });
+      reset();
+      setAddForm(false);
+    }
+  }, [result]);
 
   return (
     <>
       <Card border="warning">
         <h3>자격증</h3>
         <br />
+        {loading && <LoadingLayer message="Loading....." />}
         {certificates.map((certificate, index) => (
           <Certificate
             key={`certificate-${index}`}
