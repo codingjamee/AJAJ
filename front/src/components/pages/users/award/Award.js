@@ -59,7 +59,6 @@ const Award = ({ isEditable, award = {}, setAwards }) => {
         }
       );
 
-      console.log(award);
       if (res.status === 200) {
         setAwards((prev) => {
           const updatedAwards = prev.map((prevAward) => {
@@ -81,7 +80,6 @@ const Award = ({ isEditable, award = {}, setAwards }) => {
         // throw new Error("POST 요청이 실패하였습니다.");
       }
     } catch (err) {
-      console.log(err);
       console.error(err);
     }
   };

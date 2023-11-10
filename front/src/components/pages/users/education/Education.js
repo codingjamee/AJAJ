@@ -18,8 +18,7 @@ const initialValue = {
 
 const Education = ({ isEditable, education = {}, setEducations }) => {
   const [editMode, setEditMode] = useState(false);
-  const [data, onChange, onChangeSelect] = useInput(education || initialValue);
-  console.log(data);
+  const [data, onChange] = useInput(education || initialValue);
   const { schoolName, major, degree, admissionDate, graduationDate } = data;
 
   const userState = useSelector((state) => state.userLogin);

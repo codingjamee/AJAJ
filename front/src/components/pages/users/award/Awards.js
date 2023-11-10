@@ -20,8 +20,8 @@ const initialValue = {
 
 const Awards = (props) => {
   const [addForm, setAddForm] = useState(false);
+  const [data, onChange, _, reset] = useInput(initialValue);
   const [awards, setAwards] = useState([]);
-  const [data, onChange, reset] = useInput(initialValue);
   const { awardName, awardDetail, awardOrganization, awardDate } = data;
 
   const userState = useSelector((state) => state.userLogin);
@@ -61,9 +61,7 @@ const Awards = (props) => {
         awardDate,
       });
 
-      console.log(res.data.awardId);
       const postedNewId = res.data.awardId;
-      console.log(postedNewId);
 
       if (res.status === 201) {
         setAwards((prev) => {

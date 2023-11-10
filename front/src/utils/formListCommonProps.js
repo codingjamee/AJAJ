@@ -138,8 +138,8 @@ export const certificatesCommonFormProps = [
     placeholder: "자격증 발급 기관",
   },
   {
-    controlId: "certificateDate",
-    name: "certificateDate",
+    controlId: "acquisitionDate",
+    name: "acquisitionDate",
     customClassName: "mb-3",
     label: "자격증 발급 일자",
     type: "date",
