@@ -34,10 +34,15 @@ function LoginForm() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    sendRequest("user/login", "post", {
-      email: emailState,
-      password: passwordState,
-    });
+    sendRequest(
+      "user/login",
+      "post",
+      {
+        email: emailState,
+        password: passwordState,
+      },
+      true
+    );
   };
 
   return (

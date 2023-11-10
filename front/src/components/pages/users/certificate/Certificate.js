@@ -67,7 +67,7 @@ const Certificate = ({ isEditable, certificate = {}, setCertificates }) => {
     //post 서버와 통신
     try {
       const res = await api.put(
-        `user/${userState.userInfo?.id}/certificate/${certificate._id}`,
+        `user/${userState.userInfo?.id}/certificate/${certificate.certificateId}`,
         {
           certificateName,
           certificateDetail,
@@ -78,7 +78,7 @@ const Certificate = ({ isEditable, certificate = {}, setCertificates }) => {
       if (res.status === 200) {
         setCertificates((prev) => {
           const updatedCert = prev.map((prevCert) => {
-            if (prevCert._id === certificate._id) {
+            if (prevCert.certificateId === certificate.certificateId) {
               return {
                 ...prevCert,
                 certificateName,
@@ -108,7 +108,9 @@ const Certificate = ({ isEditable, certificate = {}, setCertificates }) => {
       );
       if (res.status === 200) {
         setCertificates((prev) =>
-          prev.filter((certificates) => certificates._id !== certificateId)
+          prev.filter(
+            (certificates) => certificates.certificateId !== certificateId
+          )
         );
       } else if (res.status !== 200) {
         // throw new Error("삭제를 실패하였습니다");
@@ -143,7 +145,7 @@ const Certificate = ({ isEditable, certificate = {}, setCertificates }) => {
                 <ButtonCommon
                   variant="outline-secondary"
                   text="Delete"
-                  onClickHandler={() => onClickDel(certificate._id)}
+                  onClickHandler={() => onClickDel(certificate.certificateId)}
                 />
               </Col>
             </Form.Group>

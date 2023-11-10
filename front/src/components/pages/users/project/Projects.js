@@ -120,7 +120,7 @@ const Projects = (props) => {
             return [
               ...prev,
               {
-                _id: postedNewId,
+                projectId: postedNewId,
                 projectName,
                 projectDetail,
                 projectImgUrl: postedNewImgUrl,

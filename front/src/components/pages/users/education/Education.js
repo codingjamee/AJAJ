@@ -66,7 +66,7 @@ const Education = ({ isEditable, education = {}, setEducations }) => {
     //put 서버와 통신
     try {
       const res = await api.put(
-        `user/${userState.userInfo?.id}/education/${education._id}`,
+        `user/${userState.userInfo?.id}/education/${education.eduId}`,
         {
           schoolName,
           major,
@@ -78,7 +78,7 @@ const Education = ({ isEditable, education = {}, setEducations }) => {
       if (res.status === 200) {
         setEducations((prev) => {
           const updatedEdus = prev.map((prevEdu) => {
-            if (prevEdu._id === education._id) {
+            if (prevEdu.eduId === education.eduId) {
               return {
                 ...prevEdu,
                 schoolName,
@@ -112,7 +112,7 @@ const Education = ({ isEditable, education = {}, setEducations }) => {
       // console.log(res);
       if (res.status === 200) {
         setEducations((prevObj) => {
-          return prevObj.filter((edus) => edus._id !== eduId);
+          return prevObj.filter((edus) => edus.eduId !== eduId);
         });
       } else if (res.status !== 200) {
         // throw new Error("삭제를 실패하였습니다");
@@ -149,7 +149,7 @@ const Education = ({ isEditable, education = {}, setEducations }) => {
                 <ButtonCommon
                   variant="outline-secondary"
                   text="Delete"
-                  onClickHandler={() => onClickDel(education._id)}
+                  onClickHandler={() => onClickDel(education.eduId)}
                 />
               </Col>
             </Form.Group>

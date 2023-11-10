@@ -10,6 +10,7 @@ import { useMemo } from "react";
 import { useSelector } from "react-redux";
 import LoadingLayer from "../../../../UI/LoadingLayer";
 import useInput from "../../../../hooks/useInput";
+import useApi from "../../../../hooks/useApi";
 
 const initialValue = {
   awardName: "",
@@ -20,12 +21,14 @@ const initialValue = {
 
 const Awards = (props) => {
   const [addForm, setAddForm] = useState(false);
+  const portfolioOwnerData = useContext(PortfolioOwnerDataContext);
   const [data, onChange, _, reset] = useInput(initialValue);
+  const userState = useSelector((state) => state.userLogin);
+  const { result, loading, sendRequest } = useApi();
   const [awards, setAwards] = useState([]);
   const { awardName, awardDetail, awardOrganization, awardDate } = data;
 
-  const userState = useSelector((state) => state.userLogin);
-  const portfolioOwnerData = useContext(PortfolioOwnerDataContext);
+  // const portfolioOwnerData = useContext(PortfolioOwnerDataContext);
   const { isEditable } = props;
 
   //form 상세설정 어레이
@@ -49,62 +52,60 @@ const Awards = (props) => {
       }),
     [awardState]
   );
+
+  useEffect(() => {
+    if (portfolioOwnerData.id) {
+      api.get(`user/${portfolioOwnerData.id}/awards`).then((res) => {
+        console.log(res.data);
+        return setAwards(res.data.awards || []);
+      });
+    }
+  }, [portfolioOwnerData.id]);
+
   //제출버튼 클릭시
   const handleSubmit = async (e) => {
     e.preventDefault();
     //post 서버와 통신
-    try {
-      const res = await api.post(`user/${userState.userInfo?.id}/award`, {
-        awardName,
-        awardDetail,
-        awardOrganization,
-        awardDate,
-      });
 
-      const postedNewId = res.data.awardId;
-
-      if (res.status === 201) {
-        setAwards((prev) => {
-          return [
-            ...prev,
-            {
-              _id: postedNewId,
-              awardName,
-              awardDetail,
-              awardOrganization,
-              awardDate,
-            },
-          ];
-        });
-        reset();
-        setAddForm(false);
-      } else if (res.status !== 201) {
-        // throw new Error("POST 요청이 실패하였습니다.");
-      }
-    } catch (err) {
-      throw new Error("POST요청 실패");
-    }
+    await sendRequest(`user/${userState.userInfo?.id}/award`, "post", {
+      awardName,
+      awardDetail,
+      awardOrganization,
+      awardDate,
+    });
   };
 
-  // 모든 수상 목록 가져오기 서버와 통신
+  //요청성공시 재렌더링
   useEffect(() => {
-    //portfolioOwnerData.id를 가져오고 나서 실행
-    if (portfolioOwnerData.id) {
-      api
-        .get(`user/${portfolioOwnerData.id}/awards`, "", "Awards")
-        .then((res) => {
-          return setAwards(res.data.awards);
-        });
+    const postedNewId = result.data?.awardId;
+
+    if (result.status === 201) {
+      setAwards((prev) => {
+        return [
+          ...prev,
+          {
+            awardId: postedNewId,
+            awardName,
+            awardDetail,
+            awardOrganization,
+            awardDate,
+          },
+        ];
+      });
+      reset();
+      setAddForm(false);
     }
-  }, [portfolioOwnerData.id]);
+  }, [reset, result]);
 
   return (
     <>
       <Card border="warning">
         <h3>수상 내역</h3>
         <br />
-        {awards.map((award, index) => (
-          <Suspense fallback={<LoadingLayer />} key={`awards-${index}`}>
+        {loading && <LoadingLayer message="Loading....." />}
+        {!loading &&
+          awards &&
+          awards.map((award, index) => (
             <Award
               key={`award-${index}`}
               isEditable={isEditable}
@@ -112,8 +113,7 @@ const Awards = (props) => {
               setAwards={setAwards}
               award={award}
             />
-          </Suspense>
-        ))}
+          ))}
         {isEditable && (
           <Card>
             {addForm && (
