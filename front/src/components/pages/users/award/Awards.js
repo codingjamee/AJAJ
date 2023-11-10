@@ -84,7 +84,7 @@ const Awards = (props) => {
         return [
           ...prev,
           {
-            awardId: postedNewId,
+            _id: postedNewId,
             awardName,
             awardDetail,
             awardOrganization,

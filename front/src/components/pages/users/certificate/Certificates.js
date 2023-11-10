@@ -96,7 +96,7 @@ const Certificates = (props) => {
         return [
           ...prev,
           {
-            certificateId: updatedCertId,
+            _id: updatedCertId,
             certificateName,
             certificateDetail,
             certificateOrganization,

@@ -50,7 +50,7 @@ const Award = ({ isEditable, award = {}, setAwards }) => {
     //post 서버와 통신
     try {
       const res = await api.put(
-        `user/${userState.userInfo?.id}/award/${award.awardId}`,
+        `user/${userState.userInfo?.id}/award/${award._id}`,
         {
           awardName,
           awardDetail,
@@ -62,7 +62,7 @@ const Award = ({ isEditable, award = {}, setAwards }) => {
       if (res.status === 200) {
         setAwards((prev) => {
           const updatedAwards = prev.map((prevAward) => {
-            if (prevAward.awardId === award.awardId) {
+            if (prevAward._id === award._id) {
               return {
                 ...prevAward,
                 awardName,
@@ -93,7 +93,7 @@ const Award = ({ isEditable, award = {}, setAwards }) => {
       );
       // console.log(res);
       if (res.status === 200) {
-        setAwards((prev) => prev.filter((award) => award.awardId !== awardId));
+        setAwards((prev) => prev.filter((award) => award._id !== awardId));
       } else if (res.status !== 200) {
         // throw new Error("삭제를 실패하였습니다");
       }
@@ -129,7 +129,7 @@ const Award = ({ isEditable, award = {}, setAwards }) => {
                 <ButtonCommon
                   variant="outline-secondary"
                   text="Delete"
-                  onClickHandler={() => onClickDel(award.awardId)}
+                  onClickHandler={() => onClickDel(award._id)}
                 />
               </Col>
             </Form.Group>

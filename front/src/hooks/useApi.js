@@ -8,6 +8,7 @@ import { useErrorBoundary } from "react-error-boundary";
 const useApi = () => {
   const [result, setResult] = useState("");
   const [loading, setLoading] = useState(false);
+  const [reqIdentifier, setReqIdentifier] = useState("");
   const [error, setError] = useState(false);
   const dispatch = useDispatch();
   const { showBoundary } = useErrorBoundary();
@@ -16,6 +17,7 @@ const useApi = () => {
     if (method === "post") {
       try {
         setLoading(true);
+        setReqIdentifier(method + "Data");
         const res = await api.post(url, data);
         setResult(res);
 
@@ -33,6 +35,7 @@ const useApi = () => {
     if (method === "get") {
       try {
         setLoading(true);
+        setReqIdentifier(method + "Data");
         const res = await api.get(url, data);
         setResult(res);
       } catch (err) {
@@ -44,6 +47,7 @@ const useApi = () => {
     if (method === "put") {
       try {
         setLoading(true);
+        setReqIdentifier(method + "Data");
         const res = await api.put(url, data);
         setResult(res);
       } catch (err) {
@@ -55,6 +59,7 @@ const useApi = () => {
     if (method === "delete") {
       try {
         setLoading(true);
+        setReqIdentifier(method + "Data");
         const res = await api.delete(url, data);
         setResult(res);
       } catch (err) {
@@ -65,7 +70,7 @@ const useApi = () => {
     }
   };
 
-  return { result, loading, sendRequest };
+  return { result, loading, sendRequest, reqIdentifier };
 };
 
 export default useApi;

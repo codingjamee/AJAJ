@@ -112,7 +112,7 @@ const Projects = (props) => {
           formData
         );
 
-        const postedNewId = res.data.projectId;
+        const postedNewId = res.data._id;
         const postedNewImgUrl = res.data.projectImgUrl;
 
         if (res.status === 201) {
@@ -120,7 +120,7 @@ const Projects = (props) => {
             return [
               ...prev,
               {
-                projectId: postedNewId,
+                _id: postedNewId,
                 projectName,
                 projectDetail,
                 projectImgUrl: postedNewImgUrl,

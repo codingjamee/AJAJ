@@ -28,7 +28,7 @@ const Educations = (props) => {
   const [educations, setEducations] = useState([]);
   const [data, onChange, onChangeSelect, reset] = useInput(initialValue);
   const { schoolName, major, degree, admissionDate, graduationDate } = data;
-  const { result, loading, sendRequest } = useApi();
+  const { result, loading, sendRequest, reqIdentifier } = useApi();
 
   //form 상세설정 어레이
   const eduState = useMemo(
@@ -75,9 +75,7 @@ const Educations = (props) => {
 
   useEffect(() => {
     if (portfolioOwnerData.id) {
-      api
-        .get(`user/${portfolioOwnerData.id}/educations`)
-        .then((res) => setEducations(res.data.educations || []));
+      sendRequest(`user/${portfolioOwnerData.id}/educations`, "get");
     }
   }, [portfolioOwnerData.id]);
 
@@ -97,25 +95,29 @@ const Educations = (props) => {
 
   //요청성공시 재렌더링
   useEffect(() => {
-    const postedNewId = result.data?.eduId;
-    if (result.status === 201) {
-      setEducations((prev) => {
-        return [
-          ...prev,
-          {
-            eduId: postedNewId,
-            schoolName,
-            major,
-            degree,
-            admissionDate,
-            graduationDate,
-          },
-        ];
-      });
-      reset();
-      setAddForm(false);
+    if (reqIdentifier === "postData") {
+      const postedNewId = result.data?.eduId;
+      if (result.status === 201) {
+        setEducations((prev) => {
+          return [
+            ...prev,
+            {
+              _id: postedNewId,
+              schoolName,
+              major,
+              degree,
+              admissionDate,
+              graduationDate,
+            },
+          ];
+        });
+        reset();
+        setAddForm(false);
+      }
+    } else if (reqIdentifier === "getData") {
+      setEducations(result.data?.educations || []);
     }
-  }, [result]);
+  }, [result, reqIdentifier]);
 
   return (
     <>
