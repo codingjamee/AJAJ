@@ -52,7 +52,15 @@ const Educations = (props) => {
         changeHandler: (e) => onChange(e),
       },
     ],
-    [data, onChangeSelect, onChange]
+    [
+      schoolName,
+      major,
+      degree,
+      admissionDate,
+      graduationDate,
+      onChangeSelect,
+      onChange,
+    ]
   );
 
   const eduFormList = useMemo(
@@ -111,7 +119,6 @@ const Educations = (props) => {
     //portfolioOwnerData.id를 가져오고 나서 실행
     if (portfolioOwnerData.id) {
       api.get(`user/${portfolioOwnerData.id}/educations`).then((res) => {
-        console.log(res.data);
         return setEducations(res.data.educations);
       });
     }

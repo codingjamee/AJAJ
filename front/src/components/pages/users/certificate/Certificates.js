@@ -19,9 +19,8 @@ const initialValue = {
 
 const Certificates = (props) => {
   const [addForm, setAddForm] = useState(false);
+  const [data, onChange, _, reset] = useInput(initialValue);
   const [certificates, setCertificates] = useState([]);
-  const [data, onChange, reset] = useInput(initialValue);
-
   const {
     certificateName,
     certificateDetail,
@@ -47,7 +46,13 @@ const Certificates = (props) => {
       },
       { value: acquisitionDate, changeHandler: (e) => onChange(e) },
     ],
-    [data, onChange]
+    [
+      certificateName,
+      certificateDetail,
+      certificateOrganization,
+      acquisitionDate,
+      onChange,
+    ]
   );
   const certificateFormList = useMemo(
     () =>
@@ -73,7 +78,6 @@ const Certificates = (props) => {
         acquisitionDate,
       });
 
-      console.log(res);
       const updatedCertId = res.data.certificateId;
       if (res.status === 201) {
         setCertificates((prev) => {
@@ -138,7 +142,7 @@ const Certificates = (props) => {
               size="sm"
               onClickHandler={() => {
                 reset();
-                setAddForm((prev) => !prev);
+                return setAddForm((prev) => !prev);
               }}
               text={addForm ? "-" : "+"}
             />

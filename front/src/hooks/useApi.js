@@ -17,7 +17,6 @@ const useApi = () => {
       try {
         setLoading(true);
         const res = await api.post(url, data);
-        console.log("로그인성공", res);
         setResult(res.data);
         const user = res.data;
         dispatch(userLoginActions.storeUser(user));
