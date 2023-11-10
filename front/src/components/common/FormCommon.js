@@ -20,29 +20,27 @@ const FormCommon = ({
       style={{ margin: "10px" }}
     >
       {label && <Form.Label>{label}</Form.Label>}
-      {!select && type !== "file" && (
+      {/* select가 false인경우. 기본값 */}
+      {!select && (
         <Form.Control
           type={type}
           placeholder={placeholder}
-          onChange={(e) => changeHandler(e.target.value)}
+          onChange={(e) => changeHandler(e)}
           value={value}
+          name={name}
         />
       )}
-      {select && (
-        <Form.Select
-          onChange={(e) => {
-            changeHandler(e.target.value);
-          }}
-        >
+      {/* select이면서 file타입이 아닌경우...? */}
+      {select && type !== "file" && (
+        <Form.Select onChange={(e) => changeHandler(e)} value={value}>
           <option>{optionValue}</option>
-          {optionArr?.map((option) => (
-            <option value={option.value} key={option.value}>
-              {option.text}
-            </option>
+          {optionArr?.map((option, index) => (
+            <option key={`option-${index}`}>{option.text}</option>
           ))}
         </Form.Select>
       )}
-      {type === "file" && (
+      {/* select가 아니면서 type이 file인 경우 */}
+      {!select && type === "file" && (
         <>
           <Card style={{ margin: "10px" }}>
             <Image

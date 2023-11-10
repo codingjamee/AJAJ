@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { Suspense, useContext, useEffect, useState } from "react";
 import { Card } from "react-bootstrap";
 import ButtonCommon from "../../../common/ButtonCommon";
 import FormWrapper from "../../../common/FormWrapper";
@@ -8,39 +8,38 @@ import Award from "./Award";
 import api from "../../../../utils/axiosConfig";
 import { useMemo } from "react";
 import { useSelector } from "react-redux";
+import LoadingLayer from "../../../../UI/LoadingLayer";
+import useInput from "../../../../hooks/useInput";
+
+const initialValue = {
+  awardName: "",
+  awardDetail: "",
+  awardOrganization: "",
+  awardDate: "2023-01-01",
+};
 
 const Awards = (props) => {
   const [addForm, setAddForm] = useState(false);
   const [awards, setAwards] = useState([]);
-  const [awardName, setAwardName] = useState("");
-  const [awardDetail, setAwardDetail] = useState("");
-  const [awardOrganization, setAwardOrganization] = useState("");
-  const [awardDate, setAwardDate] = useState("2023-01-01");
-  const userState = useSelector((state) => state.userInfo);
+  const [data, onChange, reset] = useInput(initialValue);
+  const { awardName, awardDetail, awardOrganization, awardDate } = data;
+
+  const userState = useSelector((state) => state.userLogin);
   const portfolioOwnerData = useContext(PortfolioOwnerDataContext);
   const { isEditable } = props;
 
   //form 상세설정 어레이
   const awardState = useMemo(
     () => [
-      { value: awardName, changeHandler: (v) => setAwardName(v) },
-      { value: awardDetail, changeHandler: (v) => setAwardDetail(v) },
+      { value: awardName, changeHandler: (e) => onChange(e) },
+      { value: awardDetail, changeHandler: (e) => onChange(e) },
       {
         value: awardOrganization,
-        changeHandler: (v) => setAwardOrganization(v),
+        changeHandler: (e) => onChange(e),
       },
-      { value: awardDate, changeHandler: (v) => setAwardDate(v) },
+      { value: awardDate, changeHandler: (e) => onChange(e) },
     ],
-    [
-      awardName,
-      awardDetail,
-      awardOrganization,
-      awardDate,
-      setAwardName,
-      setAwardDetail,
-      setAwardOrganization,
-      setAwardDate,
-    ]
+    [awardName, awardDetail, awardOrganization, awardDate, onChange]
   );
 
   const awardFormList = useMemo(
@@ -53,9 +52,6 @@ const Awards = (props) => {
   //제출버튼 클릭시
   const handleSubmit = async (e) => {
     e.preventDefault();
-
-    //portfolioOwnerId는 portfolio에서 받아옴
-
     //post 서버와 통신
     try {
       const res = await api.post(`user/${userState.userInfo?.id}/award`, {
@@ -74,7 +70,7 @@ const Awards = (props) => {
           return [
             ...prev,
             {
-              awardId: postedNewId,
+              _id: postedNewId,
               awardName,
               awardDetail,
               awardOrganization,
@@ -82,10 +78,7 @@ const Awards = (props) => {
             },
           ];
         });
-        setAwardName("");
-        setAwardDetail("");
-        setAwardOrganization("");
-        setAwardDate("2023-01-01");
+        reset();
         setAddForm(false);
       } else if (res.status !== 201) {
         // throw new Error("POST 요청이 실패하였습니다.");
@@ -113,13 +106,15 @@ const Awards = (props) => {
         <h3>수상 내역</h3>
         <br />
         {awards.map((award, index) => (
-          <Award
-            key={`award-${index}`}
-            isEditable={isEditable}
-            formList={awardFormList}
-            setAwards={setAwards}
-            award={award}
-          />
+          <Suspense fallback={<LoadingLayer />} key={`awards-${index}`}>
+            <Award
+              key={`award-${index}`}
+              isEditable={isEditable}
+              formList={awardFormList}
+              setAwards={setAwards}
+              award={award}
+            />
+          </Suspense>
         ))}
         {isEditable && (
           <Card>
@@ -134,7 +129,10 @@ const Awards = (props) => {
             <ButtonCommon
               variant="light"
               size="sm"
-              onClickHandler={() => setAddForm((prev) => !prev)}
+              onClickHandler={() => {
+                reset();
+                return setAddForm((prev) => !prev);
+              }}
               text={addForm ? "-" : "+"}
             />
           </Card>

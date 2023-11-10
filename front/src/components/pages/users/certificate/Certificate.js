@@ -6,48 +6,48 @@ import { certificatesCommonFormProps } from "../../../../utils/formListCommonPro
 import api from "../../../../utils/axiosConfig";
 import { useMemo } from "react";
 import { useSelector } from "react-redux";
+import useInput from "../../../../hooks/useInput";
+
+const initialValue = {
+  certificateName: "",
+  certificateDetail: "",
+  certificateOrganization: "",
+  acquisitionDate: "2019-01-01",
+};
 
 const Certificate = ({ isEditable, certificate = {}, setCertificates }) => {
   // const [user, setUser] = useState(null);
   const [editMode, setEditMode] = useState(false);
-  const [certificateName, setCertificateName] = useState(
-    certificate.certificateName || ""
-  );
-  const [certificateDetail, setCertificateDetail] = useState(
-    certificate.certificateName || ""
-  );
-  const [certificateOrganization, setCertificateOrganization] = useState(
-    certificate.certificateOrganization || ""
-  );
-  const [acquisitionDate, setAcquisitionDate] = useState(
-    certificate.acquisitionDate || "2023-01-01"
-  );
+  const [data, onChange] = useInput(certificate || initialValue);
+  const {
+    certificateName,
+    certificateDetail,
+    certificateOrganization,
+    acquisitionDate,
+  } = data;
 
   const userState = useSelector((state) => state.userLogin);
 
   //form 상세설정 어레이
   const certificateState = useMemo(
     () => [
-      { value: certificateName, changeHandler: (v) => setCertificateName(v) },
+      { value: certificateName, changeHandler: (e) => onChange(e) },
       {
         value: certificateDetail,
-        changeHandler: (v) => setCertificateDetail(v),
+        changeHandler: (e) => onChange(e),
       },
       {
         value: certificateOrganization,
-        changeHandler: (v) => setCertificateOrganization(v),
+        changeHandler: (e) => onChange(e),
       },
-      { value: acquisitionDate, changeHandler: (v) => setAcquisitionDate(v) },
+      { value: acquisitionDate, changeHandler: (e) => onChange(e) },
     ],
     [
       certificateName,
-      setCertificateName,
       certificateDetail,
-      setCertificateDetail,
       certificateOrganization,
-      setCertificateOrganization,
       acquisitionDate,
-      setAcquisitionDate,
+      onChange,
     ]
   );
 
@@ -67,10 +67,10 @@ const Certificate = ({ isEditable, certificate = {}, setCertificates }) => {
     //post 서버와 통신
     try {
       const res = await api.put(
-        `user/${userState.userInfo?.id}/certificate/${certificate.certificateId}`,
+        `user/${userState.userInfo?.id}/certificate/${certificate._id}`,
         {
           certificateName,
-          // certificateDetail,
+          certificateDetail,
           certificateOrganization,
           acquisitionDate,
         }
@@ -78,11 +78,11 @@ const Certificate = ({ isEditable, certificate = {}, setCertificates }) => {
       if (res.status === 200) {
         setCertificates((prev) => {
           const updatedCert = prev.map((prevCert) => {
-            if (prevCert.certificateId === certificate.certificateId) {
+            if (prevCert._id === certificate._id) {
               return {
                 ...prevCert,
                 certificateName,
-                // certificateDetail,
+                certificateDetail,
                 certificateOrganization,
                 acquisitionDate,
               };
@@ -102,17 +102,20 @@ const Certificate = ({ isEditable, certificate = {}, setCertificates }) => {
 
   //삭제함수
   const onClickDel = async (certificateId) => {
-    const res = await api.delete(
-      `user/${userState.userInfo?.id}/certificate/${certificateId}`
-    );
-    if (res.status === 200) {
-      setCertificates((prev) =>
-        prev.filter(
-          (certificates) => certificates.certificateId !== certificateId
-        )
+    try {
+      const res = await api.delete(
+        `user/${userState.userInfo?.id}/certificate/${certificateId}`
       );
-    } else if (res.status !== 200) {
-      // throw new Error("삭제를 실패하였습니다");
+      if (res.status === 200) {
+        setCertificates((prev) =>
+          prev.filter((certificates) => certificates._id !== certificateId)
+        );
+      } else if (res.status !== 200) {
+        // throw new Error("삭제를 실패하였습니다");
+      }
+    } catch (err) {
+      console.error(err);
+      // throw new Error("서버와 통신에 실패하였습니다");
     }
   };
 
@@ -140,7 +143,7 @@ const Certificate = ({ isEditable, certificate = {}, setCertificates }) => {
                 <ButtonCommon
                   variant="outline-secondary"
                   text="Delete"
-                  onClickHandler={() => onClickDel(certificate.certificateId)}
+                  onClickHandler={() => onClickDel(certificate._id)}
                 />
               </Col>
             </Form.Group>

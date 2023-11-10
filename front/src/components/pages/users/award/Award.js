@@ -6,38 +6,33 @@ import { awardsCommonFormProps } from "../../../../utils/formListCommonProps";
 import api from "../../../../utils/axiosConfig";
 import { useMemo } from "react";
 import { useSelector } from "react-redux";
+import useInput from "../../../../hooks/useInput";
+
+const initialValue = {
+  awardName: "",
+  awardDetail: "",
+  awardOrganization: "",
+  awardDate: "2023-01-01",
+};
 
 const Award = ({ isEditable, award = {}, setAwards }) => {
   const [editMode, setEditMode] = useState(false);
-  const [awardName, setAwardName] = useState(award.awardName || "");
-  const [awardDetail, setAwardDetail] = useState(award.awardDetail || "");
-  const [awardOrganization, setAwardOrganization] = useState(
-    award.awardOrganization || ""
-  );
-  const [awardDate, setAwardDate] = useState(award.awardDate || "2023-01-01");
+  const [data, onChange] = useInput(award || initialValue);
+  const { awardName, awardDetail, awardOrganization, awardDate } = data;
   const userState = useSelector((state) => state.userLogin);
 
   //form 상세설정 어레이
   const awardState = useMemo(
     () => [
-      { value: awardName, changeHandler: (v) => setAwardName(v) },
-      { value: awardDetail, changeHandler: (v) => setAwardDetail(v) },
+      { value: awardName, changeHandler: (e) => onChange(e) },
+      { value: awardDetail, changeHandler: (e) => onChange(e) },
       {
         value: awardOrganization,
-        changeHandler: (v) => setAwardOrganization(v),
+        changeHandler: (e) => onChange(e),
       },
-      { value: awardDate, changeHandler: (v) => setAwardDate(v) },
+      { value: awardDate, changeHandler: (e) => onChange(e) },
     ],
-    [
-      awardName,
-      awardDetail,
-      awardOrganization,
-      awardDate,
-      setAwardName,
-      setAwardDetail,
-      setAwardOrganization,
-      setAwardDate,
-    ]
+    [awardName, awardDetail, awardOrganization, awardDate, onChange]
   );
 
   const awardFormList = useMemo(
@@ -52,12 +47,10 @@ const Award = ({ isEditable, award = {}, setAwards }) => {
   const onSubmitHandler = async (e) => {
     e.preventDefault();
 
-    //portfolioOwnerId는 portfolio에서 받아옴
-
     //post 서버와 통신
     try {
       const res = await api.put(
-        `user/${userState.userInfo?.id}/award/${award.awardId}`,
+        `user/${userState.userInfo?.id}/award/${award._id}`,
         {
           awardName,
           awardDetail,
@@ -66,10 +59,11 @@ const Award = ({ isEditable, award = {}, setAwards }) => {
         }
       );
 
+      console.log(award);
       if (res.status === 200) {
         setAwards((prev) => {
           const updatedAwards = prev.map((prevAward) => {
-            if (prevAward.awardId === award.awardId) {
+            if (prevAward._id === award._id) {
               return {
                 ...prevAward,
                 awardName,
@@ -97,11 +91,11 @@ const Award = ({ isEditable, award = {}, setAwards }) => {
   const onClickDel = async (awardId) => {
     try {
       const res = await api.delete(
-        `user/${userState.userInfo.id}/award/${awardId}`
+        `user/${userState.userInfo?.id}/award/${awardId}`
       );
       // console.log(res);
       if (res.status === 200) {
-        setAwards((prev) => prev.filter((award) => award.awardId !== awardId));
+        setAwards((prev) => prev.filter((award) => award._id !== awardId));
       } else if (res.status !== 200) {
         // throw new Error("삭제를 실패하였습니다");
       }
@@ -137,7 +131,7 @@ const Award = ({ isEditable, award = {}, setAwards }) => {
                 <ButtonCommon
                   variant="outline-secondary"
                   text="Delete"
-                  onClickHandler={() => onClickDel(award.awardId)}
+                  onClickHandler={() => onClickDel(award._id)}
                 />
               </Col>
             </Form.Group>

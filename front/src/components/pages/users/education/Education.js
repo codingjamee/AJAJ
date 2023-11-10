@@ -6,43 +6,49 @@ import { educationsCommonFormProps } from "../../../../utils/formListCommonProps
 import api from "../../../../utils/axiosConfig";
 import { useMemo } from "react";
 import { useSelector } from "react-redux";
+import useInput from "../../../../hooks/useInput";
+
+const initialValue = {
+  schoolName: "",
+  major: "",
+  degree: "",
+  addmissionDate: "2019-01-01",
+  graduationDate: "2023-01-01",
+};
 
 const Education = ({ isEditable, education = {}, setEducations }) => {
-  // useState 훅을 통해 user 상태를 생성함.
-  // const [user, setUser] = useState(null);
   const [editMode, setEditMode] = useState(false);
-  const [schoolName, setSchoolName] = useState(education.schoolName || "");
-  const [major, setMajor] = useState(education.major || "");
-  const [degree, setDegree] = useState(education.degree || "");
-  const [admissionDate, setAdmissionDate] = useState(
-    education.admissionDate || "2023-01-01"
-  );
-  const [graduationDate, setGraduationDate] = useState(
-    education.graduationDate || "2023-01-01"
-  );
+  const [data, onChange, onChangeSelect] = useInput(education || initialValue);
+  console.log(data);
+  const { schoolName, major, degree, admissionDate, graduationDate } = data;
+
   const userState = useSelector((state) => state.userLogin);
 
   //form 상세설정 어레이
   const eduState = useMemo(
     () => [
-      { value: schoolName, changeHandler: (v) => setSchoolName(v) },
-      { value: major, changeHandler: (v) => setMajor(v) },
-      { value: degree, changeHandler: (v) => setDegree(v) },
-      { value: admissionDate, changeHandler: (v) => setAdmissionDate(v) },
-      { value: graduationDate, changeHandler: (v) => setGraduationDate(v) },
+      {
+        value: schoolName,
+        changeHandler: (e) => onChange(e),
+      },
+      {
+        value: major,
+        changeHandler: (e) => onChange(e),
+      },
+      {
+        value: degree,
+        changeHandler: (e) => onChange(e),
+      },
+      {
+        value: admissionDate,
+        changeHandler: (e) => onChange(e),
+      },
+      {
+        value: graduationDate,
+        changeHandler: (e) => onChange(e),
+      },
     ],
-    [
-      schoolName,
-      setSchoolName,
-      major,
-      setMajor,
-      degree,
-      setDegree,
-      admissionDate,
-      setAdmissionDate,
-      graduationDate,
-      setGraduationDate,
-    ]
+    [schoolName, major, degree, admissionDate, graduationDate, onChange]
   );
 
   const eduFormList = useMemo(
@@ -58,12 +64,10 @@ const Education = ({ isEditable, education = {}, setEducations }) => {
     //제출버튼 클릭시
     e.preventDefault();
 
-    //portfolioOwnerId는 portfolio에서 받아옴
-
-    //post 서버와 통신
+    //put 서버와 통신
     try {
       const res = await api.put(
-        `user/${userState.userInfo?.id}/education/${education.eduId}`,
+        `user/${userState.userInfo?.id}/education/${education._id}`,
         {
           schoolName,
           major,
@@ -75,7 +79,7 @@ const Education = ({ isEditable, education = {}, setEducations }) => {
       if (res.status === 200) {
         setEducations((prev) => {
           const updatedEdus = prev.map((prevEdu) => {
-            if (prevEdu.eduId === education.eduId) {
+            if (prevEdu._id === education._id) {
               return {
                 ...prevEdu,
                 schoolName,
@@ -109,7 +113,7 @@ const Education = ({ isEditable, education = {}, setEducations }) => {
       // console.log(res);
       if (res.status === 200) {
         setEducations((prevObj) => {
-          return prevObj.filter((edus) => edus.eduId !== eduId);
+          return prevObj.filter((edus) => edus._id !== eduId);
         });
       } else if (res.status !== 200) {
         // throw new Error("삭제를 실패하였습니다");
@@ -146,7 +150,7 @@ const Education = ({ isEditable, education = {}, setEducations }) => {
                 <ButtonCommon
                   variant="outline-secondary"
                   text="Delete"
-                  onClickHandler={() => onClickDel(education.eduId)}
+                  onClickHandler={() => onClickDel(education._id)}
                 />
               </Col>
             </Form.Group>
