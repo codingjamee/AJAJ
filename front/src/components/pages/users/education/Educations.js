@@ -8,40 +8,51 @@ import { educationsCommonFormProps } from "../../../../utils/formListCommonProps
 import api from "../../../../utils/axiosConfig";
 import { useMemo } from "react";
 import { useSelector } from "react-redux";
+import useInput from "../../../../hooks/useInput";
+
+const initialValue = {
+  schoolName: "",
+  major: "",
+  degree: "",
+  admissionDate: "2019-01-01",
+  graduationDate: "2023-01-01",
+};
 
 const Educations = (props) => {
   const [addForm, setAddForm] = useState(false);
-  const [schoolName, setSchoolName] = useState("");
-  const [major, setMajor] = useState("");
-  const [degree, setDegree] = useState("");
-  const [admissionDate, setAdmissionDate] = useState("2023-01-01");
-  const [graduationDate, setGraduationDate] = useState("2023-01-01");
+  const [data, onChange, onChangeSelect, reset] = useInput(initialValue);
   const [educations, setEducations] = useState([]);
   const { isEditable } = props;
   const userState = useSelector((state) => state.userLogin);
   const portfolioOwnerData = useContext(PortfolioOwnerDataContext);
 
+  const { schoolName, major, degree, admissionDate, graduationDate } = data;
+
   //form 상세설정 어레이
   const eduState = useMemo(
     () => [
-      { value: schoolName, changeHandler: (v) => setSchoolName(v) },
-      { value: major, changeHandler: (v) => setMajor(v) },
-      { value: degree, changeHandler: (v) => setDegree(v) },
-      { value: admissionDate, changeHandler: (v) => setAdmissionDate(v) },
-      { value: graduationDate, changeHandler: (v) => setGraduationDate(v) },
+      {
+        value: schoolName,
+        changeHandler: (e) => onChange(e),
+      },
+      {
+        value: major,
+        changeHandler: (e) => onChange(e),
+      },
+      {
+        value: degree,
+        changeHandler: (e) => onChangeSelect(e),
+      },
+      {
+        value: admissionDate,
+        changeHandler: (e) => onChange(e),
+      },
+      {
+        value: graduationDate,
+        changeHandler: (e) => onChange(e),
+      },
     ],
-    [
-      schoolName,
-      major,
-      degree,
-      admissionDate,
-      graduationDate,
-      setSchoolName,
-      setMajor,
-      setDegree,
-      setAdmissionDate,
-      setGraduationDate,
-    ]
+    [data, onChangeSelect, onChange]
   );
 
   const eduFormList = useMemo(
@@ -75,7 +86,7 @@ const Educations = (props) => {
           return [
             ...prev,
             {
-              eduId: postedNewId,
+              _id: postedNewId,
               schoolName,
               major,
               degree,
@@ -84,11 +95,7 @@ const Educations = (props) => {
             },
           ];
         });
-        setSchoolName("");
-        setMajor("");
-        setDegree("");
-        setAdmissionDate("2023-01-01");
-        setGraduationDate("2023-01-01");
+        reset();
         setAddForm(false);
       } else if (res.status !== 201) {
         // throw new Error("POST 요청이 실패하였습니다.");
@@ -104,6 +111,7 @@ const Educations = (props) => {
     //portfolioOwnerData.id를 가져오고 나서 실행
     if (portfolioOwnerData.id) {
       api.get(`user/${portfolioOwnerData.id}/educations`).then((res) => {
+        console.log(res.data);
         return setEducations(res.data.educations);
       });
     }
@@ -136,7 +144,10 @@ const Educations = (props) => {
             <ButtonCommon
               variant="light"
               size="sm"
-              onClickHandler={() => setAddForm((prev) => !prev)}
+              onClickHandler={() => {
+                reset();
+                return setAddForm((prev) => !prev);
+              }}
               text={addForm ? "-" : "+"}
             />
           </Card>

@@ -87,18 +87,19 @@ const Project = ({ isEditable, project = {}, setProjects }) => {
     formData.append("projectDetail", projectDetail);
     formData.append("projectStartDate", projectStartDate);
     formData.append("projectEndDate", projectEndDate);
-    //post 서버와 통신
+    //put 서버와 통신
     try {
       const res = await api.put(
-        `user/${userState.userInfo?.id}/project/${project.projectId}`,
+        `user/${userState.userInfo?.id}/project/${project._id}`,
         formData
       );
 
       if (res.status === 200) {
         const postedNewImgUrl = res.data.projectImgUrl;
+        console.log(postedNewImgUrl);
         setProjects((prev) => {
           const updatedProjects = prev.map((prevProject) => {
-            if (prevProject.projectId === project.projectId) {
+            if (prevProject._id === project._id) {
               return {
                 ...prevProject,
                 projectName,
@@ -134,7 +135,7 @@ const Project = ({ isEditable, project = {}, setProjects }) => {
       );
       if (res.status === 200) {
         setProjects((prevObj) => {
-          return prevObj.filter((projects) => projects.projectId !== projectId);
+          return prevObj.filter((projects) => projects._id !== projectId);
         });
       } else if (res.status !== 200) {
         // throw new Error("삭제를 실패하였습니다");
@@ -191,7 +192,7 @@ const Project = ({ isEditable, project = {}, setProjects }) => {
                 <ButtonCommon
                   variant="outline-secondary"
                   text="Delete"
-                  onClickHandler={() => onClickDel(project.projectId)}
+                  onClickHandler={() => onClickDel(project._id)}
                 />
               </Col>
             </Form.Group>

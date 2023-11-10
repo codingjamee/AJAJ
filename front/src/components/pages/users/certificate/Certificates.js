@@ -8,42 +8,46 @@ import { PortfolioOwnerDataContext } from "../Portfolio";
 import api from "../../../../utils/axiosConfig";
 import { useMemo } from "react";
 import { useSelector } from "react-redux";
+import useInput from "../../../../hooks/useInput";
+
+const initialValue = {
+  certificateName: "",
+  certificateDetail: "",
+  certificateOrganization: "",
+  acquisitionDate: "2019-01-01",
+};
 
 const Certificates = (props) => {
   const [addForm, setAddForm] = useState(false);
   const [certificates, setCertificates] = useState([]);
-  const [certificateName, setCertificateName] = useState("");
-  const [certificateDetail, setCertificateDetail] = useState("");
-  const [certificateOrganization, setCertificateOrganization] = useState("");
-  const [acquisitionDate, setAcquisitionDate] = useState("2023-01-01");
+  const [data, onChange, reset] = useInput(initialValue);
+
+  const {
+    certificateName,
+    certificateDetail,
+    certificateOrganization,
+    acquisitionDate,
+  } = data;
+
   const { isEditable } = props;
-  const userState = useSelector((state) => state.userInfo);
+  const userState = useSelector((state) => state.userLogin);
   const portfolioOwnerData = useContext(PortfolioOwnerDataContext);
 
   //form 상세설정 어레이
   const certificateState = useMemo(
     () => [
-      { value: certificateName, changeHandler: (v) => setCertificateName(v) },
+      { value: certificateName, changeHandler: (e) => onChange(e) },
       {
         value: certificateDetail,
-        changeHandler: (v) => setCertificateDetail(v),
+        changeHandler: (e) => onChange(e),
       },
       {
         value: certificateOrganization,
-        changeHandler: (v) => setCertificateOrganization(v),
+        changeHandler: (e) => onChange(e),
       },
-      { value: acquisitionDate, changeHandler: (v) => setAcquisitionDate(v) },
+      { value: acquisitionDate, changeHandler: (e) => onChange(e) },
     ],
-    [
-      certificateName,
-      setCertificateName,
-      certificateDetail,
-      setCertificateDetail,
-      certificateOrganization,
-      setCertificateOrganization,
-      acquisitionDate,
-      setAcquisitionDate,
-    ]
+    [data, onChange]
   );
   const certificateFormList = useMemo(
     () =>
@@ -76,18 +80,15 @@ const Certificates = (props) => {
           return [
             ...prev,
             {
-              certificateId: updatedCertId,
+              _id: updatedCertId,
               certificateName,
-              // certificateDetail,
+              certificateDetail,
               certificateOrganization,
               acquisitionDate,
             },
           ];
         });
-        setCertificateName("");
-        setCertificateDetail("");
-        setCertificateOrganization("");
-        setAcquisitionDate("2023-01-01");
+        reset();
         setAddForm(false);
       } else if (res.status !== 201) {
         // throw new Error("POST 요청이 실패하였습니다.");
@@ -135,7 +136,10 @@ const Certificates = (props) => {
             <ButtonCommon
               variant="light"
               size="sm"
-              onClickHandler={() => setAddForm((prev) => !prev)}
+              onClickHandler={() => {
+                reset();
+                setAddForm((prev) => !prev);
+              }}
               text={addForm ? "-" : "+"}
             />
           </Card>

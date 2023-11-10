@@ -6,7 +6,7 @@ import { Navigate } from "react-router-dom";
 import { useErrorBoundary } from "react-error-boundary";
 
 const useApi = () => {
-  const [result, setResult] = useState();
+  const [result, setResult] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(false);
   const dispatch = useDispatch();

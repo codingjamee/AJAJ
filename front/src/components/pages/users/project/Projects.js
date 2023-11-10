@@ -9,6 +9,13 @@ import api from "../../../../utils/axiosConfig";
 import { useMemo } from "react";
 import { useSelector } from "react-redux";
 
+const initialValue = {
+  schoolName: "",
+  major: "",
+  degree: "",
+  admissionDate: "2019-01-01",
+  graduationDate: "2023-01-01",
+};
 const Projects = (props) => {
   const [addForm, setAddForm] = useState(false);
   const [projects, setProjects] = useState([]);
@@ -113,7 +120,7 @@ const Projects = (props) => {
             return [
               ...prev,
               {
-                projectId: postedNewId,
+                _id: postedNewId,
                 projectName,
                 projectDetail,
                 projectImgUrl: postedNewImgUrl,
