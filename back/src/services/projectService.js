@@ -1,11 +1,9 @@
 import { Project } from "../db"; // Project 모델을 import
-// import { v4 as uuidv4 } from "uuid";
 
 class projectAuthService {
   static async addProject( projectInfo ) {
-    // const projectId = uuidv4();
-    // const newProject = { projectId, ...projectInfo };
-    const createdNewProject = await Project.create({ projectInfo });
+    const newProject = { ...projectInfo };
+    const createdNewProject = await Project.create({ newProject });
     return createdNewProject;
   };
 
