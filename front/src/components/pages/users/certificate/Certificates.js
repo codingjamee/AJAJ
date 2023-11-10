@@ -32,7 +32,7 @@ const Certificates = (props) => {
     certificateOrganization,
     acquisitionDate,
   } = data;
-  const { result, loading, sendRequest } = useApi();
+  const { result, loading, sendRequest, reqIdentifier } = useApi();
 
   //form 상세설정 어레이
   const certificateState = useMemo(
@@ -69,9 +69,7 @@ const Certificates = (props) => {
   useEffect(() => {
     //portfolioOwnerData.id를 가져오고 나서 실행
     if (portfolioOwnerData.id) {
-      api
-        .get(`user/${portfolioOwnerData.id}/certificates`)
-        .then((res) => setCertificates(res.data.certificates || []));
+      sendRequest(`user/${portfolioOwnerData.id}/certificates`, "get");
     }
   }, [portfolioOwnerData.id]);
 
@@ -90,24 +88,28 @@ const Certificates = (props) => {
 
   //요청성공시 재렌더링
   useEffect(() => {
-    const updatedCertId = result.data?.certificateId;
-    if (result.status === 201) {
-      setCertificates((prev) => {
-        return [
-          ...prev,
-          {
-            _id: updatedCertId,
-            certificateName,
-            certificateDetail,
-            certificateOrganization,
-            acquisitionDate,
-          },
-        ];
-      });
-      reset();
-      setAddForm(false);
+    if (reqIdentifier === "postData") {
+      const updatedCertId = result.data?.certificateId;
+      if (result.status === 201) {
+        setCertificates((prev) => {
+          return [
+            ...prev,
+            {
+              _id: updatedCertId,
+              certificateName,
+              certificateDetail,
+              certificateOrganization,
+              acquisitionDate,
+            },
+          ];
+        });
+        reset();
+        setAddForm(false);
+      }
+    } else if (reqIdentifier === "getData") {
+      setCertificates(result.data?.certificates || []);
     }
-  }, [result]);
+  }, [result, reqIdentifier]);
 
   return (
     <>
@@ -115,15 +117,17 @@ const Certificates = (props) => {
         <h3>자격증</h3>
         <br />
         {loading && <LoadingLayer message="Loading....." />}
-        {certificates.map((certificate, index) => (
-          <Certificate
-            key={`certificate-${index}`}
-            isEditable={isEditable}
-            formList={certificateFormList}
-            setCertificates={setCertificates}
-            certificate={certificate}
-          />
-        ))}
+        {!loading &&
+          certificates &&
+          certificates.map((certificate, index) => (
+            <Certificate
+              key={`certificate-${index}`}
+              isEditable={isEditable}
+              formList={certificateFormList}
+              setCertificates={setCertificates}
+              certificate={certificate}
+            />
+          ))}
         {isEditable && (
           <Card>
             {addForm && (

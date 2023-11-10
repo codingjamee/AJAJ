@@ -24,7 +24,7 @@ const Awards = (props) => {
   const portfolioOwnerData = useContext(PortfolioOwnerDataContext);
   const [data, onChange, _, reset] = useInput(initialValue);
   const userState = useSelector((state) => state.userLogin);
-  const { result, loading, sendRequest } = useApi();
+  const { result, loading, sendRequest, reqIdentifier } = useApi();
   const [awards, setAwards] = useState([]);
   const { awardName, awardDetail, awardOrganization, awardDate } = data;
 
@@ -55,12 +55,18 @@ const Awards = (props) => {
 
   useEffect(() => {
     if (portfolioOwnerData.id) {
-      api.get(`user/${portfolioOwnerData.id}/awards`).then((res) => {
-        console.log(res.data);
-        return setAwards(res.data.awards || []);
-      });
+      sendRequest(`user/${portfolioOwnerData.id}/awards`, "get");
     }
   }, [portfolioOwnerData.id]);
+
+  // useEffect(() => {
+  //   if (portfolioOwnerData.id) {
+  //     api.get(`user/${portfolioOwnerData.id}/awards`).then((res) => {
+  //       console.log(res.data);
+  //       return setAwards(res.data.awards || []);
+  //     });
+  //   }
+  // }, [portfolioOwnerData.id]);
 
   //제출버튼 클릭시
   const handleSubmit = async (e) => {
@@ -77,25 +83,28 @@ const Awards = (props) => {
 
   //요청성공시 재렌더링
   useEffect(() => {
-    const postedNewId = result.data?.awardId;
-
-    if (result.status === 201) {
-      setAwards((prev) => {
-        return [
-          ...prev,
-          {
-            _id: postedNewId,
-            awardName,
-            awardDetail,
-            awardOrganization,
-            awardDate,
-          },
-        ];
-      });
-      reset();
-      setAddForm(false);
+    if (reqIdentifier === "postData") {
+      const postedNewId = result.data?.awardId;
+      if (result.status === 201) {
+        setAwards((prev) => {
+          return [
+            ...prev,
+            {
+              _id: postedNewId,
+              awardName,
+              awardDetail,
+              awardOrganization,
+              awardDate,
+            },
+          ];
+        });
+        reset();
+        setAddForm(false);
+      }
+    } else if (reqIdentifier === "getData") {
+      setAwards(result.data?.awards || []);
     }
-  }, [reset, result]);
+  }, [result, reqIdentifier]);
 
   return (
     <>
