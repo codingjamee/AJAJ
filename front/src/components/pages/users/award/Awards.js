@@ -5,7 +5,6 @@ import FormWrapper from "../../../common/FormWrapper";
 import { PortfolioOwnerDataContext } from "../Portfolio";
 import { awardsCommonFormProps } from "../../../../utils/formListCommonProps";
 import Award from "./Award";
-import api from "../../../../utils/axiosConfig";
 import { useMemo } from "react";
 import { useSelector } from "react-redux";
 import LoadingLayer from "../../../../UI/LoadingLayer";
@@ -28,7 +27,6 @@ const Awards = (props) => {
   const [awards, setAwards] = useState([]);
   const { awardName, awardDetail, awardOrganization, awardDate } = data;
 
-  // const portfolioOwnerData = useContext(PortfolioOwnerDataContext);
   const { isEditable } = props;
 
   //form 상세설정 어레이
@@ -58,15 +56,6 @@ const Awards = (props) => {
       sendRequest(`user/${portfolioOwnerData.id}/awards`, "get");
     }
   }, [portfolioOwnerData.id]);
-
-  // useEffect(() => {
-  //   if (portfolioOwnerData.id) {
-  //     api.get(`user/${portfolioOwnerData.id}/awards`).then((res) => {
-  //       console.log(res.data);
-  //       return setAwards(res.data.awards || []);
-  //     });
-  //   }
-  // }, [portfolioOwnerData.id]);
 
   //제출버튼 클릭시
   const handleSubmit = async (e) => {

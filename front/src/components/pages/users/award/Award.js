@@ -1,12 +1,13 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Form, Card, Col } from "react-bootstrap";
 import FormWrapper from "../../../common/FormWrapper";
 import ButtonCommon from "../../../common/ButtonCommon";
 import { awardsCommonFormProps } from "../../../../utils/formListCommonProps";
-import api from "../../../../utils/axiosConfig";
 import { useMemo } from "react";
 import { useSelector } from "react-redux";
 import useInput from "../../../../hooks/useInput";
+import useApi from "../../../../hooks/useApi";
+import LoadingLayer from "../../../../UI/LoadingLayer";
 
 const initialValue = {
   awardName: "",
@@ -17,9 +18,10 @@ const initialValue = {
 
 const Award = ({ isEditable, award = {}, setAwards }) => {
   const [editMode, setEditMode] = useState(false);
+  const userState = useSelector((state) => state.userLogin);
   const [data, onChange] = useInput(award || initialValue);
   const { awardName, awardDetail, awardOrganization, awardDate } = data;
-  const userState = useSelector((state) => state.userLogin);
+  const { result, loading, sendRequest, reqIdentifier, extra } = useApi();
 
   //form 상세설정 어레이
   const awardState = useMemo(
@@ -47,64 +49,60 @@ const Award = ({ isEditable, award = {}, setAwards }) => {
   const onSubmitHandler = async (e) => {
     e.preventDefault();
 
-    //post 서버와 통신
-    try {
-      const res = await api.put(
-        `user/${userState.userInfo?.id}/award/${award._id}`,
-        {
-          awardName,
-          awardDetail,
-          awardOrganization,
-          awardDate,
-        }
-      );
-
-      if (res.status === 200) {
-        setAwards((prev) => {
-          const updatedAwards = prev.map((prevAward) => {
-            if (prevAward._id === award._id) {
-              return {
-                ...prevAward,
-                awardName,
-                awardDetail,
-                awardOrganization,
-                awardDate,
-              };
-            }
-            return prevAward;
-          });
-          return updatedAwards;
-        });
-        setEditMode(false);
-      } else if (res.status !== 200) {
-        // throw new Error("POST 요청이 실패하였습니다.");
+    //put 서버와 통신
+    await sendRequest(
+      `user/${userState.userInfo?.id}/award/${award._id}`,
+      "put",
+      {
+        awardName,
+        awardDetail,
+        awardOrganization,
+        awardDate,
       }
-    } catch (err) {
-      console.error(err);
-    }
+    );
   };
 
   //삭제함수
-
   const onClickDel = async (awardId) => {
-    try {
-      const res = await api.delete(
-        `user/${userState.userInfo?.id}/award/${awardId}`
-      );
-      // console.log(res);
-      if (res.status === 200) {
-        setAwards((prev) => prev.filter((award) => award._id !== awardId));
-      } else if (res.status !== 200) {
-        // throw new Error("삭제를 실패하였습니다");
-      }
-    } catch (err) {
-      console.error(err);
-    }
+    await sendRequest(
+      `user/${userState.userInfo?.id}/award/${awardId}`,
+      "delete",
+      "",
+      "",
+      awardId
+    );
   };
+
+  useEffect(() => {
+    if (reqIdentifier === "putData") {
+      setAwards((prev) => {
+        const updatedAwards = prev.map((prevAward) => {
+          if (prevAward._id === award._id) {
+            return {
+              ...prevAward,
+              awardName,
+              awardDetail,
+              awardOrganization,
+              awardDate,
+            };
+          }
+          return prevAward;
+        });
+        return updatedAwards;
+      });
+      setEditMode(false);
+    } else if (reqIdentifier === "deleteData") {
+      setAwards((prev) => {
+        const updatedAwards = prev.filter((award) => award._id !== extra);
+        return updatedAwards;
+      });
+    }
+  }, [result, extra]);
 
   return (
     <Card className="border-0" style={{ width: "100%" }}>
-      {!editMode && (
+      {!editMode && loading && <LoadingLayer message="Loading....." />}
+      {!editMode && !loading && (
         <>
           <Card.Title>{award.awardName}</Card.Title>
 
@@ -136,6 +134,7 @@ const Award = ({ isEditable, award = {}, setAwards }) => {
           )}
         </>
       )}
+
       {editMode && (
         <FormWrapper
           formList={awardFormList}

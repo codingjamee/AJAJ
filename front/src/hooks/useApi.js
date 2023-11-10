@@ -10,10 +10,11 @@ const useApi = () => {
   const [loading, setLoading] = useState(false);
   const [reqIdentifier, setReqIdentifier] = useState("");
   const [error, setError] = useState(false);
+  const [extra, setExtra] = useState("");
   const dispatch = useDispatch();
   const { showBoundary } = useErrorBoundary();
 
-  const sendRequest = async (url, method, data, login = false) => {
+  const sendRequest = async (url, method, data, login = false, extras = "") => {
     if (method === "post") {
       try {
         setLoading(true);
@@ -50,6 +51,7 @@ const useApi = () => {
         setReqIdentifier(method + "Data");
         const res = await api.put(url, data);
         setResult(res);
+        setExtra(extras);
       } catch (err) {
         showBoundary(err);
       } finally {
@@ -60,7 +62,9 @@ const useApi = () => {
       try {
         setLoading(true);
         setReqIdentifier(method + "Data");
-        const res = await api.delete(url, data);
+        const res = await api.delete(url);
+        console.log(res);
+        setExtra(extras);
         setResult(res);
       } catch (err) {
         showBoundary(err);
@@ -70,7 +74,7 @@ const useApi = () => {
     }
   };
 
-  return { result, loading, sendRequest, reqIdentifier };
+  return { result, loading, sendRequest, reqIdentifier, extra };
 };
 
 export default useApi;

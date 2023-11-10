@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Form, Card, Col } from "react-bootstrap";
 import FormWrapper from "../../../common/FormWrapper";
 import ButtonCommon from "../../../common/ButtonCommon";
@@ -7,6 +7,8 @@ import api from "../../../../utils/axiosConfig";
 import { useMemo } from "react";
 import { useSelector } from "react-redux";
 import useInput from "../../../../hooks/useInput";
+import useApi from "../../../../hooks/useApi";
+import LoadingLayer from "../../../../UI/LoadingLayer";
 
 const initialValue = {
   certificateName: "",
@@ -25,6 +27,7 @@ const Certificate = ({ isEditable, certificate = {}, setCertificates }) => {
     certificateOrganization,
     acquisitionDate,
   } = data;
+  const { result, loading, sendRequest, reqIdentifier, extra } = useApi();
 
   const userState = useSelector((state) => state.userLogin);
 
@@ -64,64 +67,62 @@ const Certificate = ({ isEditable, certificate = {}, setCertificates }) => {
   const onSubmitHandler = async (e) => {
     e.preventDefault();
 
-    //post 서버와 통신
-    try {
-      const res = await api.put(
-        `user/${userState.userInfo?.id}/certificate/${certificate._id}`,
-        {
-          certificateName,
-          certificateDetail,
-          certificateOrganization,
-          acquisitionDate,
-        }
-      );
-      if (res.status === 200) {
-        setCertificates((prev) => {
-          const updatedCert = prev.map((prevCert) => {
-            if (prevCert._id === certificate._id) {
-              return {
-                ...prevCert,
-                certificateName,
-                certificateDetail,
-                certificateOrganization,
-                acquisitionDate,
-              };
-            }
-            return prevCert;
-          });
-          return updatedCert;
-        });
-        setEditMode(false);
-      } else if (res.status !== 200) {
-        // throw new Error("POST 요청을 실패하였습니다.");
+    //put 서버와 통신
+    await sendRequest(
+      `user/${userState.userInfo?.id}/award/${certificate._id}`,
+      "put",
+      {
+        certificateName,
+        certificateDetail,
+        certificateOrganization,
+        acquisitionDate,
       }
-    } catch (err) {
-      // throw new Error("서버와 통신이 실패하였습니다");
-    }
+    );
   };
 
-  //삭제함수
+  // 삭제함수
   const onClickDel = async (certificateId) => {
-    try {
-      const res = await api.delete(
-        `user/${userState.userInfo?.id}/certificate/${certificateId}`
-      );
-      if (res.status === 200) {
-        setCertificates((prev) =>
-          prev.filter((certificates) => certificates._id !== certificateId)
-        );
-      } else if (res.status !== 200) {
-        // throw new Error("삭제를 실패하였습니다");
-      }
-    } catch (err) {
-      console.error(err);
-      // throw new Error("서버와 통신에 실패하였습니다");
-    }
+    await sendRequest(
+      `user/${userState.userInfo?.id}/certificate/${certificateId}`,
+      "delete",
+      "",
+      "",
+      certificateId
+    );
   };
+
+  useEffect(() => {
+    if (reqIdentifier === "putData") {
+      setCertificates((prev) => {
+        const updatedCert = prev.map((prevCert) => {
+          if (prevCert._id === certificate._id) {
+            return {
+              ...prevCert,
+              certificateName,
+              certificateDetail,
+              certificateOrganization,
+              acquisitionDate,
+            };
+          }
+          return prevCert;
+        });
+        return updatedCert;
+      });
+      setEditMode(false);
+    } else if (reqIdentifier === "deleteData") {
+      setCertificates((prev) => {
+        const updatedCertificates = prev.filter(
+          (certificates) => certificates._id !== extra
+        );
+        return updatedCertificates;
+      });
+    }
+  }, [result, extra]);
 
   return (
     <Card className="border-0" style={{ width: "100%" }}>
-      {!editMode && (
+      {!editMode && loading && <LoadingLayer message="Loading....." />}
+      {!editMode && !loading && (
         <>
           <Card.Title>{certificate.certificateName}</Card.Title>
           <Card.Subtitle className="mb-2 text-muted">
