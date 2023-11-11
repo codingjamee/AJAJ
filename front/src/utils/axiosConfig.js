@@ -1,7 +1,4 @@
-//추후 설정할것!
 import axios from "axios";
-
-// import axios from "axios";
 
 const config = {
   baseURL: process.env.REACT_APP_API_BASE_URL + "/api",
@@ -17,10 +14,12 @@ api.interceptors.request.use(
   (req) => {
     //요청 data가 formData일때
     if (req.data && req.data instanceof FormData) {
+      console.log("form데이터를 보냅니다. ");
       req.headers["Content-Type"] = "multipart/form-data";
     }
     //요청 data가 Object일 때
     else if (req.data && req.data instanceof Object) {
+      console.log("object를 보냅니다");
       req.headers["Content-Type"] = "application/json";
     }
 

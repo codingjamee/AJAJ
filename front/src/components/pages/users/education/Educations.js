@@ -5,7 +5,6 @@ import FormWrapper from "../../../common/FormWrapper";
 import Education from "./Education";
 import { PortfolioOwnerDataContext } from "../Portfolio";
 import { educationsCommonFormProps } from "../../../../utils/formListCommonProps";
-import api from "../../../../utils/axiosConfig";
 import { useMemo } from "react";
 import { useSelector } from "react-redux";
 import useInput from "../../../../hooks/useInput";

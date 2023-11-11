@@ -21,7 +21,7 @@ const FormCommon = ({
     >
       {label && <Form.Label>{label}</Form.Label>}
       {/* select가 false인경우. 기본값 */}
-      {!select && (
+      {!select && type !== "file" && (
         <Form.Control
           type={type}
           placeholder={placeholder}
