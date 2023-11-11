@@ -94,7 +94,9 @@ userAuthRouter.post("/user/login", deleted_checked, request_checked, async funct
 // 전체 사용자목록 가져오기 - 페이징
 userAuthRouter.get("/userlist", login_required, async function (req, res, next) {
   try {
+    
     const currentPage = req.query.page;
+    console.log('currentPage', currentPage);
     
     const users = await userAuthService.getUsers_paging({ currentPage });
 
