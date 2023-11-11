@@ -5,7 +5,6 @@ import FormWrapper from "../../../common/FormWrapper";
 import Certificate from "./Certificate";
 import { certificatesCommonFormProps } from "../../../../utils/formListCommonProps";
 import { PortfolioOwnerDataContext } from "../Portfolio";
-import api from "../../../../utils/axiosConfig";
 import { useMemo } from "react";
 import { useSelector } from "react-redux";
 import useInput from "../../../../hooks/useInput";

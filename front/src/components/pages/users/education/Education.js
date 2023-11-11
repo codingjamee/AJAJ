@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Form, Card, Col } from "react-bootstrap";
 import FormWrapper from "../../../common/FormWrapper";
 import ButtonCommon from "../../../common/ButtonCommon";
@@ -7,6 +7,8 @@ import api from "../../../../utils/axiosConfig";
 import { useMemo } from "react";
 import { useSelector } from "react-redux";
 import useInput from "../../../../hooks/useInput";
+import useApi from "../../../../hooks/useApi";
+import LoadingLayer from "../../../../UI/LoadingLayer";
 
 const initialValue = {
   schoolName: "",
@@ -20,6 +22,7 @@ const Education = ({ isEditable, education = {}, setEducations }) => {
   const [editMode, setEditMode] = useState(false);
   const [data, onChange] = useInput(education || initialValue);
   const { schoolName, major, degree, admissionDate, graduationDate } = data;
+  const { result, loading, sendRequest, reqIdentifier, extra } = useApi();
 
   const userState = useSelector((state) => state.userLogin);
 
@@ -60,72 +63,65 @@ const Education = ({ isEditable, education = {}, setEducations }) => {
 
   //수정해서 onSubmitHandler
   const onSubmitHandler = async (e) => {
-    //제출버튼 클릭시
     e.preventDefault();
 
     //put 서버와 통신
-    try {
-      const res = await api.put(
-        `user/${userState.userInfo?.id}/education/${education._id}`,
-        {
-          schoolName,
-          major,
-          degree,
-          admissionDate,
-          graduationDate,
-        }
-      );
-      if (res.status === 200) {
-        setEducations((prev) => {
-          const updatedEdus = prev.map((prevEdu) => {
-            if (prevEdu._id === education._id) {
-              return {
-                ...prevEdu,
-                schoolName,
-                major,
-                degree,
-                admissionDate,
-                graduationDate,
-              };
-            }
-            return prevEdu;
-          });
-          return updatedEdus;
-        });
-        setEditMode(false);
-      } else if (res.status !== 200) {
-        // throw new Error("POST 요청을 실패하였습니다.");
+    await sendRequest(
+      `user/${userState.userInfo?.id}/education/${education._id}`,
+      "put",
+      {
+        schoolName,
+        major,
+        degree,
+        admissionDate,
+        graduationDate,
       }
-    } catch (err) {
-      console.error(err);
-      // throw new Error("서버와 통신이 실패하였습니다");
-    }
+    );
   };
 
   //삭제함수
 
   const onClickDel = async (eduId) => {
-    try {
-      const res = await api.delete(
-        `user/${userState.userInfo?.id}/education/${eduId}`
-      );
-      // console.log(res);
-      if (res.status === 200) {
-        setEducations((prevObj) => {
-          return prevObj.filter((edus) => edus._id !== eduId);
-        });
-      } else if (res.status !== 200) {
-        // throw new Error("삭제를 실패하였습니다");
-      }
-    } catch (err) {
-      console.error(err);
-      // throw new Error("서버와 통신에 실패하였습니다");
-    }
+    await sendRequest(
+      `user/${userState.userInfo?.id}/education/${eduId}`,
+      "delete",
+      "",
+      "",
+      eduId
+    );
   };
+
+  useEffect(() => {
+    if (reqIdentifier === "putData") {
+      setEducations((prev) => {
+        const updatedEdus = prev.map((prevEdu) => {
+          if (prevEdu._id === education._id) {
+            return {
+              ...prevEdu,
+              schoolName,
+              major,
+              degree,
+              admissionDate,
+              graduationDate,
+            };
+          }
+          return prevEdu;
+        });
+        return updatedEdus;
+      });
+      setEditMode(false);
+    } else if (reqIdentifier === "deleteData") {
+      setEducations((prevObj) => {
+        const updatedEducations = prevObj.filter((edus) => edus._id !== extra);
+        return updatedEducations;
+      });
+    }
+  }, [result, extra]);
 
   return (
     <Card className="border-0" style={{ width: "100%" }}>
-      {!editMode && (
+      {!editMode && loading && <LoadingLayer message="Loading....." />}
+      {!editMode && !loading && (
         <>
           <Card.Title>{education.schoolName}</Card.Title>
           <Card.Subtitle className="mb-2 text-muted">

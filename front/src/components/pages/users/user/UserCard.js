@@ -17,7 +17,7 @@ function UserCard({ user, setIsEditing, isEditable, isNetwork }) {
             }}
             className="mb-3"
             src={user?.userImgUrl || defaultImg}
-            alt="랜덤 고양이 사진 (http://placekitten.com API 사용)"
+            alt="프로필이미지"
           />
         </Row>
         <Card.Title>{user?.name}</Card.Title>
@@ -44,7 +44,7 @@ function UserCard({ user, setIsEditing, isEditable, isNetwork }) {
           <Card.Link
             className="mt-3"
             href="#"
-            onClick={() => navigate(`/users/${user.userId}`)}
+            onClick={() => navigate(`/users/${user._id}`)}
           >
             포트폴리오
           </Card.Link>

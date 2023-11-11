@@ -44,7 +44,7 @@ function Portfolio() {
       const ownerId = userState.userInfo?.id;
       fetchPortfolioOwner(ownerId);
     }
-  }, []);
+  }, [params]);
 
   return (
     <PortfolioOwnerDataContext.Provider value={portfolioOwnerData}>

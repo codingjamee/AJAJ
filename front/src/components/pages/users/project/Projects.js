@@ -8,6 +8,7 @@ import Project from "./Project";
 import api from "../../../../utils/axiosConfig";
 import { useMemo } from "react";
 import { useSelector } from "react-redux";
+import useApi from "../../../../hooks/useApi";
 
 const initialValue = {
   schoolName: "",
@@ -28,6 +29,7 @@ const Projects = (props) => {
   const userState = useSelector((state) => state.userLogin);
   const portfolioOwnerData = useContext(PortfolioOwnerDataContext);
   const { isEditable } = props;
+  const { result, loading, sendRequest, reqIdentifier } = useApi();
 
   //form 상세설정 어레이
   const projectState = useMemo(
@@ -150,9 +152,7 @@ const Projects = (props) => {
   useEffect(() => {
     //portfolioOwnerData.id를 가져오고 나서 실행
     if (portfolioOwnerData.id) {
-      api.get(`user/${portfolioOwnerData.id}/projects`).then((res) => {
-        return setProjects(res.data.projects);
-      });
+      sendRequest(`user/${portfolioOwnerData.id}/projects`, "get");
     }
   }, [portfolioOwnerData.id]);
 
