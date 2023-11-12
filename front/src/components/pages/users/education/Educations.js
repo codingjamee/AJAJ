@@ -5,7 +5,6 @@ import FormWrapper from "../../../common/FormWrapper";
 import Education from "./Education";
 import { PortfolioOwnerDataContext } from "../Portfolio";
 import { educationsCommonFormProps } from "../../../../utils/formListCommonProps";
-import api from "../../../../utils/axiosConfig";
 import { useMemo } from "react";
 import { useSelector } from "react-redux";
 import useInput from "../../../../hooks/useInput";
@@ -21,14 +20,21 @@ const initialValue = {
 };
 
 const Educations = (props) => {
+  const userState = useSelector((state) => state.userLogin);
   const { isEditable } = props;
   const portfolioOwnerData = useContext(PortfolioOwnerDataContext);
-  const userState = useSelector((state) => state.userLogin);
   const [addForm, setAddForm] = useState(false);
   const [educations, setEducations] = useState([]);
   const [data, onChange, onChangeSelect, reset] = useInput(initialValue);
   const { schoolName, major, degree, admissionDate, graduationDate } = data;
-  const { result, loading, sendRequest, reqIdentifier } = useApi();
+  const { result, loading, trigger, reqIdentifier } = useApi({
+    method: "get",
+    path: `user/${portfolioOwnerData?.id}/educations`,
+    data: "",
+    shouldInitFetch: false,
+  });
+
+  const { status } = result;
 
   //form 상세설정 어레이
   const eduState = useMemo(
@@ -73,9 +79,17 @@ const Educations = (props) => {
     [eduState]
   );
 
+  // 모든 학위 목록 가져오기 서버와 통신
   useEffect(() => {
+    //portfolioOwnerData.id를 가져오고 나서 실행
     if (portfolioOwnerData.id) {
-      sendRequest(`user/${portfolioOwnerData.id}/educations`, "get");
+      trigger({
+        method: "get",
+        path: `user/${portfolioOwnerData.id}/educations`,
+        data: {},
+        applyResult: true,
+        isShowBoundary: true,
+      });
     }
   }, [portfolioOwnerData.id]);
 
@@ -83,39 +97,48 @@ const Educations = (props) => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    //post 서버와 통신
-    await sendRequest(`user/${userState.userInfo?.id}/education`, "post", {
+    const educationData = {
       schoolName,
       major,
       degree,
       admissionDate,
       graduationDate,
+    };
+    //post 서버와 통신
+    trigger({
+      method: "post",
+      path: `user/${userState.userInfo?.id}/education`,
+      data: educationData,
+      applyResult: true,
+      isShowBoundary: true,
     });
   };
 
+  useEffect(() => {
+    if (reqIdentifier !== "getData") return;
+    setEducations(result.data?.educations || []);
+  }, [result, reqIdentifier]);
+
   //요청성공시 재렌더링
   useEffect(() => {
-    if (reqIdentifier === "postData") {
-      const postedNewId = result.data?.eduId;
-      if (result.status === 201) {
-        setEducations((prev) => {
-          return [
-            ...prev,
-            {
-              _id: postedNewId,
-              schoolName,
-              major,
-              degree,
-              admissionDate,
-              graduationDate,
-            },
-          ];
-        });
-        reset();
-        setAddForm(false);
-      }
-    } else if (reqIdentifier === "getData") {
-      setEducations(result.data?.educations || []);
+    if (reqIdentifier !== "postData") return;
+    const postedNewId = result.data?.eduId;
+    if (result.status === 201) {
+      setEducations((prev) => {
+        return [
+          ...prev,
+          {
+            _id: postedNewId,
+            schoolName,
+            major,
+            degree,
+            admissionDate,
+            graduationDate,
+          },
+        ];
+      });
+      reset();
+      setAddForm(false);
     }
   }, [result, reqIdentifier]);
 

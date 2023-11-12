@@ -17,7 +17,7 @@ function Portfolio() {
   const params = useParams();
   const [portfolioOwnerData, setPortfolioOwnerData] = useState({});
   const userState = useSelector((state) => state.userLogin);
-  const isEditable = portfolioOwnerData?.id === userState.userInfo?.id;
+  const isEditable = portfolioOwnerData?.id === userState?.userInfo?.id;
 
   const fetchPortfolioOwner = async (ownerId) => {
     try {
@@ -31,7 +31,7 @@ function Portfolio() {
 
   useEffect(() => {
     //userState가 없는 경우
-    if (!userState.userInfo?.id) {
+    if (!userState?.userInfo?.id) {
       return navigate("/login", { replace: true });
     }
 
@@ -41,7 +41,7 @@ function Portfolio() {
       fetchPortfolioOwner(ownerId);
     } else {
       // URL "/"
-      const ownerId = userState.userInfo?.id;
+      const ownerId = userState?.userInfo?.id;
       fetchPortfolioOwner(ownerId);
     }
   }, [params]);

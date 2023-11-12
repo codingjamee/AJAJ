@@ -27,6 +27,7 @@ function App() {
       if (preventCurrentApiCallPaths.includes(location.pathname)) return;
       const res = await api.get("user/current");
       const currentUser = res.data.id;
+      console.log(currentUser);
       if (currentUser) {
         //쿠키에 유저가 있는 경우만
         reduxDispatch(userLoginActions.storeUser(res.data));

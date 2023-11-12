@@ -31,7 +31,12 @@ const Certificates = (props) => {
     certificateOrganization,
     acquisitionDate,
   } = data;
-  const { result, loading, sendRequest, reqIdentifier } = useApi();
+  const { result, loading, trigger, reqIdentifier } = useApi({
+    method: "get",
+    path: `user/${portfolioOwnerData?.id}/certificates`,
+    data: "",
+    shouldInitFetch: false,
+  });
 
   //form 상세설정 어레이
   const certificateState = useMemo(
@@ -68,7 +73,13 @@ const Certificates = (props) => {
   useEffect(() => {
     //portfolioOwnerData.id를 가져오고 나서 실행
     if (portfolioOwnerData.id) {
-      sendRequest(`user/${portfolioOwnerData.id}/certificates`, "get");
+      trigger({
+        method: "get",
+        path: `user/${portfolioOwnerData.id}/certificates`,
+        data: {},
+        applyResult: true,
+        isShowBoundary: true,
+      });
     }
   }, [portfolioOwnerData.id]);
 
@@ -76,37 +87,47 @@ const Certificates = (props) => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    // post 서버와 통신
-    await sendRequest(`user/${userState.userInfo?.id}/certificate`, "post", {
+    const certificateData = {
       certificateName,
       certificateDetail,
       certificateOrganization,
       acquisitionDate,
+    };
+
+    // post 서버와 통신
+    trigger({
+      method: "post",
+      path: `user/${userState.userInfo?.id}/certificate`,
+      data: certificateData,
+      applyResult: true,
+      isShowBoundary: true,
     });
   };
 
+  useEffect(() => {
+    if (reqIdentifier !== "getData") return;
+    setCertificates(result.data?.certificates || []);
+  }, [result.data, reqIdentifier]);
+
   //요청성공시 재렌더링
   useEffect(() => {
-    if (reqIdentifier === "postData") {
-      const updatedCertId = result.data?.certificateId;
-      if (result.status === 201) {
-        setCertificates((prev) => {
-          return [
-            ...prev,
-            {
-              _id: updatedCertId,
-              certificateName,
-              certificateDetail,
-              certificateOrganization,
-              acquisitionDate,
-            },
-          ];
-        });
-        reset();
-        setAddForm(false);
-      }
-    } else if (reqIdentifier === "getData") {
-      setCertificates(result.data?.certificates || []);
+    if (reqIdentifier !== "postData") return;
+    const updatedCertId = result.data?.certificateId;
+    if (result.status === 201) {
+      setCertificates((prev) => {
+        return [
+          ...prev,
+          {
+            _id: updatedCertId,
+            certificateName,
+            certificateDetail,
+            certificateOrganization,
+            acquisitionDate,
+          },
+        ];
+      });
+      reset();
+      setAddForm(false);
     }
   }, [result, reqIdentifier]);
 

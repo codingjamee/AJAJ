@@ -1,58 +1,73 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { useCallback, useContext, useEffect, useState } from "react";
 import { Card } from "react-bootstrap";
 import ButtonCommon from "../../../common/ButtonCommon";
 import FormWrapper from "../../../common/FormWrapper";
 import { PortfolioOwnerDataContext } from "../Portfolio";
 import { projectsCommonFormProps } from "../../../../utils/formListCommonProps";
 import Project from "./Project";
-import api from "../../../../utils/axiosConfig";
 import { useMemo } from "react";
 import { useSelector } from "react-redux";
 import useApi from "../../../../hooks/useApi";
+import LoadingLayer from "../../../../UI/LoadingLayer";
+import useInput from "../../../../hooks/useInput";
 
 const initialValue = {
-  schoolName: "",
-  major: "",
-  degree: "",
-  admissionDate: "2019-01-01",
-  graduationDate: "2023-01-01",
+  projectName: "",
+  projectDetail: "",
+  projectImgFile: {},
+  imgBase64: null,
+  projectStartDate: "2023-01-01",
+  projectEndDate: "2023-01-01",
 };
 const Projects = (props) => {
   const [addForm, setAddForm] = useState(false);
   const [projects, setProjects] = useState([]);
-  const [projectName, setProjectName] = useState("");
-  const [projectDetail, setProjectDetail] = useState("");
-  const [projectImgFile, setProjectImgFile] = useState({});
+
   const [imgBase64, setImgBase64] = useState(null);
-  const [projectStartDate, setProjectStartDate] = useState("2023-01-01");
-  const [projectEndDate, setProjectEndDate] = useState("2023-01-01");
+  const [projectImgFile, setProjectImgFile] = useState({});
+
+  // const [projectName, setProjectName] = useState("");
+  // const [projectDetail, setProjectDetail] = useState("");
+  // const [projectStartDate, setProjectStartDate] = useState("2023-01-01");
+  // const [projectEndDate, setProjectEndDate] = useState("2023-01-01");
+  const [data, onChange, _, reset, onChangeFile] = useInput(initialValue);
+  const { projectName, projectDetail, projectStartDate, projectEndDate } = data;
+
   const userState = useSelector((state) => state.userLogin);
   const portfolioOwnerData = useContext(PortfolioOwnerDataContext);
   const { isEditable } = props;
-  const { result, loading, sendRequest, reqIdentifier } = useApi();
+  const { result, loading, sendRequest, reqIdentifier, trigger } = useApi({
+    method: "get",
+    path: `user/${userState?.userInfo?.id}/projects`,
+    data: {},
+    shouldInitFetch: false,
+  });
 
   //form 상세설정 어레이
   const projectState = useMemo(
     () => [
-      { value: projectName, changeHandler: (v) => setProjectName(v) },
-      { value: projectDetail, changeHandler: (v) => setProjectDetail(v) },
+      {
+        value: projectName,
+        changeHandler: (e) => onChange(e),
+      },
+      {
+        value: projectDetail,
+        changeHandler: (e) => onChange(e),
+      },
       {
         value: imgBase64,
-        changeHandler: (v) => handleChangeFile(v),
+        changeHandler: (e) => handleChangeFile(e),
       },
-      { value: projectStartDate, changeHandler: (v) => setProjectStartDate(v) },
-      { value: projectEndDate, changeHandler: (v) => setProjectEndDate(v) },
+      { value: projectStartDate, changeHandler: (e) => onChange(e) },
+      { value: projectEndDate, changeHandler: (e) => onChange(e) },
     ],
     [
+      onChange,
       projectName,
-      setProjectName,
       projectDetail,
-      setProjectDetail,
       imgBase64,
       projectStartDate,
-      setProjectStartDate,
       projectEndDate,
-      setProjectEndDate,
     ]
   );
 
@@ -64,30 +79,21 @@ const Projects = (props) => {
     [projectState]
   );
 
-  const handleChangeFile = (e) => {
-    if (e.target.files && e.target.files[0]) {
-      setProjectImgFile(e.target.files[0]);
+  const handleChangeFile = useCallback((e) => {
+    if (e.target?.files && e.target?.files[0]) {
+      onChangeFile(e);
       setImgBase64([]);
     }
-    // for (var i = 0; i < e.target.files.length; i++) {
-    //   if (e.target.files[i]) {
     let reader = new FileReader();
     reader.readAsDataURL(e.target.files[0]); // 1. 파일을 읽어 버퍼에 저장합니다.
-    // 파일 상태 업데이트
     reader.onloadend = () => {
-      // 2. 읽기가 완료되면 아래코드가 실행됩니다.
       const base64 = reader.result;
       if (base64) {
-        var base64Sub = base64.toString();
-
+        const base64Sub = base64.toString();
         setImgBase64(base64Sub);
-        //  setImgBase64(newObj);
-        // 파일 base64 상태 업데이트
       }
-      //   };
-      // }
     };
-  };
+  }, []);
 
   //제출버튼 클릭시
   const handleSubmit = async (e) => {
@@ -100,76 +106,80 @@ const Projects = (props) => {
 
     const formData = new FormData();
 
-    formData.append("image", projectImgFile);
     formData.append("projectName", projectName);
     formData.append("projectDetail", projectDetail);
+    formData.append("image", projectImgFile);
     formData.append("projectStartDate", projectStartDate);
     formData.append("projectEndDate", projectEndDate);
-
     //post 서버와 통신
-    try {
-      if (userState.userInfo?.id) {
-        const res = await api.post(
-          `user/${userState.userInfo?.id}/project`,
-          formData
-        );
 
-        const postedNewId = res.data._id;
-        const postedNewImgUrl = res.data.projectImgUrl;
-
-        if (res.status === 201) {
-          setProjects((prev) => {
-            return [
-              ...prev,
-              {
-                _id: postedNewId,
-                projectName,
-                projectDetail,
-                projectImgUrl: postedNewImgUrl,
-                projectStartDate,
-                projectEndDate,
-              },
-            ];
-          });
-          alert(res.data.message);
-          setProjectName("");
-          setProjectDetail("");
-          setProjectImgFile({});
-          setProjectStartDate("2023-01-01");
-          setProjectEndDate("2023-01-01");
-          setAddForm(false);
-        } else if (res.status !== 201) {
-          throw new Error("POST 요청이 실패하였습니다.");
-        }
-      }
-    } catch (err) {
-      console.error(err);
-      throw new Error("서버와 통신이 실패하였습니다.");
-    }
+    trigger({
+      method: "post",
+      path: `user/${userState?.userInfo?.id}/project`,
+      data: formData,
+      applyResult: true,
+      isShowBoundary: true,
+    });
   };
 
-  // 모든 프로젝트 목록 가져오기 서버와 통신
+  //portfolioOwnerData를 가져오면 projects목록 가져오기
   useEffect(() => {
-    //portfolioOwnerData.id를 가져오고 나서 실행
     if (portfolioOwnerData.id) {
-      sendRequest(`user/${portfolioOwnerData.id}/projects`, "get");
+      trigger({
+        method: "get",
+        path: `user/${portfolioOwnerData.id}/projects`,
+        data: {},
+        applyResult: true,
+        isShowBoundary: true,
+      });
     }
   }, [portfolioOwnerData.id]);
+
+  //result가 변하면(projects가져오면) 트리거됨
+  useEffect(() => {
+    setProjects(result.data?.projects || []);
+  }, [result.data]);
+
+  //요청성공시 재렌더링
+  useEffect(() => {
+    const postedNewId = result.data?.projectId;
+    const postedNewImgUrl = result.data?.projectImgUrl;
+    if (result.status === 201) {
+      setProjects((prev) => {
+        return [
+          ...prev,
+          {
+            _id: postedNewId,
+            projectName,
+            projectDetail,
+            projectImgUrl: postedNewImgUrl,
+            projectStartDate,
+            projectEndDate,
+          },
+        ];
+      });
+      reset();
+      setAddForm(false);
+    }
+  }, [result]);
 
   return (
     <>
       <Card border="warning">
         <h3>프로젝트</h3>
         <br />
-        {projects.map((project, index) => (
-          <Project
-            key={`project-${index}`}
-            isEditable={isEditable}
-            formList={projectFormList}
-            setProjects={setProjects}
-            project={project}
-          />
-        ))}
+        {loading && <LoadingLayer message="Loading....." />}
+        {!loading &&
+          projects &&
+          projects.map((project, index) => (
+            <Project
+              key={`project-${index}`}
+              isEditable={isEditable}
+              formList={projectFormList}
+              setProjects={setProjects}
+              project={project}
+            />
+          ))}
         {isEditable && (
           <Card>
             {addForm && (
@@ -185,6 +195,7 @@ const Projects = (props) => {
               size="sm"
               onClickHandler={() => {
                 setImgBase64("");
+                reset();
                 setAddForm((prev) => !prev);
               }}
               text={addForm ? "-" : "+"}

@@ -6,6 +6,7 @@ import { projectsCommonFormProps } from "../../../../utils/formListCommonProps";
 import api from "../../../../utils/axiosConfig";
 import { useMemo } from "react";
 import { useSelector } from "react-redux";
+import useApi from "../../../../hooks/useApi";
 
 const Project = ({ isEditable, project = {}, setProjects }) => {
   const [editMode, setEditMode] = useState(false);
@@ -20,8 +21,14 @@ const Project = ({ isEditable, project = {}, setProjects }) => {
   const [projectEndDate, setProjectEndDate] = useState(
     project.projectEndDate || "2023-01-01"
   );
-  const [imgBase64, setImgBase64] = useState(project.projectImgUrl || null);
   const userState = useSelector((state) => state.userLogin);
+  const [imgBase64, setImgBase64] = useState(project.projectImgUrl || null);
+  const { result, loading, sendRequest, reqIdentifier } = useApi({
+    method: "put",
+    path: `user/${userState.userInfo?.id}/project/${project._id}`,
+    data: {},
+    shouldInitFetch: false,
+  });
 
   //form 상세설정 어레이
   const projectState = useMemo(
@@ -90,7 +97,7 @@ const Project = ({ isEditable, project = {}, setProjects }) => {
     //put 서버와 통신
     try {
       const res = await api.put(
-        `user/${userState.userInfo?.id}/project/${project._id}`,
+        `user/${userState?.userInfo?.id}/project/${project._id}`,
         formData
       );
 

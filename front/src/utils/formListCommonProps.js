@@ -1,5 +1,3 @@
-import { educationsCommonOptionProps } from "./optionListCommonProps";
-
 export const educationsCommonFormProps = [
   {
     controlId: "eduSchoolName",
@@ -61,12 +59,11 @@ export const projectsCommonFormProps = [
     placeholder: "프로젝트설명",
   },
   {
-    controlId: "image",
-    name: "image",
+    controlId: "projectImgFile",
+    name: "projectImgFile",
     customClassName: "mb-3",
     label: "프로젝트사진",
     type: "file",
-    placeholder: "https://",
   },
   {
     controlId: "projectStartDate",
