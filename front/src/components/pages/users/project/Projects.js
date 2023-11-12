@@ -36,7 +36,12 @@ const Projects = (props) => {
   const userState = useSelector((state) => state.userLogin);
   const portfolioOwnerData = useContext(PortfolioOwnerDataContext);
   const { isEditable } = props;
-  const { result, loading, sendRequest, reqIdentifier } = useApi();
+  const { result, loading, sendRequest, reqIdentifier, trigger } = useApi({
+    method: "get",
+    path: `user/${userState?.userInfo?.id}/projects`,
+    data: {},
+    shouldInitFetch: false,
+  });
 
   //form 상세설정 어레이
   const projectState = useMemo(
@@ -108,46 +113,55 @@ const Projects = (props) => {
     formData.append("projectEndDate", projectEndDate);
     //post 서버와 통신
 
-    await sendRequest(
-      `user/${userState.userInfo?.id}/project`,
-      "post",
-      formData
-    );
+    trigger({
+      method: "post",
+      path: `user/${userState?.userInfo?.id}/project`,
+      data: formData,
+      applyResult: true,
+      isShowBoundary: true,
+    });
   };
 
-  // 모든 프로젝트 목록 가져오기 서버와 통신
+  //portfolioOwnerData를 가져오면 projects목록 가져오기
   useEffect(() => {
-    //portfolioOwnerData.id를 가져오고 나서 실행
     if (portfolioOwnerData.id) {
-      sendRequest(`user/${portfolioOwnerData.id}/projects`, "get");
+      trigger({
+        method: "get",
+        path: `user/${portfolioOwnerData.id}/projects`,
+        data: {},
+        applyResult: true,
+        isShowBoundary: true,
+      });
     }
   }, [portfolioOwnerData.id]);
 
+  //result가 변하면(projects가져오면) 트리거됨
   useEffect(() => {
-    if (reqIdentifier === "postData") {
-      const postedNewId = result.data?.projectId;
-      const postedNewImgUrl = result.data?.projectImgUrl;
-      if (result.status === 201) {
-        setProjects((prev) => {
-          return [
-            ...prev,
-            {
-              _id: postedNewId,
-              projectName,
-              projectDetail,
-              projectImgUrl: postedNewImgUrl,
-              projectStartDate,
-              projectEndDate,
-            },
-          ];
-        });
-        reset();
-        setAddForm(false);
-      }
-    } else if (reqIdentifier === "getData") {
-      setProjects(result.data?.projects || []);
+    setProjects(result.data?.projects || []);
+  }, [result.data]);
+
+  //요청성공시 재렌더링
+  useEffect(() => {
+    const postedNewId = result.data?.projectId;
+    const postedNewImgUrl = result.data?.projectImgUrl;
+    if (result.status === 201) {
+      setProjects((prev) => {
+        return [
+          ...prev,
+          {
+            _id: postedNewId,
+            projectName,
+            projectDetail,
+            projectImgUrl: postedNewImgUrl,
+            projectStartDate,
+            projectEndDate,
+          },
+        ];
+      });
+      reset();
+      setAddForm(false);
     }
-  }, [result, reqIdentifier]);
+  }, [result]);
 
   return (
     <>

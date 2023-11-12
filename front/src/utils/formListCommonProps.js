@@ -1,5 +1,3 @@
-import { educationsCommonOptionProps } from "./optionListCommonProps";
-
 export const educationsCommonFormProps = [
   {
     controlId: "eduSchoolName",

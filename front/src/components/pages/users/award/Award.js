@@ -21,7 +21,12 @@ const Award = ({ isEditable, award = {}, setAwards }) => {
   const userState = useSelector((state) => state.userLogin);
   const [data, onChange] = useInput(award || initialValue);
   const { awardName, awardDetail, awardOrganization, awardDate } = data;
-  const { result, loading, sendRequest, reqIdentifier, extra } = useApi();
+  const { result, loading, trigger, reqIdentifier } = useApi({
+    method: "put",
+    path: `user/${userState.userInfo?.id}/award/${award._id}`,
+    data: {},
+    shouldInitFetch: false,
+  });
 
   //form 상세설정 어레이
   const awardState = useMemo(
@@ -49,55 +54,58 @@ const Award = ({ isEditable, award = {}, setAwards }) => {
   const onSubmitHandler = async (e) => {
     e.preventDefault();
 
+    const updatedAwardData = {};
+
     //put 서버와 통신
-    await sendRequest(
-      `user/${userState.userInfo?.id}/award/${award._id}`,
-      "put",
-      {
-        awardName,
-        awardDetail,
-        awardOrganization,
-        awardDate,
-      }
-    );
+    trigger({
+      method: "put",
+      path: `user/${userState?.userInfo?.id}/award/${award._id}`,
+      data: updatedAwardData,
+      applyResult: true,
+      isShowBoundary: true,
+    });
   };
 
   //삭제함수
   const onClickDel = async (awardId) => {
-    await sendRequest(
-      `user/${userState.userInfo?.id}/award/${awardId}`,
-      "delete",
-      "",
-      "",
-      awardId
-    );
+    trigger({
+      method: "delete",
+      path: `user/${userState.userInfo?.id}/award/${awardId}`,
+      data: "",
+      applyResult: true,
+      isShowBoundary: true,
+    });
   };
 
   useEffect(() => {
-    if (reqIdentifier === "putData") {
-      setAwards((prev) => {
-        const updatedAwards = prev.map((prevAward) => {
-          if (prevAward._id === award._id) {
-            return {
-              ...prevAward,
-              awardName,
-              awardDetail,
-              awardOrganization,
-              awardDate,
-            };
-          }
-          return prevAward;
-        });
-        return updatedAwards;
+    if (reqIdentifier !== "putData") return;
+    setAwards((prev) => {
+      const updatedAwards = prev.map((prevAward) => {
+        if (prevAward._id === award._id) {
+          return {
+            ...prevAward,
+            awardName,
+            awardDetail,
+            awardOrganization,
+            awardDate,
+          };
+        }
+        return prevAward;
       });
-      setEditMode(false);
-    } else if (reqIdentifier === "deleteData") {
-      setAwards((prev) => {
-        const updatedAwards = prev.filter((award) => award._id !== extra);
-        return updatedAwards;
-      });
-    }
-  }, [result, extra]);
+      return updatedAwards;
+    });
+    setEditMode(false);
+  }, [result, reqIdentifier]);
+
+  useEffect(() => {
+    if (reqIdentifier !== "deleteData") return;
+    setAwards((prev) => {
+      const updatedAwards = prev.filter(
+        (prevAward) => prevAward._id !== award._id
+      );
+      return updatedAwards;
+    });
+  }, [result, reqIdentifier]);
 
   return (
     <Card className="border-0" style={{ width: "100%" }}>

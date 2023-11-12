@@ -3,7 +3,6 @@ import { Form, Card, Col } from "react-bootstrap";
 import FormWrapper from "../../../common/FormWrapper";
 import ButtonCommon from "../../../common/ButtonCommon";
 import { certificatesCommonFormProps } from "../../../../utils/formListCommonProps";
-import api from "../../../../utils/axiosConfig";
 import { useMemo } from "react";
 import { useSelector } from "react-redux";
 import useInput from "../../../../hooks/useInput";
@@ -27,9 +26,13 @@ const Certificate = ({ isEditable, certificate = {}, setCertificates }) => {
     certificateOrganization,
     acquisitionDate,
   } = data;
-  const { result, loading, sendRequest, reqIdentifier, extra } = useApi();
-
   const userState = useSelector((state) => state.userLogin);
+  const { result, loading, trigger, reqIdentifier } = useApi({
+    method: "put",
+    path: `user/${userState?.userInfo?.id}/project/${certificate._id}`,
+    data: {},
+    shouldInitFetch: false,
+  });
 
   //form 상세설정 어레이
   const certificateState = useMemo(
@@ -66,58 +69,68 @@ const Certificate = ({ isEditable, certificate = {}, setCertificates }) => {
   //수정해서 onSubmitHandler
   const onSubmitHandler = async (e) => {
     e.preventDefault();
+    const updatedCertificateData = {
+      certificateName,
+      certificateDetail,
+      certificateOrganization,
+      acquisitionDate,
+    };
 
     //put 서버와 통신
-    await sendRequest(
-      `user/${userState.userInfo?.id}/award/${certificate._id}`,
-      "put",
-      {
-        certificateName,
-        certificateDetail,
-        certificateOrganization,
-        acquisitionDate,
-      }
-    );
+    trigger({
+      method: "put",
+      path: `user/${userState.userInfo?.id}/certificate/${certificate._id}`,
+      data: updatedCertificateData,
+      applyResult: false,
+      isShowBoundary: true,
+      shouldSetError: true,
+    });
   };
 
   // 삭제함수
   const onClickDel = async (certificateId) => {
-    await sendRequest(
-      `user/${userState.userInfo?.id}/certificate/${certificateId}`,
-      "delete",
-      "",
-      "",
-      certificateId
-    );
+    trigger({
+      method: "delete",
+      path: `user/${userState.userInfo?.id}/certificate/${certificateId}`,
+      data: {},
+      applyResult: false,
+      isShowBoundary: true,
+      shouldSetError: true,
+    });
   };
 
+  //put요청 성공시
   useEffect(() => {
-    if (reqIdentifier === "putData") {
-      setCertificates((prev) => {
-        const updatedCert = prev.map((prevCert) => {
-          if (prevCert._id === certificate._id) {
-            return {
-              ...prevCert,
-              certificateName,
-              certificateDetail,
-              certificateOrganization,
-              acquisitionDate,
-            };
-          }
-          return prevCert;
-        });
-        return updatedCert;
+    if (reqIdentifier !== "putData") return;
+    setCertificates((prev) => {
+      const updatedCert = prev.map((prevCert) => {
+        if (prevCert._id === certificate._id) {
+          return {
+            ...prevCert,
+            certificateName,
+            certificateDetail,
+            certificateOrganization,
+            acquisitionDate,
+          };
+        }
+        return prevCert;
       });
-      setEditMode(false);
-    } else if (reqIdentifier === "deleteData") {
-      setCertificates((prev) => {
-        const updatedCertificates = prev.filter(
-          (certificates) => certificates._id !== extra
-        );
-        return updatedCertificates;
-      });
-    }
-  }, [result, extra]);
+      return updatedCert;
+    });
+    setEditMode(false);
+  }, [result, reqIdentifier]);
+
+  //내가 삭제할 id를 걸러줌
+  useEffect(() => {
+    if (reqIdentifier !== "deleteData") return;
+    setCertificates((prev) => {
+      const updatedCertificates = prev.filter(
+        (certificates) => certificates._id !== certificate._id
+      );
+      return updatedCertificates;
+    });
+    // }
+  }, [result]);
 
   return (
     <Card className="border-0" style={{ width: "100%" }}>

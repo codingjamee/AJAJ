@@ -44,4 +44,28 @@ api.interceptors.response.use(
   }
 );
 
+const getFetcher = async (path, params) => {
+  return await api.get(path, { params });
+};
+const postFetcher = async (path, body) => {
+  return await api.post(path, body);
+};
+const patchFetcher = async (path, body) => {
+  return await api.put(path, body);
+};
+const putFetcher = async (path, body) => {
+  return await api.put(path, body);
+};
+const deleteFetcher = async (path, params) => {
+  return await api.delete(path, { params });
+};
+
+export const API_FETCHER = {
+  get: (...args) => getFetcher(...args),
+  post: (...args) => postFetcher(...args),
+  put: (...args) => putFetcher(...args),
+  patch: (...args) => patchFetcher(...args),
+  delete: (...args) => deleteFetcher(...args),
+};
+
 export default api;

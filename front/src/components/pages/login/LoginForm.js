@@ -3,16 +3,23 @@ import { useNavigate } from "react-router-dom";
 import { Container, Col, Row, Form, Button } from "react-bootstrap";
 import { validateEmail, validatePassword } from "../../../utils/validate";
 import { useMemo } from "react";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+import { userLoginActions } from "../../../store/userLogin";
 import useApi from "../../../hooks/useApi";
 
 function LoginForm() {
   const navigate = useNavigate();
   const [emailState, setEmail] = useState("");
   const [passwordState, setPassword] = useState("");
+  const dispatch = useDispatch();
   // const [isFirst, setIsFirst] = useState(true);
   const userState = useSelector((state) => state.userLogin);
-  const { result, loading, sendRequest } = useApi();
+  const { result, trigger } = useApi({
+    method: "get",
+    path: "user/current",
+    data: {},
+    shouldInitFetch: false,
+  });
   const isEmailValid = useMemo(() => validateEmail(emailState), [emailState]);
   const isPasswordValid = useMemo(
     () => validatePassword(passwordState),
@@ -34,16 +41,26 @@ function LoginForm() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    sendRequest(
-      "user/login",
-      "post",
-      {
-        email: emailState,
-        password: passwordState,
-      },
-      true
-    );
+    const loginData = {
+      email: emailState,
+      password: passwordState,
+    };
+    await trigger({
+      method: "post",
+      path: "user/login",
+      data: loginData,
+      applyResult: true,
+      isShowBoundary: false,
+      shouldSetError: false,
+    });
   };
+
+  useEffect(() => {
+    if (result.status !== 200) return;
+    const user = result.data;
+    dispatch(userLoginActions.storeUser(user));
+    navigate("/", { replace: true });
+  }, [result]);
 
   return (
     <Container>

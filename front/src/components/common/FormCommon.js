@@ -32,7 +32,11 @@ const FormCommon = ({
       )}
       {/* select이면서 file타입이 아닌경우...? */}
       {select && type !== "file" && (
-        <Form.Select onChange={(e) => changeHandler(e)} value={value}>
+        <Form.Select
+          onChange={(e) => changeHandler(e)}
+          value={value}
+          name={name}
+        >
           <option>{optionValue}</option>
           {optionArr?.map((option, index) => (
             <option key={`option-${index}`}>{option.text}</option>

@@ -1,9 +1,8 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { Form, Card, Col } from "react-bootstrap";
 import FormWrapper from "../../../common/FormWrapper";
 import ButtonCommon from "../../../common/ButtonCommon";
 import { educationsCommonFormProps } from "../../../../utils/formListCommonProps";
-import api from "../../../../utils/axiosConfig";
 import { useMemo } from "react";
 import { useSelector } from "react-redux";
 import useInput from "../../../../hooks/useInput";
@@ -19,12 +18,16 @@ const initialValue = {
 };
 
 const Education = ({ isEditable, education = {}, setEducations }) => {
+  const userState = useSelector((state) => state.userLogin);
   const [editMode, setEditMode] = useState(false);
   const [data, onChange] = useInput(education || initialValue);
   const { schoolName, major, degree, admissionDate, graduationDate } = data;
-  const { result, loading, sendRequest, reqIdentifier, extra } = useApi();
-
-  const userState = useSelector((state) => state.userLogin);
+  const { result, loading, trigger, reqIdentifier } = useApi({
+    method: "put",
+    path: `user/${userState.userInfo?.id}/education/${education._id}`,
+    data: {},
+    shouldInitFetch: false,
+  });
 
   //form 상세설정 어레이
   const eduState = useMemo(
@@ -64,59 +67,67 @@ const Education = ({ isEditable, education = {}, setEducations }) => {
   //수정해서 onSubmitHandler
   const onSubmitHandler = async (e) => {
     e.preventDefault();
+    const updatedEducationData = {
+      schoolName,
+      major,
+      degree,
+      admissionDate,
+      graduationDate,
+    };
 
     //put 서버와 통신
-    await sendRequest(
-      `user/${userState.userInfo?.id}/education/${education._id}`,
-      "put",
-      {
-        schoolName,
-        major,
-        degree,
-        admissionDate,
-        graduationDate,
-      }
-    );
+    trigger({
+      method: "put",
+      path: `user/${userState.userInfo?.id}/education/${education._id}`,
+      data: updatedEducationData,
+      applyResult: true,
+      isShowBoundary: true,
+    });
   };
 
   //삭제함수
 
   const onClickDel = async (eduId) => {
-    await sendRequest(
-      `user/${userState.userInfo?.id}/education/${eduId}`,
-      "delete",
-      "",
-      "",
-      eduId
-    );
+    await trigger({
+      method: "delete",
+      path: `user/${userState.userInfo?.id}/education/${eduId}`,
+      data: "",
+      applyResult: true,
+      isShowBoundary: true,
+    });
   };
 
   useEffect(() => {
-    if (reqIdentifier === "putData") {
-      setEducations((prev) => {
-        const updatedEdus = prev.map((prevEdu) => {
-          if (prevEdu._id === education._id) {
-            return {
-              ...prevEdu,
-              schoolName,
-              major,
-              degree,
-              admissionDate,
-              graduationDate,
-            };
-          }
-          return prevEdu;
-        });
-        return updatedEdus;
+    if (reqIdentifier !== "putData") return;
+    setEducations((prev) => {
+      const updatedEdus = prev.map((prevEdu) => {
+        if (prevEdu._id === education._id) {
+          return {
+            ...prevEdu,
+            schoolName,
+            major,
+            degree,
+            admissionDate,
+            graduationDate,
+          };
+        }
+        return prevEdu;
       });
-      setEditMode(false);
-    } else if (reqIdentifier === "deleteData") {
-      setEducations((prevObj) => {
-        const updatedEducations = prevObj.filter((edus) => edus._id !== extra);
-        return updatedEducations;
-      });
-    }
-  }, [result, extra]);
+      return updatedEdus;
+    });
+    setEditMode(false);
+  }, [result]);
+
+  useEffect(() => {
+    if (reqIdentifier !== "deleteData") return;
+    setEducations((prev) => {
+      const updatedEducations = prev.filter(
+        (educations) => educations._id !== education._id
+      );
+      return updatedEducations;
+    });
+    // }
+  }, [result]);
 
   return (
     <Card className="border-0" style={{ width: "100%" }}>
