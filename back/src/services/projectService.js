@@ -23,6 +23,7 @@ class projectAuthService {
   };
 
   static async setProject({ projectId, toUpdate }) {
+    console.log('Service_projectId', projectId)
     let project = await Project.findByProjectId({ projectId });
 
     // DB에서 찾지 못한 경우, 에러 메시지 반환

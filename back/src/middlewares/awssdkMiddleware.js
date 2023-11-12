@@ -12,12 +12,13 @@ AWS.config.update({
 
 const s3 = new AWS.S3();
 
+const bucketName = 'elice-ajaj2'
 const allowedExtensions = ['.png', '.jpg', '.jpeg', '.bmp']
 
 const imageUploader = multer({
     storage: multerS3({
         s3: s3,
-        bucket: 'elice-ajaj2',
+        bucket: bucketName,
         key: (req, file, callback) => {
             console.log('file', file);
             const uploadDirectory = req.query.directory ?? ''
@@ -26,10 +27,23 @@ const imageUploader = multer({
             if (!allowedExtensions.includes(extension)){
                 return callback(new Error('파일의 확장자가 잘못되었습니다.'))
             }
-            callback(null, `${uploadDirectory}/${Date.now()}_${file.originalname}`)
+            console.log('extension', extension);
+            callback(null, `${uploadDirectory}/${Date.now()}${extension}`)
         },
         acl: 'public-read-write'
     }),
 })
 
-export { imageUploader };
+const imageDelete = async (imageUrl) => {
+    const imageKey = imageUrl.split('.com/')[1];
+    s3.deleteObject({
+        Bucket: bucketName,
+        Key: imageKey,
+      }, (err) => {
+           if (err) {
+            return callback(new Error('파일이 삭제되지 않았습니다.'))
+           } else console.log('삭제 완료');
+      });
+}
+
+export { imageUploader, imageDelete };
