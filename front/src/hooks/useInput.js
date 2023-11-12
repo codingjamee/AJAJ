@@ -15,17 +15,13 @@ const useInput = (initialValue = null) => {
     setData((prev) => ({ ...prev, [id]: value }));
   }, []);
 
-  const onChangeFile = useCallback(
-    (e) => {
-      if (!e.target.files) return;
-      const { files, name } = e?.target;
-      console.log(files, name);
-      console.log(e.target);
-      console.log(files.location);
-      setData((prev) => ({ ...prev, [name]: files[0] }));
-    },
-    [data]
-  );
+  const onChangeFile = useCallback((e) => {
+    if (!e.target.files) return;
+    const { files, name } = e?.target;
+    console.log({ [name]: files[0] });
+    console.log(e.target);
+    setData((prev) => ({ ...prev, [name]: files[0] }));
+  }, []);
 
   const reset = useCallback(() => {
     return setData(initialValue);

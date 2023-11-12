@@ -25,18 +25,13 @@ const Projects = (props) => {
 
   const [imgBase64, setImgBase64] = useState(null);
   const [projectImgFile, setProjectImgFile] = useState({});
-
-  // const [projectName, setProjectName] = useState("");
-  // const [projectDetail, setProjectDetail] = useState("");
-  // const [projectStartDate, setProjectStartDate] = useState("2023-01-01");
-  // const [projectEndDate, setProjectEndDate] = useState("2023-01-01");
   const [data, onChange, _, reset, onChangeFile] = useInput(initialValue);
   const { projectName, projectDetail, projectStartDate, projectEndDate } = data;
 
   const userState = useSelector((state) => state.userLogin);
   const portfolioOwnerData = useContext(PortfolioOwnerDataContext);
   const { isEditable } = props;
-  const { result, loading, sendRequest, reqIdentifier, trigger } = useApi({
+  const { result, loading, reqIdentifier, trigger } = useApi({
     method: "get",
     path: `user/${userState?.userInfo?.id}/projects`,
     data: {},
@@ -79,21 +74,22 @@ const Projects = (props) => {
     [projectState]
   );
 
-  const handleChangeFile = useCallback((e) => {
+  const handleChangeFile = (e) => {
     if (e.target?.files && e.target?.files[0]) {
       onChangeFile(e);
       setImgBase64([]);
     }
     let reader = new FileReader();
-    reader.readAsDataURL(e.target.files[0]); // 1. 파일을 읽어 버퍼에 저장합니다.
+    reader.readAsDataURL(e.target.files[0]);
     reader.onloadend = () => {
       const base64 = reader.result;
       if (base64) {
         const base64Sub = base64.toString();
         setImgBase64(base64Sub);
+        setProjectImgFile(e.target.files[0]);
       }
     };
-  }, []);
+  };
 
   //제출버튼 클릭시
   const handleSubmit = async (e) => {
@@ -122,7 +118,7 @@ const Projects = (props) => {
     });
   };
 
-  //portfolioOwnerData를 가져오면 projects목록 가져오기
+  // 모든 project 목록 가져오기 서버와 통신
   useEffect(() => {
     if (portfolioOwnerData.id) {
       trigger({
@@ -137,11 +133,13 @@ const Projects = (props) => {
 
   //result가 변하면(projects가져오면) 트리거됨
   useEffect(() => {
+    if (reqIdentifier !== "getData") return;
     setProjects(result.data?.projects || []);
-  }, [result.data]);
+  }, [result.data, reqIdentifier]);
 
   //요청성공시 재렌더링
   useEffect(() => {
+    if (reqIdentifier !== "postData") return;
     const postedNewId = result.data?.projectId;
     const postedNewImgUrl = result.data?.projectImgUrl;
     if (result.status === 201) {
@@ -161,7 +159,7 @@ const Projects = (props) => {
       reset();
       setAddForm(false);
     }
-  }, [result]);
+  }, [result, reqIdentifier]);
 
   return (
     <>

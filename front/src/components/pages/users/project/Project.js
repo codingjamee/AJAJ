@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Card, Col, Form } from "react-bootstrap";
 import ButtonCommon from "../../../common/ButtonCommon";
 import FormWrapper from "../../../common/FormWrapper";
@@ -7,23 +7,27 @@ import api from "../../../../utils/axiosConfig";
 import { useMemo } from "react";
 import { useSelector } from "react-redux";
 import useApi from "../../../../hooks/useApi";
+import useInput from "../../../../hooks/useInput";
+import LoadingLayer from "../../../../UI/LoadingLayer";
+
+const initialValue = {
+  projectName: "",
+  projectDetail: "",
+  projectImgFile: {},
+  imgBase64: null,
+  projectStartDate: "2023-01-01",
+  projectEndDate: "2023-01-01",
+};
 
 const Project = ({ isEditable, project = {}, setProjects }) => {
   const [editMode, setEditMode] = useState(false);
-  const [projectName, setProjectName] = useState(project.projectName || "");
-  const [projectDetail, setProjectDetail] = useState(
-    project.projectDetail || ""
-  );
   const [projectImgFile, setProjectImgFile] = useState(null);
-  const [projectStartDate, setProjectStartDate] = useState(
-    project.projectStartDate || "2023-10-01"
-  );
-  const [projectEndDate, setProjectEndDate] = useState(
-    project.projectEndDate || "2023-01-01"
-  );
+  const [data, onChange, _, _2, onChangeFile] = useInput(initialValue);
+  const { projectName, projectDetail, projectStartDate, projectEndDate } = data;
+
   const userState = useSelector((state) => state.userLogin);
   const [imgBase64, setImgBase64] = useState(project.projectImgUrl || null);
-  const { result, loading, sendRequest, reqIdentifier } = useApi({
+  const { result, loading, reqIdentifier, trigger } = useApi({
     method: "put",
     path: `user/${userState.userInfo?.id}/project/${project._id}`,
     data: {},
@@ -33,25 +37,28 @@ const Project = ({ isEditable, project = {}, setProjects }) => {
   //form 상세설정 어레이
   const projectState = useMemo(
     () => [
-      { value: projectName, changeHandler: (v) => setProjectName(v) },
-      { value: projectDetail, changeHandler: (v) => setProjectDetail(v) },
+      {
+        value: projectName,
+        changeHandler: (e) => onChange(e),
+      },
+      {
+        value: projectDetail,
+        changeHandler: (e) => onChange(e),
+      },
       {
         value: imgBase64,
-        changeHandler: (v) => handleChangeFile(v),
+        changeHandler: (e) => handleChangeFile(e),
       },
-      { value: projectStartDate, changeHandler: (v) => setProjectStartDate(v) },
-      { value: projectEndDate, changeHandler: (v) => setProjectEndDate(v) },
+      { value: projectStartDate, changeHandler: (e) => onChange(e) },
+      { value: projectEndDate, changeHandler: (e) => onChange(e) },
     ],
     [
+      onChange,
       projectName,
-      setProjectName,
       projectDetail,
-      setProjectDetail,
       imgBase64,
       projectStartDate,
-      setProjectStartDate,
       projectEndDate,
-      setProjectEndDate,
     ]
   );
 
@@ -65,20 +72,19 @@ const Project = ({ isEditable, project = {}, setProjects }) => {
 
   const handleChangeFile = (e) => {
     if (e.target.files && e.target.files[0]) {
-      setProjectImgFile(e.target.files[0]);
+      onChangeFile(e);
       setImgBase64([]);
+      setProjectImgFile({});
     }
-
     let reader = new FileReader();
-    reader.readAsDataURL(e.target.files[0]); // 1. 파일을 읽어 버퍼에 저장합니다.
-    // 파일 상태 업데이트
+    reader.readAsDataURL(e.target.files[0]);
     reader.onloadend = () => {
-      // 2. 읽기가 완료되면 아래코드가 실행됩니다.
       const base64 = reader.result;
       if (base64) {
         var base64Sub = base64.toString();
 
         setImgBase64(base64Sub);
+        setProjectImgFile(e.target.files[0]);
       }
     };
   };
@@ -89,69 +95,74 @@ const Project = ({ isEditable, project = {}, setProjects }) => {
 
     const formData = new FormData();
 
-    formData.append("image", projectImgFile);
     formData.append("projectName", projectName);
     formData.append("projectDetail", projectDetail);
+    formData.append("image", projectImgFile);
     formData.append("projectStartDate", projectStartDate);
     formData.append("projectEndDate", projectEndDate);
     //put 서버와 통신
-    try {
-      const res = await api.put(
-        `user/${userState?.userInfo?.id}/project/${project._id}`,
-        formData
-      );
 
-      if (res.status === 200) {
-        const postedNewImgUrl = res.data.projectImgUrl;
-        console.log(postedNewImgUrl);
-        setProjects((prev) => {
-          const updatedProjects = prev.map((prevProject) => {
-            if (prevProject._id === project._id) {
-              return {
-                ...prevProject,
-                projectName,
-                projectDetail,
-                projectImgUrl: postedNewImgUrl,
-                projectStartDate,
-                projectEndDate,
-              };
-            }
-            return prevProject;
-          });
-          return updatedProjects;
-        });
-        alert(res.data.message);
-        setEditMode(false);
-        setImgBase64(null);
-        setProjectImgFile("");
-      } else if (res.status !== 200) {
-        // throw new Error("PUT 요청이 실패하였습니다.");
-      }
-    } catch (err) {
-      console.error(err);
-      // throw new Error("서버와 통신이 실패하였습니다");
-    }
+    trigger({
+      method: "put",
+      path: `user/${userState?.userInfo?.id}/project/${project._id}`,
+      data: formData,
+      applyResult: true,
+      isShowBoundary: true,
+    });
   };
 
   //삭제함수
 
   const onClickDel = async (projectId) => {
-    try {
-      const res = await api.delete(
-        `user/${userState.userInfo?.id}/project/${projectId}`
-      );
-      if (res.status === 200) {
-        setProjects((prevObj) => {
-          return prevObj.filter((projects) => projects._id !== projectId);
-        });
-      } else if (res.status !== 200) {
-        // throw new Error("삭제를 실패하였습니다");
-      }
-    } catch (err) {
-      console.error(err);
-      // throw new Error("서버와 통신에 실패하였습니다");
-    }
+    trigger({
+      method: "delete",
+      path: `user/${userState.userInfo?.id}/project/${projectId}`,
+      data: {},
+      applyResult: false,
+      isShowBoundary: true,
+      shouldSetError: true,
+    });
   };
+
+  useEffect(() => {
+    if (reqIdentifier !== "putData") return;
+    const postedNewImgUrl = result.data?.projectImgUrl;
+    console.log(postedNewImgUrl);
+    setProjects((prev) => {
+      const updatedProjects = prev.map((prevProject) => {
+        if (prevProject._id === project._id) {
+          return {
+            ...prevProject,
+            projectName,
+            projectDetail,
+            projectImgUrl: postedNewImgUrl,
+            projectStartDate,
+            projectEndDate,
+          };
+        }
+        return prevProject;
+      });
+      return updatedProjects;
+    });
+    result.data?.message && alert(result.data?.message);
+    setEditMode(false);
+    setImgBase64(null);
+    setProjectImgFile({}); //파일 비워주기?
+    //생각해볼것... 파일을 만약 제출하지 않고 프로젝트 명 설명을 넣었다면?
+  }, [result, reqIdentifier]);
+
+  //내가 삭제할 id를 걸러줌
+  useEffect(() => {
+    console.log(reqIdentifier);
+    if (reqIdentifier !== "deleteData") return;
+    setProjects((prevObj) => {
+      const updatedCertificates = prevObj.filter(
+        (projects) => projects._id !== project._id
+      );
+      return updatedCertificates;
+    });
+    // }
+  }, [result, reqIdentifier]);
 
   return (
     <Card
@@ -163,7 +174,8 @@ const Project = ({ isEditable, project = {}, setProjects }) => {
         boxSizing: "content-box",
       }}
     >
-      {!editMode && (
+      {!editMode && loading && <LoadingLayer message="Loading....." />}
+      {!editMode && !loading && (
         <>
           <Card.Title>{project.projectName}</Card.Title>
 
