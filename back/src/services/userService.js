@@ -73,6 +73,7 @@ class userAuthService {
 
   static async setUser({ userId, toUpdate }) {
     let user = await User.findById({ userId });
+    const beforeUserImgUrl = user.userImgUrl
     let errorMessage = null;
 
     // db에서 찾지 못한 경우, 에러 메시지 반환
@@ -94,11 +95,11 @@ class userAuthService {
       user = await User.update({ userId, fieldToUpdate, newValue });
     }
 
-    if (toUpdate.password) {
-      const fieldToUpdate = "password";
-      const newValue = bcrypt.hash(toUpdate.password, 10);
-      user = await User.update({ userId, fieldToUpdate, newValue });
-    }
+    // if (toUpdate.password) {
+    //   const fieldToUpdate = "password";
+    //   const newValue = bcrypt.hash(toUpdate.password, 10);
+    //   user = await User.update({ userId, fieldToUpdate, newValue });
+    // }
 
     if (toUpdate.description) {
       const fieldToUpdate = "description";
@@ -112,7 +113,7 @@ class userAuthService {
       user = await User.update({ userId, fieldToUpdate, newValue });
     }
 
-    return { errorMessage };
+    return { errorMessage, beforeUserImgUrl };
   }
 
   static async getUserInfo({ userId }) {
@@ -133,8 +134,8 @@ class userAuthService {
   static async deleteUser({ userId }) {
     const fieldToUpdate = "deletedAt";
     const newValue = new Date();
-    const deleteduser = await User.update({ userId, fieldToUpdate, newValue });
-    return deleteduser;
+    const { beforeUserImgUrl, deletedUser } = await User.update({ userId, fieldToUpdate, newValue });
+    return { beforeUserImgUrl, deletedUser };
   }
 
 }

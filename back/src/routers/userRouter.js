@@ -2,7 +2,7 @@ const { Router } = require('express');
 const { deleted_checked, login_required, request_checked } = require('../middlewares/requireMiddleware');
 const { userAuthService } = require('../services/userService');
 const { NotFoundError } = require('../middlewares/errorHandlingMiddleware');
-const { imageUploader } = require("../middlewares/awssdkMiddleware");
+const { imageUploader, imageDelete } = require("../middlewares/awssdkMiddleware");
 const { RefreshTokenModel } = require('../db/schemas/refreshToken');
 const ObjectId = require('mongoose').Types.ObjectId;
 
@@ -136,14 +136,19 @@ userAuthRouter.patch("/users/:id", login_required, imageUploader.array("image"),
     try {
       const userId = ObjectId(req.params.id);
       const userImgUrl = req.files[0].location;
+      console.log('수정할 이미지 url', userImgUrl);
       const { name, email, password, description } = req.body;
       const toUpdate = { name, email, password, description, userImgUrl };
 
       // 해당 사용자 아이디로 사용자 정보를 db에서 찾아 업데이트함. 업데이트 요소가 없을 시 생략함
-      const { errorMessage } = await userAuthService.setUser({ userId, toUpdate });
+      const { errorMessage, beforeUserImgUrl } = await userAuthService.setUser({ userId, toUpdate });
 
       if (errorMessage) {
         throw new NotFoundError(errorMessage);
+      }
+      if (beforeUserImgUrl) {
+        console.log('삭제할 url', beforeUserImgUrl);
+        await imageDelete(beforeUserImgUrl);
       }
 
       res.status(200).send({
@@ -183,10 +188,15 @@ userAuthRouter.get("/logout", async function (req, res, next) {
 userAuthRouter.delete("/users/:id", login_required, async function (req, res, next) {
   try {
     const userId = ObjectId(req.params.id);
-    const deletedUser = await userAuthService.deleteUser({ userId });
+    const { beforeUserImgUrl, deletedUser } = await userAuthService.deleteUser({ userId });
+
+    if (beforeUserImgUrl) {
+      await imageDelete(beforeUserImgUrl)
+    }
     if (!deletedUser) {
       throw new NotFoundError("탈퇴과정에서 오류가 났습니다. 다시 시도해주세요.");
     }
+
     res.clearCookie('user_cookie').end();
     res.status(200).send({
       message: "회원 탈퇴에 성공했습니다. 이용해주셔서 감사합니다."

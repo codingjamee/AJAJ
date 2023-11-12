@@ -53,6 +53,7 @@ projectAuthRouter.put("/user/:id/project/:projectId", login_required, userId_che
   async function (req, res, next) {
     try {
       const projectId = ObjectId(req.params.projectId);
+      console.log('프로젝트url?', req.files[0].location);
       const { projectName, projectDetail, projectImgUrl, projectStartDate, projectEndDate } = req.body;
       const toUpdate = { projectName, projectDetail, projectImgUrl, projectStartDate, projectEndDate };
 
@@ -77,7 +78,7 @@ projectAuthRouter.delete("/user/:id/project/:projectId", login_required, userId_
   const projectId = ObjectId(req.params.projectId);
   try {
     const deleteProject = await projectAuthService.deleteProject({ projectId });
-
+    const deleteImage = await imageDelete({imageUrl})
     if (!deleteProject) {
       throw new NotFoundError("해당 프로젝트가 삭제되지 않았습니다.");
     }

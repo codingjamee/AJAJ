@@ -55,12 +55,16 @@ class User {
   }
 
   static async update({ userId, fieldToUpdate, newValue }) {
-    const filter = { _id: userId };
+    const user = await UserModel.findOne({ _id: ObjectId(userId) });
+    const beforeUserImgUrl = user.userImgUrl;
+
+    const filter = { _id: ObjectId(userId) };
     const update = { [fieldToUpdate]: newValue };
     const option = { returnOriginal: false };
 
     const updatedUser = await UserModel.findOneAndUpdate(filter, update, option);
-    return updatedUser;
+
+    return {beforeUserImgUrl, updatedUser};
   }
 
   static async findRefreshToken({ userId }) {
