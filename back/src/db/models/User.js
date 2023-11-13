@@ -37,9 +37,10 @@ class User {
   static async findAll_paging({ currentPage }) {
     const showCount = 4; // 임시로 4개만
     const usersCount = await UserModel.find()
-    const totalPage = Object.keys(usersCount).length;
+    const totalPage = Math.ceil((Object.keys(usersCount).length) / showCount);
     const skipPage = (currentPage-1) * showCount;
     console.log('시작 인덱스', skipPage);
+    console.log('totalPage', totalPage);
     const users = await UserModel.find().skip(skipPage).limit(showCount);
 
     // const filteredUsers = users.map(({...rest}) => [rest._doc].map(({_id, password, createdAt, updatedAt, __v, deletedAt, ...rest}) => rest)).flat();
