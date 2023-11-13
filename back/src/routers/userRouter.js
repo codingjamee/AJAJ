@@ -102,8 +102,9 @@ userAuthRouter.get("/userlist", login_required, async function (req, res, next) 
       if (!users) {
         throw new NotFoundError("사용자 목록을 가져올 수 없습니다.");
       }
-    users.push({"totalPage": totalPage});
-    res.status(200).send(users);
+    res.status(200).send({
+      users: users,
+      totalPage: totalPage});
   } catch (error) {
     next(error);
   }
