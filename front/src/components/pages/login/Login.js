@@ -2,6 +2,7 @@ import { ErrorBoundary } from "react-error-boundary";
 import LoginForm from "./LoginForm";
 import img from "../../../components/common/header/logo0.png";
 import ButtonCommon from "../../common/ButtonCommon";
+import LoginFormR from "./LoginFormR";
 
 const BtnSetting = {
   variant: "primary",
@@ -31,7 +32,7 @@ const ErrorFallback = ({ resetErrorBoundary }) => {
 const Login = () => {
   return (
     <ErrorBoundary FallbackComponent={ErrorFallback}>
-      <LoginForm />
+      <LoginFormR />
     </ErrorBoundary>
   );
 };
