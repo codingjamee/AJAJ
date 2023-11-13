@@ -3,6 +3,7 @@ const { deleted_checked, login_required, request_checked } = require('../middlew
 const { userAuthService } = require('../services/userService');
 const { NotFoundError } = require('../middlewares/errorHandlingMiddleware');
 const { imageUploader, imageDelete } = require("../middlewares/awssdkMiddleware");
+const { imageUploader, imageDelete } = require("../middlewares/awssdkMiddleware");
 const { RefreshTokenModel } = require('../db/schemas/refreshToken');
 const ObjectId = require('mongoose').Types.ObjectId;
 
@@ -102,8 +103,9 @@ userAuthRouter.get("/userlist", login_required, async function (req, res, next) 
       if (!users) {
         throw new NotFoundError("사용자 목록을 가져올 수 없습니다.");
       }
-    users.push({"totalPage": totalPage});
-    res.status(200).send(users);
+    res.status(200).send({
+      users: users,
+      totalPage: totalPage});
   } catch (error) {
     next(error);
   }

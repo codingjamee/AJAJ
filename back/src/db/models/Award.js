@@ -31,7 +31,7 @@ class Award {
   }
 
   static async update({ awardId, fieldToUpdate, newValue }) {
-    const filter = { _id: awardId };
+    const filter = { _id: ObjectId(awardId) };
     const update = { [fieldToUpdate]: newValue };
     const option = { returnOriginal: false };
 

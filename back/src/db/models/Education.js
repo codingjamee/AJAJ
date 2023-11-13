@@ -32,7 +32,7 @@ class Education {
   }
 
   static async update({ eduId, fieldToUpdate, newValue }) {
-    const filter = { _id: eduId };
+    const filter = { _id: ObjectId(eduId) };
     const update = { [fieldToUpdate]: newValue };
     const option = { returnOriginal: false };
     const updatedEducation = await EducationModel.findOneAndUpdate(filter, update, option);

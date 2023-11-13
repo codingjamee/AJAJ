@@ -31,7 +31,7 @@ class Certificate {
   }
 
   static async update({ certificateId, fieldToUpdate, newValue }) {
-    const filter = { _id: certificateId };
+    const filter = { _id: ObjectId(certificateId) };
     const update = { [fieldToUpdate]: newValue };
     const option = { returnOriginal: false };
 
