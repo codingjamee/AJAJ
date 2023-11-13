@@ -35,11 +35,12 @@ class User {
 
   // 페이징 part
   static async findAll_paging({ currentPage }) {
+    const showCount = 4; // 임시로 4개만
     const usersCount = await UserModel.find()
-    const totalPage= Object.keys(usersCount).length;
-    const skipPage = (currentPage-1) * 4;
+    const totalPage = Object.keys(usersCount).length;
+    const skipPage = (currentPage-1) * showCount;
     console.log('시작 인덱스', skipPage);
-    const users = await UserModel.find().skip(skipPage).limit(4); // 임시로 4개만
+    const users = await UserModel.find().skip(skipPage).limit(showCount);
 
     // const filteredUsers = users.map(({...rest}) => [rest._doc].map(({_id, password, createdAt, updatedAt, __v, deletedAt, ...rest}) => rest)).flat();
     // const result = filteredUsers.sort(((a,b) => {
@@ -51,7 +52,7 @@ class User {
     //   if (a.email > b.email) return 1;
     //   if (a.email < b.email) return -1;
     // }));
-    return {totalPage, ...users};
+    return {totalPage, users};
   }
 
   static async update({ userId, fieldToUpdate, newValue }) {

@@ -98,12 +98,11 @@ userAuthRouter.get("/userlist", login_required, async function (req, res, next) 
     const currentPage = req.query.page;
     console.log('currentPage', currentPage);
     
-    const users = await userAuthService.getUsers_paging({ currentPage });
-
+    const { totalPage, users } = await userAuthService.getUsers_paging({ currentPage });
       if (!users) {
         throw new NotFoundError("사용자 목록을 가져올 수 없습니다.");
       }
-
+    users.push({"totalPage": totalPage});
     res.status(200).send(users);
   } catch (error) {
     next(error);

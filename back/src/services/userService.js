@@ -66,8 +66,8 @@ class userAuthService {
 
   // 페이징 part
   static async getUsers_paging({ currentPage }) {
-    const users = await User.findAll_paging({ currentPage });
-    return users;
+    const { totalPage, users } = await User.findAll_paging({ currentPage });
+    return { totalPage, users };
   }
 
 
