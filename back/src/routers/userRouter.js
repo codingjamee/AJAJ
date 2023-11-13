@@ -3,7 +3,6 @@ const { deleted_checked, login_required, request_checked } = require('../middlew
 const { userAuthService } = require('../services/userService');
 const { NotFoundError } = require('../middlewares/errorHandlingMiddleware');
 const { imageUploader, imageDelete } = require("../middlewares/awssdkMiddleware");
-const { imageUploader, imageDelete } = require("../middlewares/awssdkMiddleware");
 const { RefreshTokenModel } = require('../db/schemas/refreshToken');
 const ObjectId = require('mongoose').Types.ObjectId;
 
