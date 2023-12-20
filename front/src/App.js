@@ -1,73 +1,67 @@
-import React, { useState, useEffect, useReducer, createContext } from "react";
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import React, { useEffect, useCallback, Suspense } from "react";
+import { Routes, Route, useLocation } from "react-router-dom";
 
-import * as Api from "./api";
-import { loginReducer } from "./reducer";
+import Navigation from "./components/common/header/Navigation";
+import Login from "./components/pages/login/Login";
+import Network from "./components/pages/network/Network";
+import RegisterForm from "./components/pages/register/RegisterForm";
+import Portfolio from "./components/pages/users/Portfolio";
+import { loadingActions } from "./store/loading";
+import { userLoginActions } from "./store/userLogin";
+import { useDispatch, useSelector } from "react-redux";
+import LoadingLayer from "./UI/LoadingLayer";
+import api from "./utils/axiosConfig";
+import Home from "./components/pages/home/Home";
+import NotFound from "./components/pages/404/NotFound";
 
-import Header from "./components/Header";
-import LoginForm from "./components/user/LoginForm";
-import Network from "./components/user/Network";
-import RegisterForm from "./components/user/RegisterForm";
-import Portfolio from "./components/Portfolio";
-
-export const UserStateContext = createContext(null);
-export const DispatchContext = createContext(null);
+const preventCurrentApiCallPaths = ["/register"];
 
 function App() {
-  // useReducer 훅을 통해 userState 상태와 dispatch함수를 생성함.
-  const [userState, dispatch] = useReducer(loginReducer, {
-    user: null,
-  });
+  const reduxDispatch = useDispatch();
+  const loadingState = useSelector((state) => state.loading.open);
+  const location = useLocation();
 
-  // 아래의 fetchCurrentUser 함수가 실행된 다음에 컴포넌트가 구현되도록 함.
-  // 아래 코드를 보면 isFetchCompleted 가 true여야 컴포넌트가 구현됨.
-  const [isFetchCompleted, setIsFetchCompleted] = useState(false);
-
-  const fetchCurrentUser = async () => {
+  const fetchCurrentUser = useCallback(async () => {
     try {
-      // 이전에 발급받은 토큰이 있다면, 이를 가지고 유저 정보를 받아옴.
-      const res = await Api.get("user/current");
-      const currentUser = res.data;
-
-      // dispatch 함수를 통해 로그인 성공 상태로 만듦.
-      dispatch({
-        type: "LOGIN_SUCCESS",
-        payload: currentUser,
-      });
-
-      console.log("%c sessionStorage에 토큰 있음.", "color: #d93d1a;");
+      reduxDispatch(loadingActions.open());
+      if (preventCurrentApiCallPaths.includes(location.pathname)) return;
+      const res = await api.get("user/current");
+      const currentUser = res.data.id;
+      console.log(currentUser);
+      if (currentUser) {
+        //쿠키에 유저가 있는 경우만
+        reduxDispatch(userLoginActions.storeUser(res.data));
+        console.log("%c 로그인 되었습니다.", "color: #d93d1a;");
+      }
     } catch {
-      console.log("%c SessionStorage에 토큰 없음.", "color: #d93d1a;");
+      console.log("%c 로그인 후 사용해주세요.", "color: #d93d1a;");
+    } finally {
+      reduxDispatch(loadingActions.close());
     }
-    // fetchCurrentUser 과정이 끝났으므로, isFetchCompleted 상태를 true로 바꿔줌
-    setIsFetchCompleted(true);
-  };
+  }, []);
 
-  // useEffect함수를 통해 fetchCurrentUser 함수를 실행함.
   useEffect(() => {
     fetchCurrentUser();
   }, []);
 
-  if (!isFetchCompleted) {
-    return "loading...";
+  if (loadingState) {
+    return <LoadingLayer message="Loading....." />;
   }
 
   return (
-    <DispatchContext.Provider value={dispatch}>
-      <UserStateContext.Provider value={userState}>
-        <Router>
-          <Header />
-          <Routes>
-            <Route path="/" exact element={<Portfolio />} />
-            <Route path="/login" element={<LoginForm />} />
-            <Route path="/register" element={<RegisterForm />} />
-            <Route path="/users/:userId" element={<Portfolio />} />
-            <Route path="/network" element={<Network />} />
-            <Route path="*" element={<Portfolio />} />
-          </Routes>
-        </Router>
-      </UserStateContext.Provider>
-    </DispatchContext.Provider>
+    <>
+      <Suspense fallback={<div>페이지를 불러오는 중.....</div>}>
+        <Navigation />
+        <Routes>
+          <Route path="/" exact element={<Home />} />
+          <Route path="/login" element={<Login />} />
+          <Route path="/register" element={<RegisterForm />} />
+          <Route path="/users/:userId" element={<Portfolio />} />
+          <Route path="/network" element={<Network />} />
+          <Route path="*" element={<NotFound />} />
+        </Routes>
+      </Suspense>
+    </>
   );
 }
 
